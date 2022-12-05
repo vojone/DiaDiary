@@ -15,7 +15,8 @@ export async function get(key) {
     try {
         let rawData = await AsyncStorage.getItem(`@${key}`);
         if(rawData === null) {
-            console.log('Data with given key were not saved!');
+            console.log('Data with given key were not saved yet!');
+            AsyncStorage.getAllKeys().then(result => console.log(result));
             return null;
         }
 

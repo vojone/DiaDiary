@@ -1,36 +1,50 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-import { store, get } from './store';
+import { Record } from './models/record';
 
 
 export default function App() {
   const [input, setInput] = useState('');
+  const [idInput, setIdInput] = useState(0);
 
   const onSave = () => {
     if(!input) {
       return;
     }
     else {
-      const objToStore = { text : input };
-      store('testKey', objToStore);
+      let record = new Record({bloodSugar_ : input});
+      record.save().then(result => {
+        alert(`Record saved under ID ${result}`);
+      });
 
       setInput('');
     }
   }
 
   const onRetrieve = () => {
-    get('testKey').then(result => alert(result.text));
+    Record.find(idInput).then(result => {
+      if(result) {
+        alert(`ID ${result.id} BloodSugar ${result.bloodSugar}`);
+      }
+      else {
+        alert(`The record with ID ${idInput} was not found!`);
+      }
+    });
   }
 
   const inputChange = text => {
     setInput(text);
   }
 
+  const idInputChange = text => {
+    setIdInput(text);
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style="auto" />
+      <Text>Type your blood sugar level:</Text>
       <TextInput
         type="text"
         id="test"
@@ -43,6 +57,16 @@ export default function App() {
         title='Save'
         onPress={onSave}
       ></Button>
+      <Text>Type your blood sugar level:</Text>
+      <TextInput
+        type="number"
+        id="idInput"
+        name="idInput"
+        keyboardType='numeric'
+        value={idInput}
+        placeholder="Select ID of record for retrieving"
+        onChangeText={idInputChange}
+      />
       <Button
         title='Retrieve'
         onPress={onRetrieve}
