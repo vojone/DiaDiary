@@ -1,4 +1,4 @@
-import { store, get } from "../store";
+import { store, get } from "../services/store";
 
 
 export class Record {
