@@ -6,13 +6,14 @@ import HomeScreen from '../views/HomeScreen';
 import HistoryScreen from '../views/HistoryScreen';
 
 import { Button, StyleSheet } from 'react-native';
+import { navTextSize } from '../styles/common';
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomNavigator() {
     const styles = StyleSheet.create({
         navbutton: {
-            fontSize: 16,
+            fontSize: navTextSize,
         },
     });
 
