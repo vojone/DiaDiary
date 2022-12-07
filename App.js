@@ -7,11 +7,15 @@ import HomeScreen from './views/HomeScreen';
 import HistoryScreen from './views/HistoryScreen';
 import EntryDetail from './views/EntryDetail';
 
+import { Provider as PaperProvider } from 'react-native-paper';
+
 const Stack = createNativeStackNavigator();
 
 
 export default function App() {
   return (
+    <PaperProvider>
+  
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -23,5 +27,6 @@ export default function App() {
         <Stack.Screen name="EntryDetail" component={EntryDetail} />
       </Stack.Navigator>
     </NavigationContainer>
+    </PaperProvider>
   );
 }
