@@ -4,16 +4,17 @@ import { useState } from 'react';
 
 export default function HomeScreen({ navigation }) {
     const [input, setInput] = useState('');
-    const [idInput, setIdInput] = useState(0);
+    const [saveKeyInput, setSaveKeyInput] = useState('');
+    const [keyInput, setKeyInput] = useState('');
   
     const onSave = () => {
       if(!input) {
         return;
       }
       else {
-        let record = new Record({bloodSugar_ : input});
+        let record = new Record({bloodSugar : input, key : saveKeyInput});
         record.save().then(result => {
-          alert(`Record saved under ID ${result}`);
+          alert(`Record saved under ID ${result._id}`);
         });
   
         setInput('');
@@ -21,12 +22,12 @@ export default function HomeScreen({ navigation }) {
     }
   
     const onRetrieve = () => {
-      Record.find(idInput).then(result => {
+      Record.find({ key: keyInput }).then(result => {
         if(result) {
           alert(`ID ${result.id} BloodSugar ${result.bloodSugar}`);
         }
         else {
-          alert(`The record with ID ${idInput} was not found!`);
+          alert(`The record with ID ${keyInput} was not found!`);
         }
       });
     }
@@ -35,8 +36,8 @@ export default function HomeScreen({ navigation }) {
       setInput(text);
     }
   
-    const idInputChange = text => {
-      setIdInput(text);
+    const keyInputChange = text => {
+      setKeyInput(text);
     }
 
     const styles = StyleSheet.create({
@@ -57,15 +58,22 @@ export default function HomeScreen({ navigation }) {
           onChangeText={inputChange}
           value={input}
         />
+        <Text>Key</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setSaveKeyInput}
+          value={saveKeyInput}
+        />
         <Button
           title="Save"
           onPress={onSave}
         />
-        <Text>Retrieve Blood Sugar</Text>
+
+        <Text>Retrieve Blood Sugar with key</Text>
         <TextInput
           style={styles.input}
-          onChangeText={idInputChange}
-          value={idInput}
+          onChangeText={keyInputChange}
+          value={keyInput}
         />
         <Button
           title="Retrieve"
