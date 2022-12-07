@@ -1,25 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator, createNativeStackNavigator } from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 import HomeScreen from './views/HomeScreen';
 import HistoryScreen from './views/HistoryScreen';
 
-const Stack = createNativeStackNavigator();
-
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: 'Welcome' }}
+      <Tab.Navigator initialRouteName='Home'>
+        <Tab.Screen
+            name='Nový záznam'
+            component={HomeScreen}
+            options={{ 
+                tabBarLabel: 'Přidat záznam',
+                tabBarIcon: ({color, size}) => (
+                    <MaterialCommunityIcons name="plus" color={color} size={size} /> 
+                ), 
+            }}
         />
-        <Stack.Screen name="History" component={HistoryScreen} />
-      </Stack.Navigator>
+        <Tab.Screen 
+            name='Graf' 
+            component={HistoryScreen}
+            options={{ 
+                tabBarLabel: 'Graf',
+                tabBarIcon: ({color, size}) => (
+                  <MaterialCommunityIcons name="chart-bell-curve-cumulative" color={color} size={size} /> 
+              ), 
+            }} 
+        />
+        <Tab.Screen 
+            name='Historie' 
+            component={HistoryScreen}
+            options={{ 
+                tabBarLabel: 'Histore',
+                tabBarIcon: ({color, size}) => (
+                  <Entypo name="back-in-time" color={color} size={size} /> 
+              ), 
+            }}  
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
