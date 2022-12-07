@@ -71,6 +71,10 @@ export default function HomeScreen({ navigation }) {
           title="Retrieve"
           onPress={onRetrieve}
         />
+        <Button
+          title="Entry Detail" 
+          onPress={() => navigation.navigate('EntryDetail')} 
+        />
       </View>
     );
   }
