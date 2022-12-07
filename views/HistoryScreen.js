@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
+
 import { Record } from '../models/record';
 import HistoryItem from '../components/HistoryItem';
 
