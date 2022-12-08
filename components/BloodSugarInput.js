@@ -1,9 +1,22 @@
 import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import { formatOneDecimal } from '../utils';
+import { addRecordStyles } from '../styles/common';
 
+const GLYCEMIA_STEP = 0.1;
+const GLYCEMIA_INIT = 5.5;
+
+const INSULINE_STEP = 1;
+const INSULINE_INIT = NaN;
 
 export default function BloodSugarInput() {
+    const [glycemia, setGlycemia] = useState(GLYCEMIA_INIT);
+    const [glycemiaInput, setGlycemiaInput] = useState(glycemia.toFixed(1));
+
+    const [insuline, setInsuline] = useState(INSULINE_INIT);
+    const [insulineInput, setInsulineInput] = useState('');
+
     const [dateTime, setDateTime] = useState(new Date());
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -13,6 +26,52 @@ export default function BloodSugarInput() {
             str = str.substring(1);
             
         return str;
+    }
+
+    const glycemiaChanged = text => {
+        if(text.match(/^([1-9]?\d?[,.]\d?|[1-9]?\d?)$/) == null) {
+            return;
+        }
+
+        setGlycemiaInput(text.replace('.', ','));
+
+        let newGlycVal = parseFloat(text.replace(',', '.'));
+        setGlycemia(newGlycVal);
+    }
+
+    const glycemiaInc = () => {
+        let newGlycVal = glycemia + GLYCEMIA_STEP;
+        setGlycemia(newGlycVal);
+        setGlycemiaInput(formatOneDecimal(newGlycVal));
+    }
+
+    const glycemiaDec = () => {
+        let newGlycVal = glycemia - GLYCEMIA_STEP;
+        setGlycemia(newGlycVal);
+        setGlycemiaInput(formatOneDecimal(newGlycVal));
+    }
+
+    const insulineChanged = text => {
+        if(text.match(/^\d*$/) == null) {
+            return;
+        }
+
+        setInsulineInput(text);
+
+        let newInsulineVal = parseInt(text);
+        setInsuline(newInsulineVal);
+    }
+
+    const insulineInc = () => {
+        let newInsulineVal = insuline + INSULINE_STEP;
+        setInsuline(newInsulineVal);
+        setInsulineInput(newInsulineVal.toString());
+    }
+
+    const insulineDec = () => {
+        let newInsulineVal = insuline - INSULINE_STEP;
+        setInsuline(newInsulineVal);
+        setInsulineInput(newInsulineVal.toString());
     }
 
     const getDateFormatted = () => {
@@ -58,37 +117,7 @@ export default function BloodSugarInput() {
         setDateTime(time);
     };
 
-
-    const styles = StyleSheet.create({
-        maincontainer: {
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'stretch',
-            justifyContent: 'space-between',
-
-            padding: 20,
-        },
-
-        inputcontainer: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'stretch',
-            justifyContent: 'space-between',
-        },
-
-        timeinputcontainer: {
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-        },
-
-        rightaligned: {
-            textAlign: 'right',
-        }
-    });
-
-
+    const styles = addRecordStyles;
     return (
         <View style={styles.maincontainer}>
             <View>
@@ -96,12 +125,18 @@ export default function BloodSugarInput() {
                 <View style={styles.inputcontainer}>
                 <Button
                     title="-"
+                    onPress={glycemiaDec}
                 ></Button>
                 <TextInput
-                    placeholder='Glykémie'
+                    value={glycemiaInput}
+                    onChangeText={glycemiaChanged}
+                    keyboardType="numeric"
+                    style={styles.input}
+                    placeholder="Nezadáno"
                 ></TextInput>
                 <Button
                     title="+"
+                    onPress={glycemiaInc}
                 ></Button>
                 </View>
             </View>
@@ -113,12 +148,18 @@ export default function BloodSugarInput() {
                 <View style={styles.inputcontainer}>
                 <Button
                     title="-"
+                    onPress={insulineDec}
                 ></Button>
                 <TextInput
-                    placeholder='Glykémie'
+                    style={styles.input}
+                    keyboardType="numeric"
+                    placeholder="Nezadáno"
+                    value={insulineInput}
+                    onChangeText={insulineChanged}
                 ></TextInput>
                 <Button
                     title="+"
+                    onPress={insulineInc}
                 ></Button>
                 </View>
             </View>
