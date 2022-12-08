@@ -2,8 +2,8 @@ import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Record } from '../models/record';
 import { useState } from 'react';
-import BloodSugarInput from '../components/BloodSugarInput';
-import FoodInput from '../components/FoodInput';
+import BloodSugarInput from './BloodSugarInput';
+import FoodInput from './FoodInput';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
 export default function RecordAddScreen({ navigation }) {

@@ -7,6 +7,7 @@ const CARBO_STEP = 1;
 
 export default function FoodInput() {
     const [carbo, setCarbo] = useState(CARBO_INIT);
+    const [food, setFood] = useState('');
 
     const styles = addRecordStyles;
     return (
@@ -17,11 +18,9 @@ export default function FoodInput() {
             label="Sacharidy"
             onValueChange={setCarbo}
         />
-        <Text>Co jste jedl?</Text>
-        <TextInput
-            multiline={true}
-            numberOfLines={5}
-            style={styles.multilineinput}
-        ></TextInput>
+        <View>
+            <Text>Jídlo</Text>
+            <TextInput placeholder="Snídaně"></TextInput>
+        </View>
     </View>);
 } 
