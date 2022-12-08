@@ -22,16 +22,6 @@ export const addRecordStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 
-    timeinputcontainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-
-    rightaligned: {
-        textAlign: 'right',
-    },
-
     input: {
         borderStyle: 'solid',
         borderLeftWidth: 1,
@@ -41,5 +31,22 @@ export const addRecordStyles = StyleSheet.create({
         flex: 1,
         fontSize: 32,
         textAlign: 'center',
+    },
+
+    multilineinput: {
+        textAlign: 'left',
+        textAlignVertical: 'top',
+
+
+
+        flex: 1,
+        fontSize: 20,
+
+        minHeight: 100,
+
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
     }
 });
