@@ -10,7 +10,7 @@ import RecordAddScreen from '../views/RecordAddScreen';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomNavigator() {
+export default function BottomNavigator({ navigation }) {
     const styles = StyleSheet.create({
         navbutton: {
             fontSize: navTextSize,

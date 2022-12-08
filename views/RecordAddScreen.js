@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Vibration } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Record } from '../models/record';
 import { useState } from 'react';
-import BloodSugarInput from './BloodSugarInput';
-import FoodInput from './FoodInput';
+import BloodSugarTab from './BloodSugarTab';
+import FoodTab from './FoodTab';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
 export default function RecordAddScreen({ navigation }) {
@@ -16,7 +16,7 @@ export default function RecordAddScreen({ navigation }) {
     const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
     const onSave = () => {
-
+        Vibration.vibrate([1000]);
     }
 
     const onRetrieve = () => {
@@ -110,7 +110,7 @@ export default function RecordAddScreen({ navigation }) {
                 <Tab.Navigator>
                     <Tab.Screen
                         name="glycemia"
-                        component={BloodSugarInput}
+                        component={BloodSugarTab}
                         options={{
                             tabBarLabel: 'Hladina cukru',
                             tabBarLabelStyle: {
@@ -121,7 +121,7 @@ export default function RecordAddScreen({ navigation }) {
                     </Tab.Screen>
                     <Tab.Screen
                         name="food"
-                        component={FoodInput}
+                        component={FoodTab}
                         options={{
                             tabBarLabel: 'Jídlo',
                             tabBarLabelStyle: {
@@ -132,7 +132,7 @@ export default function RecordAddScreen({ navigation }) {
                     </Tab.Screen>
                     <Tab.Screen
                         name="other"
-                        component={BloodSugarInput}
+                        component={BloodSugarTab}
                         options={{
                             tabBarLabel: 'Ostatní',
                             tabBarLabelStyle: {
@@ -179,7 +179,7 @@ export default function RecordAddScreen({ navigation }) {
             </View>
             <View style={styles.controlpanel}>
                 <Button title="Zahodit"></Button>
-                <Button title="Přidat záznam"></Button>
+                <Button title="Přidat záznam" onPress={onSave}></Button>
             </View>
         </View>
     );

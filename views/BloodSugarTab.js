@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { formatOneDecimal } from '../utils';
 import { addRecordStyles } from '../styles/common';
-import NumericInput from './NumericInput';
+import NumericInput from '../components/NumericInput';
 
 const GLYCEMIA_STEP = 0.1;
 const GLYCEMIA_INIT = 5.5;
@@ -10,7 +10,7 @@ const GLYCEMIA_INIT = 5.5;
 const INSULINE_STEP = 1;
 const INSULINE_INIT = NaN;
 
-export default function BloodSugarInput() {
+export default function BloodSugarTab() {
     const [glycemia, setGlycemia] = useState(GLYCEMIA_INIT);
     const [glycemiaInput, setGlycemiaInput] = useState(glycemia.toFixed(1).replace('.', ','));
 

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles } from "../styles/common";
+import NumericInput from "../components/NumericInput";
 
 const CARBO_INIT = NaN;
 const CARBO_STEP = 1;
 
-export default function FoodInput() {
+export default function FoodTab() {
     const [carbo, setCarbo] = useState(CARBO_INIT);
     const [food, setFood] = useState('');
 
