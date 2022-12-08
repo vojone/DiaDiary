@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, FlatList } from 'react-native';
 import EntryItem from '../components/EntryItem';
 import React from 'react';
+import InputSpinner from "react-native-input-spinner";
 
 import { List } from 'react-native-paper';
 import { Button } from 'react-native-paper';
@@ -10,14 +11,9 @@ export default function EntryDetail({ navigation }) {
 
   const handlePress = () => setExpanded(!expanded);
 
-    let records = [
-        {id: 0, bloodSugar: 100, insulineTaken: 2, date: new Date()},
-        {id: 1, bloodSugar: 200, insulineTaken: 1, date: new Date()},
-        {id: 2, bloodSugar: 120, insulineTaken: 3, date: new Date()},
-        {id: 3, bloodSugar: 50, insulineTaken: 2, date: new Date()},
-    ];
+    
 
-    let props=[{record: records}];
+    //let props=[{record: records}];
     //load records from storage
     let i = 0;
     let cont = true;
@@ -28,21 +24,19 @@ export default function EntryDetail({ navigation }) {
         alignContent: 'center',
         alignItems: 'flex-end',
         justifyContent: 'space-between',
+        
+      },
 
-        button_minus: {
-          
-          
-          marginBottom: 20,
+      text_style: {
+        header: {
+          fontSize: 20,
+          fontWeight: 'bold',
         },
-
-        button_plus: {
-          
-          marginBottom: 20,
-        },
-
-        list: {
-          minWidth: 210,
-        },
+        normal: {
+          marginTop: 20,
+          marginBottom: 5,
+          fontSize: 16,
+        }
       },
 
       confirm_buttons_flex: {
@@ -59,21 +53,29 @@ export default function EntryDetail({ navigation }) {
 
     return (
       <View style={{ margin: 20}}>
-        <Text>Entry detail</Text>
+        <Text style={styles.text_style.header}> Entry detail</Text>
 
+        <Text style={styles.text_style.normal}>Sugar level</Text>
         <View style={styles.list_flex}>
-          <Button icon="minus" style={styles.list_flex.button_minus} mode="contained" onPress={() => navigation.navigate('Home')}/>
 
-          <List.Section title="Sugar levels" style={styles.list_flex.list}>
-            <List.Accordion
-              title="Sugar levels"
-              left={props => <List.Icon {...props} icon="folder" />}>
-              <List.Item title='First item' description='Hello?'/>
-              <List.Item title="Second item" />
-            </List.Accordion>
-          </List.Section>
-
-          <Button icon="plus" style={styles.list_flex.button_plus} mode="contained" onPress={() => navigation.navigate('Home')}/>
+          <InputSpinner
+            max={10}
+            min={0}
+            step={1}
+            color={"#674fa5"}
+            value={i}
+            />
+        </View>
+        
+        <Text style={styles.text_style.normal}>Insuline level</Text>
+        <View style={styles.list_flex}>
+          <InputSpinner
+            
+            min={0}
+            step={1}
+            color={"#674fa5"}
+            value={i}
+            />
         </View>
 
         <View style={styles.confirm_buttons_flex}>
@@ -85,6 +87,7 @@ export default function EntryDetail({ navigation }) {
           Back
         </Button>
         </View>
+
       </View>
     );
 }
