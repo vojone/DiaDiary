@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Button, Vibration } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Record } from '../models/record';
 import { useState, useRef } from 'react';
@@ -7,6 +8,7 @@ import FoodTab from './FoodTab';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import OtherTab from './OtherTab';
 import { primaryColor } from '../styles/common';
+import DateTimePickerWithText from '../components/DateTimePickerWithText';
 
 export default function RecordAddScreen({ navigation }) {
     let record = Record.default();
@@ -76,14 +78,10 @@ export default function RecordAddScreen({ navigation }) {
     }
 
     const dateSelectionConfirm = (date) => {
-        hideDatePicker();
-
         setDateTime(date);
     };
 
     const timeSelectionConfirm = (time) => {
-        hideTimePicker();
-
         setDateTime(time);
     };
 
@@ -173,38 +171,20 @@ export default function RecordAddScreen({ navigation }) {
                 </Tab.Navigator>
             </View>
             <View style={styles.timeinputcontainer}>
-                <View>
-                    <Text>Datum</Text>
-                    <Text
-                        onPress={showDatePicker}
-                    >
-                        {getDateFormatted()}
-                    </Text>
-                    <DateTimePicker 
-                        date={dateTime}
-                        mode="date"
-                        isVisible={isDatePickerVisible}
-                        onCancel={hideDatePicker}
-                        onConfirm={dateSelectionConfirm}
-                    >
-                    </DateTimePicker>
-                </View>
-                <View>
-                    <Text style={styles.rightaligned}>Čas</Text>
-                    <Text
-                        onPress={showTimePicker}
-                    >
-                        {getTimeFormatted()}
-                    </Text>
-                    <DateTimePicker 
-                        date={dateTime}
-                        mode="time"
-                        isVisible={isTimePickerVisible}
-                        onCancel={hideTimePicker}
-                        onConfirm={timeSelectionConfirm}
-                    >
-                    </DateTimePicker>
-                </View>
+                <DateTimePickerWithText
+                    value={dateTime}
+                    mode="date"
+                    label="Datum"
+                    onConfirm={timeSelectionConfirm}
+                >
+                </DateTimePickerWithText>
+                <DateTimePickerWithText
+                    value={dateTime}
+                    mode="time"
+                    label="Čas"
+                    onConfirm={timeSelectionConfirm}
+                >
+                </DateTimePickerWithText>
             </View>
             <View style={styles.controlpanel}>
                 <Button title="Zahodit" onPress={onCancel}></Button>
