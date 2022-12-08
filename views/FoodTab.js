@@ -1,25 +1,42 @@
-import { useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles } from "../styles/common";
-import NumericInput from "../components/NumericInput";
+import InputSpinner from "react-native-input-spinner";
 
-const CARBO_INIT = NaN;
-const CARBO_STEP = 1;
 
-export default function FoodTab() {
-    const [carbo, setCarbo] = useState(CARBO_INIT);
-    const [food, setFood] = useState('');
+export default function FoodTab({ navigation, model, screenref }) {
+    useImperativeHandle(screenref, () => ({
+        refresh: (model) => { 
+            setCarbo(model.carboHydrates);
+        },
+        getData: () => {
+            return { carboHydrates: carbo }
+        } 
+    }));
+
+
+    const [carbo, setCarbo] = useState(model.carboHydrates);
 
     const styles = addRecordStyles;
     return (
     <View style={styles.maincontainer}>
-        <NumericInput 
-            value={carbo}
-            regex={/^\d*$/}
-            label="Sacharidy"
-            onValueChange={setCarbo}
-        />
         <View>
+            <Text>Sacharidy</Text>
+            <InputSpinner 
+                rounded= {false}
+                showBorder={true}
+                placeholder="Nezadáno"
+                precision={1}
+                type="real"
+                emptied={true}
+                min={0}
+                step={0.1}
+                color= "#674fa5"
+                value={carbo}
+                onChange={setCarbo}
+            />
+            </View>
+        <View style={styles.inputwrapper}>
             <Text>Jídlo</Text>
             <TextInput placeholder="Snídaně"></TextInput>
         </View>

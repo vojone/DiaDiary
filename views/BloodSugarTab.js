@@ -1,21 +1,23 @@
-import { useState } from 'react';
+import { useState, useImperativeHandle, forwardRef } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { formatOneDecimal } from '../utils';
 import { addRecordStyles } from '../styles/common';
-import NumericInput from '../components/NumericInput';
+import InputSpinner from 'react-native-input-spinner';
 
-const GLYCEMIA_STEP = 0.1;
-const GLYCEMIA_INIT = 5.5;
 
-const INSULINE_STEP = 1;
-const INSULINE_INIT = NaN;
+export default function BloodSugarTab({ navigation, model, screenref }) {
+    useImperativeHandle(screenref, () => ({
+        refresh: (model) => { 
+            setGlycemia(model.bloodSugar);
+            setInsuline(model.insuline);
+        },
+        getData: () => {
+            return { bloodSugar: glycemia, insuline: insuline }
+        } 
+    }));
 
-export default function BloodSugarTab() {
-    const [glycemia, setGlycemia] = useState(GLYCEMIA_INIT);
-    const [glycemiaInput, setGlycemiaInput] = useState(glycemia.toFixed(1).replace('.', ','));
-
-    const [insuline, setInsuline] = useState(INSULINE_INIT);
-    const [insulineInput, setInsulineInput] = useState('');
+    const [glycemia, setGlycemia] = useState(model.bloodSugar);
+    const [insuline, setInsuline] = useState(model.insuline);
 
     const shiftZeros = (str) => {
         while(str.charAt(0) === '0')
@@ -24,36 +26,12 @@ export default function BloodSugarTab() {
         return str;
     }
 
-    const glycemiaChanged = text => {
-        if(text.match(/^([1-9]?\d?[,.]\d?|[1-9]?\d?)$/) == null) {
-            return;
-        }
-
-        setGlycemiaInput(text.replace('.', ','));
-
-        let newGlycVal = parseFloat(text.replace(',', '.'));
-        setGlycemia(newGlycVal);
+    const glycemiaChanged = value => {
+        setGlycemia(value);
     }
 
-    const glycemiaInc = () => {
-        let newGlycVal = glycemia + GLYCEMIA_STEP;
-        if(isNaN(glycemia)) {
-            newGlycVal = 0;
-        }
-        
-        setGlycemia(newGlycVal);
-        setGlycemiaInput(isNaN(newGlycVal) ? '' : formatOneDecimal(newGlycVal));
-    }
-
-    const glycemiaDec = () => {
-        let newGlycVal = glycemia - GLYCEMIA_STEP;
-
-        if(newGlycVal < 0) {
-            newGlycVal = NaN;
-        }
-
-        setGlycemia(newGlycVal);
-        setGlycemiaInput(isNaN(newGlycVal) ? '' : formatOneDecimal(newGlycVal));
+    const insulineChanged = value => {
+        setInsuline(value)
     }
 
     const styles = addRecordStyles;
@@ -61,34 +39,38 @@ export default function BloodSugarTab() {
         <View style={styles.maincontainer}>
             <View>
                 <Text>Hladina cukru</Text>
-                <View style={styles.inputcontainer}>
-                <Button
-                    title="-"
-                    onPress={glycemiaDec}
-                ></Button>
-                <TextInput
-                    value={glycemiaInput}
-                    onChangeText={glycemiaChanged}
-                    keyboardType="numeric"
-                    style={styles.input}
+                <InputSpinner 
+                    rounded= {false}
+                    showBorder={true}
                     placeholder="Nezadáno"
-                ></TextInput>
-                <Button
-                    title="+"
-                    onPress={glycemiaInc}
-                ></Button>
-                </View>
+                    precision={1}
+                    type="real"
+                    emptied={true}
+                    min={0}
+                    step={0.1}
+                    color= "#674fa5"
+                    value={glycemia}
+                    onChange={setGlycemia}
+                    />
             </View>
             {/* <View>
                 <Text>5.5</Text>
             </View> */}
-            <NumericInput 
-                style={styles.inputwrapper}
-                value={insuline}
-                regex={/^\d*$/}
-                label="Podaný inzulín"
-                onValueChange={setInsuline}
-            >
-            </NumericInput>
+            <View style={styles.inputwrapper}>
+                <Text>Podaný inzulín</Text>
+                <InputSpinner 
+                    rounded= {false}
+                    showBorder={true}
+                    placeholder="Nezadáno"
+                    precision={1}
+                    type="real"
+                    emptied={true}
+                    min={0}
+                    step={0.1}
+                    color= "#674fa5"
+                    value={insuline}
+                    onChange={setInsuline}
+                />
+            </View>
         </View>);
 }

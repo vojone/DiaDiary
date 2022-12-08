@@ -47,20 +47,48 @@ export class Record {
         });
     }
 
+    static default() {
+        return new Record({
+            bloodSugar: 5.5, 
+            insuline: null, 
+            insulineU: null,
+            dateTime: new Date(),
+        }); 
+    }
+
     /**
      * 
      * @param {Object} param0 
      */
-    constructor({id = undefined, key = null, bloodSugar = null, templateObj = null} = {}) {
+    constructor({
+        id = undefined, 
+        key = null, 
+        bloodSugar = null, 
+        insuline = null, 
+        insulineU = null, 
+        carboHydrates = null,
+        carboHydratesU = null,
+        dateTime = null, 
+        templateObj = null} = {}) {
+
         if(templateObj) {
             this._id = templateObj.id;
             this.key = templateObj.key;
-            this.bloodSugar = templateObj.bloodSugar;
+            this.insuline = templateObj.insuline;
+            this.insulineU = templateObj.insulineU;
+            this.carboHydrates = templateObj.carboHydrates;
+            this.carboHydratesU = templateObj.carboHydratesU;
+            this.dateTime = templateObj.dateTime;
         }
         else {
             this._id = id;
             this.key = key;
             this.bloodSugar = bloodSugar;
+            this.insuline = insuline;
+            this.insulineU = insulineU;
+            this.carboHydrates = carboHydrates;
+            this.carboHydratesU = carboHydratesU;
+            this.dateTime = dateTime;
         }
     }
 
@@ -69,8 +97,23 @@ export class Record {
         return {
             '_id' : this._id,
             'key' : this.key,
-            'bloodSugar' : this.bloodSugar, 
+            'bloodSugar' : this.bloodSugar,
+            'insuline' : this.insuline,
+            'insulineU' : this.insulineU,
+            'dateTime' : this.dateTime,
         };
+    }
+
+    /**
+     * 
+     * @param {Object} props 
+     */
+    setProperties(props) {
+        for(const key in props) {
+            if(this[key] !== undefined) {
+                this[key] = props[key];
+            }
+        }
     }
 
 
