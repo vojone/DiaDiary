@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import BottomNavigator from './components/BottomNavigator';
 import MainStackNavigator from './components/MainNavigator';
 
-const Tab = createBottomTabNavigator();
+// const Tab = createBottomTabNavigator();
 
 export default function App() {
     const styles = StyleSheet.create({
