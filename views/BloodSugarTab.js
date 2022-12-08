@@ -83,6 +83,7 @@ export default function BloodSugarTab() {
                 <Text>5.5</Text>
             </View> */}
             <NumericInput 
+                style={styles.inputwrapper}
                 value={insuline}
                 regex={/^\d*$/}
                 label="Podaný inzulín"

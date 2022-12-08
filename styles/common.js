@@ -10,7 +10,7 @@ export const addRecordStyles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'stretch',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
 
         padding: 20,
     },
@@ -20,6 +20,10 @@ export const addRecordStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'stretch',
         justifyContent: 'space-between',
+    },
+
+    inputwrapper: {
+        marginTop: 40,
     },
 
     input: {
