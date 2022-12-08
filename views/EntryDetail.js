@@ -24,7 +24,6 @@ export default function EntryDetail({ navigation }) {
         alignContent: 'center',
         alignItems: 'flex-end',
         justifyContent: 'space-between',
-        
       },
 
       text_style: {
@@ -53,29 +52,37 @@ export default function EntryDetail({ navigation }) {
 
     return (
       <View style={{ margin: 20}}>
-        <Text style={styles.text_style.header}> Entry detail</Text>
+        <Text style={styles.text_style.header}>Detail záznamu</Text>
 
-        <Text style={styles.text_style.normal}>Sugar level</Text>
+        <Text style={styles.text_style.normal}>Hladina cukru</Text>
         <View style={styles.list_flex}>
 
-          <InputSpinner
-            max={10}
-            min={0}
-            step={1}
-            color={"#674fa5"}
-            value={i}
-            />
+          <InputSpinner 
+          rounded= {false}
+          showBorder={true}
+          placeholder="Nezadáno"
+          precision={1}
+          type="real"
+          emptied={true}
+          min={0}
+          step={1}
+          color= "#674fa5"
+          />
         </View>
         
-        <Text style={styles.text_style.normal}>Insuline level</Text>
+        <Text style={styles.text_style.normal}>Podaný inzulín</Text>
         <View style={styles.list_flex}>
-          <InputSpinner
-            
-            min={0}
-            step={1}
-            color={"#674fa5"}
-            value={i}
-            />
+          <InputSpinner 
+          rounded= {false} // makes the spinner square duh
+          showBorder={true} // shows the border of the spinner
+          emptied={true} // if input can be empy, not sure if it works the way I think it does
+          precision={1} // how many decimals can be inputted
+          type="real" // type of input, gets the decimal point
+          placeholder="Nezadáno" // placeholder text when empty
+          min={0} // minimum value
+          step={1} // step size of the number
+          color= "#674fa5" // color of the spinner
+          /> 
         </View>
 
         <View style={styles.confirm_buttons_flex}>
