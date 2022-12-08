@@ -31,29 +31,29 @@ export default function EntryDetail({ navigation }) {
 
         button_minus: {
           
-          marginRight: 20,
+          
           marginBottom: 20,
         },
 
         button_plus: {
-          marginLeft: 20,
+          
           marginBottom: 20,
         },
 
         list: {
-          minWidth: 180,
+          minWidth: 210,
         },
       },
 
       confirm_buttons_flex: {
-        save_button: {
-          minWidth: 150,
-        },
-
         flexDirection: 'row',
         alignContent: 'center',
         marginTop: 20,
         justifyContent: 'space-between',
+        
+        save_button: {
+          minWidth: 150,
+        },
       }
     });
 
