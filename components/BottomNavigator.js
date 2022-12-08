@@ -2,11 +2,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Entypo from 'react-native-vector-icons/Entypo';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import HomeScreen from '../views/HomeScreen';
 import HistoryScreen from '../views/HistoryScreen';
 
 import { Button, StyleSheet } from 'react-native';
 import { navTextSize } from '../styles/common';
+import RecordAddScreen from '../views/RecordAddScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,7 +21,7 @@ export default function BottomNavigator() {
         <Tab.Navigator initialRouteName='new'>
             <Tab.Screen
                 name='new'
-                component={HomeScreen}
+                component={RecordAddScreen}
                 options={{ 
                     lazy: true,
                     tabBarLabelStyle: styles.navbutton,
