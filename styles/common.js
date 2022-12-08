@@ -4,6 +4,8 @@ export const navTextSize = 16;
 
 export const sideNavTextSize = 20;
 
+export const primaryColor = '#674fa5';
+
 export const addRecordStyles = StyleSheet.create({
     maincontainer: {
         height: '100%',

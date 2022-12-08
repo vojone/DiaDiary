@@ -6,6 +6,7 @@ import BloodSugarTab from './BloodSugarTab';
 import FoodTab from './FoodTab';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import OtherTab from './OtherTab';
+import { primaryColor } from '../styles/common';
 
 export default function RecordAddScreen({ navigation }) {
     let record = Record.default();
@@ -130,7 +131,11 @@ export default function RecordAddScreen({ navigation }) {
                             tabBarLabel: 'Hladina cukru',
                             tabBarLabelStyle: {
                                 textTransform: 'capitalize',
-                            }
+                            },
+                            tabBarIndicatorStyle: StyleSheet.create({
+                                borderTopColor: primaryColor,
+                                borderTopWidth: 3,
+                            }),
                         }}
                     >
                         {props => <BloodSugarTab {...props} model={record} screenref={bloodSugarTab}></BloodSugarTab>}
@@ -141,7 +146,11 @@ export default function RecordAddScreen({ navigation }) {
                             tabBarLabel: 'Jídlo',
                             tabBarLabelStyle: {
                                 textTransform: 'capitalize',
-                            }
+                            },
+                            tabBarIndicatorStyle: StyleSheet.create({
+                                borderTopColor: primaryColor,
+                                borderTopWidth: 3,
+                            }),
                         }}
                     >
                         {props => <FoodTab {...props} model={record} screenref={foodTab}></FoodTab>}
@@ -153,7 +162,11 @@ export default function RecordAddScreen({ navigation }) {
                             tabBarLabel: 'Ostatní',
                             tabBarLabelStyle: {
                                 textTransform: 'capitalize',
-                            }
+                            },
+                            tabBarIndicatorStyle: StyleSheet.create({
+                                borderTopColor: primaryColor,
+                                borderTopWidth: 3,
+                            }),
                         }}
                     >
                     </Tab.Screen>

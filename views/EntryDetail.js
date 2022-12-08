@@ -5,6 +5,7 @@ import InputSpinner from "react-native-input-spinner";
 
 import { List } from 'react-native-paper';
 import { Button } from 'react-native-paper';
+import { primaryColor } from '../styles/common';
 
 export default function EntryDetail({ navigation }) {
   const [expanded, setExpanded] = React.useState(true);
@@ -66,7 +67,7 @@ export default function EntryDetail({ navigation }) {
           emptied={true}
           min={0}
           step={1}
-          color= "#674fa5"
+          color={primaryColor}
           />
         </View>
         
@@ -81,7 +82,7 @@ export default function EntryDetail({ navigation }) {
           placeholder="Nezadáno" // placeholder text when empty
           min={0} // minimum value
           step={1} // step size of the number
-          color= "#674fa5" // color of the spinner
+          color={primaryColor} // color of the spinner
           /> 
         </View>
 
