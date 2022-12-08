@@ -51,7 +51,7 @@ export default function HomeScreen({ navigation }) {
     
     return (
       <View style={styles.container}>
-        <Button title="Go to History" onPress={() => navigation.navigate('History')} />
+        <Button title="Go to History" onPress={() => navigation.navigate('Historie')} />
         <Text>Enter Blood Sugar</Text>
         <TextInput
           style={styles.input}
