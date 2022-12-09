@@ -66,7 +66,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     type="real"
                     emptied={true}
                     min={0}
-                    step={0.1}
+                    step={1}
                     color= "#674fa5"
                     value={insuline}
                     onChange={setInsuline}

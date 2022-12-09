@@ -9,6 +9,8 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import OtherTab from './OtherTab';
 import { primaryColor } from '../styles/common';
 import DateTimePickerWithText from '../components/DateTimePickerWithText';
+import ButtonSecondary from '../components/ButtonSecondary';
+import ButtonPrimary from '../components/ButtonPrimary';
 
 export default function RecordAddScreen({ navigation }) {
     let record = Record.default();
@@ -17,6 +19,8 @@ export default function RecordAddScreen({ navigation }) {
     const otherTab = useRef();
 
     const [dateTime, setDateTime] = useState(record.dateTime);
+    const [isDateModified, setIsDateModified] = useState(false);
+    const [isTimeModified, setIsTimeModified] = useState(false);
     const [isDateTimeSync, setDateTimeSync] = useState(true);
 
     useEffect(() => {
@@ -41,7 +45,7 @@ export default function RecordAddScreen({ navigation }) {
 
                 syncDateTime(true);
 
-                Vibration.vibrate(100);
+                Vibration.vibrate(200);
             },
             (error) => {
                 console.error(error);
@@ -53,6 +57,9 @@ export default function RecordAddScreen({ navigation }) {
         record = Record.default(); 
         bloodSugarTab.current.refresh(record);
         syncDateTime(true);
+
+        setIsTimeModified(false);
+        setIsDateModified(false);
     }
 
 
@@ -69,15 +76,21 @@ export default function RecordAddScreen({ navigation }) {
     }
 
     const onDateTimeSelectionCancel = () => {
-        setDateTimeSync(true);
+        if(isDateModified != true && isTimeModified != true) {
+            syncDateTime(true);
+        }
     }
 
     const dateSelectionConfirm = (date) => {
         setDateTime(date);
+        setIsDateModified(true);
+        setDateTimeSync(false);
     };
 
     const timeSelectionConfirm = (time) => {
         setDateTime(time);
+        setIsTimeModified(true);
+        setDateTimeSync(false);
     };
 
     const Tab = createMaterialTopTabNavigator();
@@ -170,26 +183,27 @@ export default function RecordAddScreen({ navigation }) {
                     <DateTimePickerWithText
                         value={dateTime}
                         mode="date"
-                        label="Datum"
+                        label={`Datum ${isDateModified ? '' : '(dnes)'}`}
                         onConfirm={dateSelectionConfirm}
                         onOpen={onDateTimeSelectionOpen}
                         onCancel={onDateTimeSelectionCancel}
+                        isModified={isDateModified}
                     >
                     </DateTimePickerWithText>
                     <DateTimePickerWithText
                         value={dateTime}
                         mode="time"
-                        label="Čas"
+                        label={`Čas ${isDateModified || isTimeModified ? '' : '(teď)'}`}
                         onConfirm={timeSelectionConfirm}
                         onOpen={onDateTimeSelectionOpen}
                         onCancel={onDateTimeSelectionCancel}
-                        isModified={!isDateTimeSync}
+                        isModified={isTimeModified}
                     >
                     </DateTimePickerWithText>
                 </View>
                 <View style={styles.controlpanel}>
-                    <Button title="Zahodit" onPress={onCancel}></Button>
-                    <Button title="Přidat záznam" onPress={onSave}></Button>
+                    <ButtonSecondary title="Zahodit" onPress={onCancel}></ButtonSecondary>
+                    <ButtonPrimary icon="plus" title="Přidat záznam" onPress={onSave}></ButtonPrimary>
                 </View>
             </View>
         </TouchableWithoutFeedback>
