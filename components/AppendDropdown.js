@@ -9,7 +9,7 @@ export default function AppendDropdown(props) {
             textStyle={{fontSize: 16}} 
             dropdownTextStyle={{fontSize: 20, padding: 20, textAlign: 'center'}}
             dropdownTextHighlightStyle={{backgroundColor: bottomTabBarActiveBgColor}}
-            dropdownStyle={{marginTop: -20}}
+            dropdownStyle={{marginTop: -20, minWidth: 50}}
             options={props.options} 
             style={{padding: 10}}
             defaultValue={props.defaultValue}

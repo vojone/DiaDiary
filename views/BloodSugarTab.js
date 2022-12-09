@@ -53,7 +53,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     color={primaryColor}
                     value={glycemia}
                     onChange={setGlycemia}
-                    fontSize={ 23 }
+                    fontSize={ 28 }
                     append={
                         <AppendDropdown
                             options={['mmol/l', 'mg/dl']}
@@ -66,7 +66,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                 <Text>5.5</Text>
             </View> */}
             <View style={styles.inputwithtopgap}>
-                <Text>Podaný inzulín</Text>
+                <Text>Podaný inzulín (jednotky)</Text>
                 <InputSpinner 
                     rounded= {false}
                     showBorder={true}
@@ -80,7 +80,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     color={primaryColor}
                     value={insuline}
                     onChange={setInsuline}
-                    fontSize={ 23 }
+                    fontSize={ 28 }
                     append={
                         <AppendDropdown
                             options={['Fiasp', 'Novorapid']}
