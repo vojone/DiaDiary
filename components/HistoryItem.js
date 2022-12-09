@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
 
 export default function HistoryItem(props) {
     const styles = StyleSheet.create({
@@ -32,16 +32,18 @@ export default function HistoryItem(props) {
     const record = props.record || {bloodSugar: 0, insulineTaken: 0};
 
     return (
-        <View style={styles.text}>
-            <Text style={styles.sugar}>
-                Sugar: {record.bloodSugar}
-            </Text> 
-            <Text style={styles.insuline}>
-                Insuline: {record.insulineTaken}
-            </Text>
-            <Text>
-                Date: {record.date.toLocaleTimeString()}
-            </Text>
-        </View>
+        <TouchableWithoutFeedback  onPress={props.onPress}>
+            <View style={styles.text}>
+                <Text style={styles.sugar}>
+                    Sugar: {record.bloodSugar}
+                </Text> 
+                <Text style={styles.insuline}>
+                    Insuline: {record.insulineTaken}
+                </Text>
+                <Text>
+                    Date: {record.date.toLocaleTimeString()}
+                </Text>
+            </View>
+        </TouchableWithoutFeedback >
     );
 }

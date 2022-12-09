@@ -11,7 +11,7 @@ import ChartScreen from '../views/ChartScreen';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomNavigator() {
+export default function BottomNavigator({ navigation }) {
     const styles = StyleSheet.create({
         navbutton: {
             fontSize: navTextSize,

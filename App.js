@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { View, Text, StyleSheet, Button } from 'react-native';
 import BottomNavigator from './components/BottomNavigator';
-import MainStackNavigator from './components/MainNavigator';
+import MainDrawerNavigator from './components/MainNavigator';
 
 // const Tab = createBottomTabNavigator();
 
@@ -17,7 +17,7 @@ export default function App() {
     return (
         <View style={styles.main}>
             <NavigationContainer>
-                <MainStackNavigator/>
+                <MainDrawerNavigator/>
             </NavigationContainer>
         </View>
     );

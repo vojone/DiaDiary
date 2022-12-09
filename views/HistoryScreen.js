@@ -46,24 +46,36 @@ export default function HistoryScreen({ navigation }) {
     });
     
     const [dateFrom, setDateFrom] = useState(null);
-    const [dateTo, setDatTo] = useState(null);
+    const [dateTo, setDateTo] = useState(null);
 
     const [isCollapsed, setIsCollapsed] = useState(true);
 
     const [isFromDatePickerVisible, setFromDatePickerVisibility] = useState(false);
+    const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
 
     const showFromDatePicker = () => {
         setFromDatePickerVisibility(true);
     };
+    const showToDatePicker = () => {
+        setToDatePickerVisibility(true);
+    };
 
     const hideFromDatePicker = () => {
         setFromDatePickerVisibility(false);
+    };
+    const hideToDatePicker = () => {
+        setToDatePickerVisibility(false);
     };
 
     const handleFromConfirm = (date) => {
         setDateFrom(date);
         console.warn("A date has been picked: ", dateFrom);
         hideFromDatePicker();
+    };
+    const handleToConfirm = (date) => {
+        setDateTo(date);
+        console.warn("A date has been picked: ", dateTo);
+        hideToDatePicker();
     };
 
     return (
@@ -74,15 +86,15 @@ export default function HistoryScreen({ navigation }) {
             <Text>Datum od: {getDisplayDate(dateFrom)}</Text>
             <View style={{flexDirection: "row"}}>
                 <Button title="Změnit" onPress={showFromDatePicker} />
-                <Button onPress={ () => {console.log(dateFrom)}} title="zrušit"/>
+                <Button onPress={ () => {setDateFrom(null)}} title="zrušit"/>
             </View>
         </View>
 
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
-            <Text>Datum do: {getDisplayDate(dateFrom)}</Text>
+            <Text>Datum do: {getDisplayDate(dateTo)}</Text>
             <View style={{flexDirection: "row"}}>
-                <Button title="Změnit" onPress={showFromDatePicker} />
-                <Button onPress={ () => {console.log(dateFrom)}} title="zrušit"/>
+                <Button title="Změnit" onPress={showToDatePicker} />
+                <Button onPress={ () => {setDateTo(null)}} title="zrušit"/>
             </View>
         </View>
 
@@ -93,9 +105,16 @@ export default function HistoryScreen({ navigation }) {
             onConfirm={handleFromConfirm}
             onCancel={hideFromDatePicker}
         />
+
+        <DateTimePickerModal
+            isVisible={isToDatePickerVisible}
+            mode="date"
+            onConfirm={handleToConfirm}
+            onCancel={hideToDatePicker}
+        />
         
         
-        <FlatList data={records} renderItem={({item}) => <HistoryItem key={item.id} record={item}></HistoryItem>} />
+        <FlatList data={records} renderItem={({item}) => <HistoryItem key={item.id} record={item} onPress={() => {navigation.navigate('EntryDetail'); console.log('hi');}}></HistoryItem>} />
     </View>
     );
 }
