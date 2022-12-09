@@ -1,7 +1,7 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet } from 'react-native';
-import { navTextSize, sideNavTextSize } from '../styles/common';
+import { headerHeight, navTextSize, sideNavTextSize } from '../styles/common';
 import StackNavigator from './StackNavigator';
 
 const SideMenu = createDrawerNavigator();

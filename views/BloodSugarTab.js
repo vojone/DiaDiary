@@ -56,7 +56,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
             {/* <View>
                 <Text>5.5</Text>
             </View> */}
-            <View style={styles.inputwrapper}>
+            <View style={styles.inputwithtopgap}>
                 <Text>Podaný inzulín</Text>
                 <InputSpinner 
                     rounded= {false}

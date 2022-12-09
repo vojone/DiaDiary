@@ -8,6 +8,12 @@ export const primaryColor = '#674fa5';
 
 export const pressUnderlayColor = '#cdc4e3';
 
+export const topBarHeight = 50;
+
+export const headerHeight = 100;
+
+export const bottomBarHeight = 60;
+
 export const addRecordStyles = StyleSheet.create({
     maincontainer: {
         height: '100%',
@@ -17,6 +23,8 @@ export const addRecordStyles = StyleSheet.create({
         justifyContent: 'flex-start',
 
         padding: 20,
+
+        flex: 1,
     },
 
     inputcontainer: {
@@ -26,7 +34,7 @@ export const addRecordStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 
-    inputwrapper: {
+    inputwithtopgap: {
         marginTop: 40,
     },
 
@@ -45,9 +53,8 @@ export const addRecordStyles = StyleSheet.create({
         textAlign: 'left',
         textAlignVertical: 'top',
 
+        padding: 15,
 
-
-        flex: 1,
         fontSize: 20,
 
         minHeight: 100,
@@ -56,5 +63,8 @@ export const addRecordStyles = StyleSheet.create({
         borderRightWidth: 1,
         borderBottomWidth: 1,
         borderTopWidth: 1,
+
+        borderColor: primaryColor,
+        borderRadius: 4,
     }
 });

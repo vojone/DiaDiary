@@ -4,9 +4,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HistoryScreen from '../views/HistoryScreen';
 
-import { Button, StyleSheet } from 'react-native';
-import { navTextSize } from '../styles/common';
+import { StyleSheet } from 'react-native';
+import { bottomBarHeight, navTextSize } from '../styles/common';
 import RecordAddScreen from '../views/RecordAddScreen';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,6 +32,9 @@ export default function BottomNavigator({ navigation }) {
                     ),
                     headerTitle: '',
                     headerShown: false,
+                    tabBarStyle: {
+                        height: bottomBarHeight,
+                    }
                 }}
             />
             <Tab.Screen 
@@ -45,6 +49,9 @@ export default function BottomNavigator({ navigation }) {
                     ), 
                     headerTitle: '',
                     headerShown: false,
+                    tabBarStyle: {
+                        height: bottomBarHeight,
+                    }
                 }} 
             />
             <Tab.Screen 
@@ -59,6 +66,9 @@ export default function BottomNavigator({ navigation }) {
                     ),
                     headerTitle: '',
                     headerShown: false,
+                    tabBarStyle: {
+                        height: bottomBarHeight,
+                    }
                 }}
             />
         </Tab.Navigator>
