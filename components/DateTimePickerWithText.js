@@ -23,6 +23,10 @@ export default function DateTimePickerWithText(props) {
         return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`; //Hours:Minutes
     }
 
+    const getDateTimeFormatted = () => {
+        return `${getDateFormatted()} ${getTimeFormatted()}`;
+    }
+
     const showPicker = () => {
         setPickerVisibility(true);
 
@@ -48,6 +52,18 @@ export default function DateTimePickerWithText(props) {
 
         if(props.onConfirm) {
             props.onConfirm(value);
+        }
+    }
+
+    const getContent = () => {
+        if(props.mode == 'time') {
+            return getTimeFormatted();
+        }
+        else if(props.mode == 'date') {
+            return getDateFormatted();
+        }
+        else {
+            return getDateTimeFormatted();
         }
     }
 
@@ -81,7 +97,7 @@ export default function DateTimePickerWithText(props) {
                     fontSize: 20,
                 })}
             >
-                {props.mode == 'time' ? getTimeFormatted() : getDateFormatted()}
+                {getContent()}
             </Text>
         </View>
         </TouchableHighlight>
