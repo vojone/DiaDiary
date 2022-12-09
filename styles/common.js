@@ -5,8 +5,8 @@ export const navTextSize = 16;
 export const sideNavTextSize = 20;
 
 export const primaryColor = '#674fa5';
-
 export const pressUnderlayColor = '#cdc4e3';
+export const bottomTabBarActiveBgColor = '#e8e0f0';
 
 export const topBarHeight = 50;
 
