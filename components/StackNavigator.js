@@ -9,6 +9,9 @@ export default function StackNavigator() {
         <Stack.Navigator initialRouteName="main">
             <Stack.Screen
                 name="main"
+                options={{
+                    headerShown: false
+                }}
                 component={BottomNavigator}
             >
             </Stack.Screen>

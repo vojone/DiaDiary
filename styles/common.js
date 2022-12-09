@@ -4,13 +4,15 @@ export const navTextSize = 16;
 
 export const sideNavTextSize = 20;
 
+export const primaryColor = '#674fa5';
+
 export const addRecordStyles = StyleSheet.create({
     maincontainer: {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'stretch',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
 
         padding: 20,
     },
@@ -20,6 +22,10 @@ export const addRecordStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'stretch',
         justifyContent: 'space-between',
+    },
+
+    inputwrapper: {
+        marginTop: 40,
     },
 
     input: {

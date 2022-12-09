@@ -71,7 +71,7 @@ export default NumericInput = (props) => {
     });
 
     return (
-    <View>
+    <View style={props.style}>
         <Text>{props.label}</Text>
         <View style={styles.inputcontainer}>
         <Button

@@ -2,14 +2,14 @@ import { useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles } from "../styles/common";
 
-export default function OtherInput() {
+export default function OtherTab() {
     const styles = addRecordStyles;
     return (
     <View style={styles.maincontainer}>
         <View>
             <Text>Tagy</Text>
             <TextInput 
-                placeholder="Snídaně"
+                placeholder="Tag"
             ></TextInput>
         </View>
         <View>
