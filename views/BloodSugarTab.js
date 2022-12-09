@@ -51,7 +51,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     color= "#674fa5"
                     value={glycemia}
                     onChange={setGlycemia}
-                    />
+                />
             </View>
             {/* <View>
                 <Text>5.5</Text>

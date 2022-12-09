@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useState } from "react";
-import { primaryColor } from "../styles/common";
+import { pressUnderlayColor, primaryColor } from "../styles/common";
 
 export default function DateTimePickerWithText(props) {
     const [isPickerVisible, setPickerVisibility] = useState(false);
@@ -25,6 +25,10 @@ export default function DateTimePickerWithText(props) {
 
     const showPicker = () => {
         setPickerVisibility(true);
+
+        if(props.onOpen) {
+            props.onOpen();
+        }
     }
 
     const hidePicker = () => {
@@ -32,25 +36,25 @@ export default function DateTimePickerWithText(props) {
     }
 
     const selectionCanceled = () => {
+        hidePicker();
+
         if(props.onCancel) {
             props.onCancel();
         }
-
-        hidePicker();
     }
 
     const selectionConfirmed = (value) => {
+        hidePicker();
+
         if(props.onConfirm) {
             props.onConfirm(value);
         }
-
-        hidePicker();
     }
 
     return (
     <View>
         <Text>{props.label}</Text>
-        <TouchableWithoutFeedback onPress={showPicker}>
+        <TouchableHighlight onPress={showPicker} underlayColor={pressUnderlayColor}>
         <View 
             style={StyleSheet.create({
                 borderBottomColor: primaryColor,
@@ -63,6 +67,7 @@ export default function DateTimePickerWithText(props) {
                 fontSize: 20,
                 display: 'flex',
                 flexDirection: 'row',
+                backgroundColor: props.isModified === true ? pressUnderlayColor : 'transparent',
             })}
         >
             <AntDesign 
@@ -79,7 +84,7 @@ export default function DateTimePickerWithText(props) {
                 {props.mode == 'time' ? getTimeFormatted() : getDateFormatted()}
             </Text>
         </View>
-        </TouchableWithoutFeedback>
+        </TouchableHighlight>
         <DateTimePicker 
             style={StyleSheet.create({ backgroundColor: primaryColor })}
             date={props.value}

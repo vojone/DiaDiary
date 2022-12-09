@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, TextInput, Button, Vibration } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Vibration, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Record } from '../models/record';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import BloodSugarTab from './BloodSugarTab';
 import FoodTab from './FoodTab';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -17,8 +17,19 @@ export default function RecordAddScreen({ navigation }) {
     const otherTab = useRef();
 
     const [dateTime, setDateTime] = useState(record.dateTime);
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+    const [isDateTimeSync, setDateTimeSync] = useState(true);
+
+    useEffect(() => {
+        const int = setInterval(() => {
+            if(isDateTimeSync == true) {
+                syncDateTime();
+            }
+        }, 5000);
+
+        return () => {
+            clearInterval(int);
+        };
+    }, [isDateTimeSync]);
 
     const onSave = () => {
         record.setProperties(bloodSugarTab.current.getData());
@@ -26,8 +37,9 @@ export default function RecordAddScreen({ navigation }) {
         record.save().then(
             (newRec) => {
                 record = Record.default();
-
                 bloodSugarTab.current.refresh(record);
+
+                syncDateTime(true);
 
                 Vibration.vibrate(100);
             },
@@ -40,41 +52,24 @@ export default function RecordAddScreen({ navigation }) {
     const onCancel = () => {
         record = Record.default(); 
         bloodSugarTab.current.refresh(record);
+        syncDateTime(true);
     }
 
-    const inputChange = text => {
-       
+
+    const syncDateTime = (setSync = false) => {
+        if(setSync) {
+            setDateTimeSync(true);
+        }
+
+        setDateTime(new Date());
     }
 
-    const getDateFormatted = () => {
-        let year = dateTime.getFullYear();
-        let day = dateTime.getDate();
-        let month = dateTime.getMonth();
-
-        return `${day}. ${month}. ${year}`; //Day. Month. Year
+    const onDateTimeSelectionOpen = () => {
+        setDateTimeSync(false);
     }
 
-    const getTimeFormatted = () => {
-        let hours = dateTime.getHours();
-        let minutes = dateTime.getMinutes();
-
-        return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`; //Hours:Minutes
-    }
-
-    const showDatePicker = () => {
-        setDatePickerVisibility(true);
-    }
-
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-    }
-
-    const showTimePicker = () => {
-        setTimePickerVisibility(true);
-    }
-
-    const hideTimePicker = () => {
-        setTimePickerVisibility(false);
+    const onDateTimeSelectionCancel = () => {
+        setDateTimeSync(true);
     }
 
     const dateSelectionConfirm = (date) => {
@@ -120,77 +115,84 @@ export default function RecordAddScreen({ navigation }) {
     });
     
     return (
-        <View style={styles.maincontainer}>
-            <View style={styles.tabcontainer}>            
-                <Tab.Navigator>
-                    <Tab.Screen
-                        name="glycemia"
-                        options={{
-                            tabBarLabel: 'Hladina cukru',
-                            tabBarLabelStyle: {
-                                textTransform: 'capitalize',
-                            },
-                            tabBarIndicatorStyle: StyleSheet.create({
-                                borderTopColor: primaryColor,
-                                borderTopWidth: 3,
-                            }),
-                        }}
+        <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss();}}>
+            <View style={styles.maincontainer}>
+                <View style={styles.tabcontainer}>            
+                    <Tab.Navigator>
+                        <Tab.Screen
+                            name="glycemia"
+                            options={{
+                                tabBarLabel: 'Hladina cukru',
+                                tabBarLabelStyle: {
+                                    textTransform: 'capitalize',
+                                },
+                                tabBarIndicatorStyle: StyleSheet.create({
+                                    borderTopColor: primaryColor,
+                                    borderTopWidth: 3,
+                                }),
+                            }}
+                        >
+                            {props => <BloodSugarTab {...props} model={record} screenref={bloodSugarTab}></BloodSugarTab>}
+                        </Tab.Screen>
+                        <Tab.Screen
+                            name="food"
+                            options={{
+                                tabBarLabel: 'Jídlo',
+                                tabBarLabelStyle: {
+                                    textTransform: 'capitalize',
+                                },
+                                tabBarIndicatorStyle: StyleSheet.create({
+                                    borderTopColor: primaryColor,
+                                    borderTopWidth: 3,
+                                }),
+                            }}
+                        >
+                            {props => <FoodTab {...props} model={record} screenref={foodTab}></FoodTab>}
+                        </Tab.Screen>
+                        <Tab.Screen
+                            name="other"
+                            component={OtherTab}
+                            options={{
+                                tabBarLabel: 'Ostatní',
+                                tabBarLabelStyle: {
+                                    textTransform: 'capitalize',
+                                },
+                                tabBarIndicatorStyle: StyleSheet.create({
+                                    borderTopColor: primaryColor,
+                                    borderTopWidth: 3,
+                                }),
+                            }}
+                        >
+                        </Tab.Screen>
+                    </Tab.Navigator>
+                </View>
+                <View style={styles.timeinputcontainer}>
+                    <DateTimePickerWithText
+                        value={dateTime}
+                        mode="date"
+                        label="Datum"
+                        onConfirm={dateSelectionConfirm}
+                        onOpen={onDateTimeSelectionOpen}
+                        onCancel={onDateTimeSelectionCancel}
                     >
-                        {props => <BloodSugarTab {...props} model={record} screenref={bloodSugarTab}></BloodSugarTab>}
-                    </Tab.Screen>
-                    <Tab.Screen
-                        name="food"
-                        options={{
-                            tabBarLabel: 'Jídlo',
-                            tabBarLabelStyle: {
-                                textTransform: 'capitalize',
-                            },
-                            tabBarIndicatorStyle: StyleSheet.create({
-                                borderTopColor: primaryColor,
-                                borderTopWidth: 3,
-                            }),
-                        }}
+                    </DateTimePickerWithText>
+                    <DateTimePickerWithText
+                        value={dateTime}
+                        mode="time"
+                        label="Čas"
+                        onConfirm={timeSelectionConfirm}
+                        onOpen={onDateTimeSelectionOpen}
+                        onCancel={onDateTimeSelectionCancel}
+                        isModified={!isDateTimeSync}
                     >
-                        {props => <FoodTab {...props} model={record} screenref={foodTab}></FoodTab>}
-                    </Tab.Screen>
-                    <Tab.Screen
-                        name="other"
-                        component={OtherTab}
-                        options={{
-                            tabBarLabel: 'Ostatní',
-                            tabBarLabelStyle: {
-                                textTransform: 'capitalize',
-                            },
-                            tabBarIndicatorStyle: StyleSheet.create({
-                                borderTopColor: primaryColor,
-                                borderTopWidth: 3,
-                            }),
-                        }}
-                    >
-                    </Tab.Screen>
-                </Tab.Navigator>
+                    </DateTimePickerWithText>
+                </View>
+                <View style={styles.controlpanel}>
+                    <Button title="Zahodit" onPress={onCancel}></Button>
+                    <Button title="Přidat záznam" onPress={onSave}></Button>
+                </View>
             </View>
-            <View style={styles.timeinputcontainer}>
-                <DateTimePickerWithText
-                    value={dateTime}
-                    mode="date"
-                    label="Datum"
-                    onConfirm={timeSelectionConfirm}
-                >
-                </DateTimePickerWithText>
-                <DateTimePickerWithText
-                    value={dateTime}
-                    mode="time"
-                    label="Čas"
-                    onConfirm={timeSelectionConfirm}
-                >
-                </DateTimePickerWithText>
-            </View>
-            <View style={styles.controlpanel}>
-                <Button title="Zahodit" onPress={onCancel}></Button>
-                <Button title="Přidat záznam" onPress={onSave}></Button>
-            </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 }
     
