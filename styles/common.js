@@ -6,6 +6,8 @@ export const sideNavTextSize = 20;
 
 export const primaryColor = '#674fa5';
 
+export const pressUnderlayColor = '#cdc4e3';
+
 export const addRecordStyles = StyleSheet.create({
     maincontainer: {
         height: '100%',
