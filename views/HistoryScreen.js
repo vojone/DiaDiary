@@ -9,6 +9,7 @@ import HistoryItem from '../components/HistoryItem';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import Accordion from 'react-native-collapsible/Accordion';
+import { getRelativeCoords } from 'react-native-reanimated';
 
 
 function getDisplayDate(date) {
@@ -16,6 +17,10 @@ function getDisplayDate(date) {
         return "";
     }
     return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+}
+
+function getRecords(records, dateFrom, dateTo){
+    return records.filter(i => (i.date > dateFrom || dateFrom === null) && (i.date > dateTo || dateTo === null))
 }
 
 export default function HistoryScreen({ navigation }) {
@@ -114,7 +119,7 @@ export default function HistoryScreen({ navigation }) {
         />
         
         
-        <FlatList data={records} renderItem={({item}) => <HistoryItem key={item.id} record={item} onPress={() => {navigation.navigate('EntryDetail'); console.log('hi');}}></HistoryItem>} />
+        <FlatList data={getRecords(records, dateFrom, dateTo)} renderItem={({item}) => <HistoryItem key={item.id} record={item} onPress={() => {navigation.navigate('EntryDetail'); console.log('hi');}}></HistoryItem>} />
     </View>
     );
 }
