@@ -17,7 +17,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
     }));
 
     const [glycemia, setGlycemia] = useState(model.bloodSugar);
+    const [glycemiaU, setGlycemiaU] = useState([model.bloodSugarU]);
     const [insuline, setInsuline] = useState(model.insuline);
+    const [insulineU, setInsulineU] = useState([model.insulineU]);
 
     const shiftZeros = (str) => {
         while(str.charAt(0) === '0')
@@ -44,7 +46,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     showBorder={true}
                     precision={1}
                     placeholderTextColor={placeholderColor}
-                    placeholder="Nezadáno"
+                    placeholder="N"
                     type="real"
                     emptied={true}
                     min={0}
@@ -56,8 +58,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     fontSize={ 28 }
                     append={
                         <AppendDropdown
-                            options={['mmol/l', 'mg/dl']}
-                            defaultValue='mmol/l'
+                            data={[{value: '1', label: 'mmol/l'}, {value: '2', label: 'mg/l'}]}
+                            value={glycemiaU}
+                            onChange={setGlycemiaU}
                         ></AppendDropdown>
                     } // Appended element
                 />
@@ -66,11 +69,11 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                 <Text>5.5</Text>
             </View> */}
             <View style={styles.inputwithtopgap}>
-                <Text>Podaný inzulín (jednotky)</Text>
+                <Text>Inzulín (jednotky)</Text>
                 <InputSpinner 
                     rounded= {false}
                     showBorder={true}
-                    placeholder="Nezadáno"
+                    placeholder="N"
                     placeholderTextColor={placeholderColor}
                     precision={1}
                     type="real"
@@ -83,8 +86,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     fontSize={ 28 }
                     append={
                         <AppendDropdown
-                            options={['Fiasp', 'Novorapid']}
-                            defaultValue='Fiasp'
+                            data={[{value: '1', label: 'Fiasp'}, {value: '2', label: 'Novorapid'}]}
+                            value={insulineU}
+                            onChange={setInsulineU}
                         ></AppendDropdown>
                     }
                 />

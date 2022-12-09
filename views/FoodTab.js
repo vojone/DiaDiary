@@ -1,9 +1,10 @@
 import { useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
-import { addRecordStyles, placeholderColor, primaryColor } from "../styles/common";
+import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from "../styles/common";
 import InputSpinner from "react-native-input-spinner";
 import { Dropdown } from "react-native-element-dropdown";
 import AppendDropdown from "../components/AppendDropdown";
+import DropdownItem from "../components/DropdownItem";
 
 
 export default function FoodTab({ navigation, model, screenref }) {
@@ -18,23 +19,18 @@ export default function FoodTab({ navigation, model, screenref }) {
 
 
     const [carbo, setCarbo] = useState(model.carboHydrates);
+    const [carboU, setCarboU] = useState([model.carboU]);
     const [food, setFood] = useState([model.food]);
-    const [maxDropdownHeight, setMaxDropdownHeight] = useState(150);
-
-    const layoutChanged = (event) => {
-        console.log(event.nativeEvent.layout.height * 0.3);
-        setMaxDropdownHeight(event.nativeEvent.layout.height * 0.35);
-    }
 
     const styles = addRecordStyles;
     return (
-    <View style={styles.maincontainer} onLayout={layoutChanged}>
+    <View style={styles.maincontainer}>
         <View>
             <Text>Sacharidy</Text>
             <InputSpinner 
                 rounded= {false}
                 showBorder={true}
-                placeholder="Nezadáno"
+                placeholder="N"
                 precision={1}
                 type="real"
                 emptied={true}
@@ -47,8 +43,9 @@ export default function FoodTab({ navigation, model, screenref }) {
                 onChange={setCarbo}
                 append={
                     <AppendDropdown
-                        options={['g']}
-                        defaultValue='g'
+                        data={[{value: '1', label: 'g'}, {value: '2', label: 'oz'}]}
+                        value={carboU}
+                        onChange={setCarboU}
                     ></AppendDropdown>
                 } // Appended element
             />
@@ -56,14 +53,22 @@ export default function FoodTab({ navigation, model, screenref }) {
         <View style={styles.inputwithtopgap}>
             <Text>Jídlo</Text>
             <Dropdown
-                data={[{ value: '1', label: 'Snídaně'}, { value: '1', label: 'Oběd'}, { value: '1', label: 'Večeře'}, { value: '1', label: 'Snídaně'}]}
+                data={[{ value: '0', label: 'Nejedl jsem'}, { value: '1', label: 'Snídaně'}, { value: '2', label: 'Oběd'}, { value: '3', label: 'Večeře'}]}
                 labelField="label"
                 valueField="value"
                 onChange={setFood}
                 onChangeText={() => {}}
                 search={false}
-                style={{borderColor: primaryColor, borderWidth: 1, borderRadius: 4, paddingHorizontal: 15, paddingVertical: 10}}
+                style={{
+                    borderColor: primaryColor, 
+                    borderWidth: 1, 
+                    borderRadius: 4, 
+                    paddingHorizontal: 15, 
+                    paddingVertical: 10
+                }}
+                renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20}></DropdownItem>}
                 placeholder={food.label}
+                value={food.value}
                 containerStyle={{top: -25}}
             >
             </Dropdown>
