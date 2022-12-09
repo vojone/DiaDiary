@@ -21,7 +21,7 @@ export default function HistoryScreen({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text>History of records</Text>
-            <FlatList data={records} renderItem={({item}) => <HistoryItem key={item.id} record={item} onPress={() => {navigation.navigate('EntryDetail'); console.log('hi');}}></HistoryItem>} />
+            <FlatList data={records} renderItem={({item}) => <HistoryItem key={item.id} record={item} onPress={() => {navigation.navigate('EntryDetail'); }}></HistoryItem>} />
         </View>
     );
 }
