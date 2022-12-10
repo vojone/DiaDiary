@@ -9,6 +9,7 @@ export default function ButtonSecondary(props) {
             mode="outlined" 
             onPress={props.onPress}
             loading={props.loading}
+            disabled={props.disabled}
             style={StyleSheet.create({borderColor: primaryColor})}
             >
             {props.title}

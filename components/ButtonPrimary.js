@@ -9,6 +9,7 @@ export default function ButtonPrimary(props) {
             mode="contained" 
             onPress={props.onPress}
             loading={props.loading}
+            disabled={props.disabled}
             style={StyleSheet.create({borderColor: primaryColor})}
             >
             {props.title}
