@@ -11,6 +11,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         refresh: (model) => { 
             setGlycemia(model.bloodSugar);
             setInsuline(model.insuline);
+
+            setDefaultGlycUnit(glycemiaUEnum);
+            setDefaultInsulineType(insulineTEnum);
         },
         getData: () => {
             return { bloodSugar: glycemia, insuline: insuline }
@@ -26,7 +29,6 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
     const [insulineTEnum, setInsulineTEnum] = useState([]);
 
     useEffect(() => {
-        console.log(global.user);
         Unit.find('glyc', {}, true).then((glycemiaUnits) => {
             if(glycemiaUnits == null) {
                 setGlycemiaUEnum([]);
@@ -34,16 +36,24 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
             else {
                 setGlycemiaUEnum(glycemiaUnits);
                 setGlycemiaU(glycemiaUnits.find((u) => (u.isReference)));
-            }
 
-            if(global.user != null && global.user.glycemiaUnit) {
-                setGlycemiaU(glycemiaUnits.find((u) => (u._id == global.user.glycemiaUnit._id)));
-            }
-            else {
-                setGlycemiaU(glycemiaUnits.find((u) => (u.isReference)));
+                setDefaultGlycUnit(glycemiaUnits);
             }
         })
     }, [global.user]);
+
+    const setDefaultGlycUnit = (unitArr) => {
+        if(!unitArr) {
+            return;
+        }
+
+        if(global.user != null && global.user.glycemiaUnit) {
+            setGlycemiaU(unitArr.find((u) => (u._id == global.user.glycemiaUnit._id)));
+        }
+        else {
+            setGlycemiaU(unitArr.find((u) => (u.isReference)));
+        }
+    }
 
     useEffect(() => {
         Unit.find('insuline', {}, true).then((insulineTypes) => {
@@ -54,15 +64,23 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                 setInsulineTEnum(insulineTypes);
                 setInsulineT(insulineTypes.find((i) => (i.isReference)));
 
-                if(global.user != null && global.user.insulineType) {
-                    setInsulineT(insulineTypes.find((i) => (i._id == global.user.insulineType._id)));
-                }
-                else {
-                    setInsulineT(insulineTypes.find((i) => (i.isReference)));
-                }
+                setDefaultInsulineType(insulineTypes);
             }
         })
     }, [global.user]);
+
+    const setDefaultInsulineType = (typeArr) => {
+        if(!typeArr) {
+            return;
+        }
+
+        if(global.user != null && global.user.insulineType) {
+            setInsulineT(typeArr.find((u) => (u._id == global.user.insulineType._id)));
+        }
+        else {
+            setInsulineT(typeArr.find((u) => (u.isReference)));
+        }
+    }
 
 
     const styles = addRecordStyles;

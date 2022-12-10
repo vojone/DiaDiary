@@ -13,8 +13,8 @@ export default function FoodTab({ navigation, model, screenref }) {
     useImperativeHandle(screenref, () => ({
         refresh: (model) => { 
             setCarbo(model.carboHydrates);
-            setCarboU(model.carboHydratesU);
-            setCarboU(model.food);
+            setDefaultMassUnit(carboUEnum);
+            setDefaultFoodType(foodEnum);
         },
         getData: () => {
             return { carboHydrates: carbo, carboHydratesU: carboU, food: food }
@@ -36,10 +36,25 @@ export default function FoodTab({ navigation, model, screenref }) {
             }
             else {
                 setCarboUEnum(massUnits);
-                setCarboU(massUnits.find((u) => (u.isReference)));
+                setDefaultMassUnit(massUnits);
             }
         })
-    }, []);
+    }, [global.user]);
+
+
+    const setDefaultMassUnit = (unitArr) => {
+        if(!unitArr) {
+            return;
+        }
+
+        if(global.user != null && global.user.massUnit) {
+            setCarboU(unitArr.find((u) => (u._id == global.user.massUnit._id)));
+        }
+        else {
+            setCarboU(unitArr.find((u) => (u.isReference)));
+        }
+    }
+
 
     useEffect(() => {
         Food.find({}, true, {order: 1}).then((foodTypes) => {
@@ -48,10 +63,18 @@ export default function FoodTab({ navigation, model, screenref }) {
             }
             else {
                 setFoodEnum(foodTypes);
-                setFood(foodTypes.find((f) => (f.isReference)));
+                setDefaultFoodType(foodTypes);
             }
         })
     }, []);
+
+    const setDefaultFoodType = (foodTypes) => {
+        if(!foodTypes) {
+            return;
+        }
+
+        setFood(foodTypes.find((f) => (f.order == -1)));
+    }
 
     const styles = addRecordStyles;
     return (
