@@ -13,8 +13,8 @@ export class Record extends Model {
      * @param {boolean} multiple 
      * @returns 
      */
-    static async find(query, multiple = false) {
-        return super.find(Record, query, multiple);
+    static async find(query, multiple = false, sort = null) {
+        return super.find(Record, query, multiple, sort);
     }
 
     /**
@@ -30,14 +30,18 @@ export class Record extends Model {
         return super.remove(Record, query, multiple);
     }
 
+    static async update(query, update) {
+        return super.update(Record, query, update);
+    }
+
     static default() {
         return new Record({
             bloodSugar: 5.5,
-            bloodSugarU : { value: '1', label: 'mmol/l'}, 
+            bloodSugarU : { _id: '1', label: 'mmol/l'}, 
             insuline: null, 
-            insulineU: { value: '1', label: 'Fiasp'},
-            carboHydrates: null,
-            carboHydratesU: { value: '1', label: 'g'},
+            insulineT: { _id: '1', label: 'Fiasp'},
+            carbo: null,
+            carboU: { _id: '1', label: 'g'},
             dateTime: new Date(),
             food: null,
             tags: [],
@@ -50,9 +54,9 @@ export class Record extends Model {
         bloodSugar = null, 
         bloodSugarU = null,
         insuline = null, 
-        insulineU = null, 
-        carboHydrates = null,
-        carboHydratesU = null,
+        insulineT = null, 
+        carbo = null,
+        carboU = null,
         dateTime = null,
         food = null,
         tags = null,
@@ -65,9 +69,9 @@ export class Record extends Model {
         this.bloodSugar = bloodSugar;
         this.bloodSugarU = bloodSugarU;
         this.insuline = insuline;
-        this.insulineU = insulineU;
-        this.carboHydrates = carboHydrates;
-        this.carboHydratesU = carboHydratesU;
+        this.insulineT = insulineT;
+        this.carbo = carbo;
+        this.carboU = carboU;
         this.food = food;
         this.tags = tags;
         this.note = note;
@@ -81,10 +85,10 @@ export class Record extends Model {
             'bloodSugar' : this.bloodSugar,
             'bloodSugarU' : this.bloodSugarU,
             'insuline' : this.insuline,
-            'insulineU' : this.insulineU,
+            'insulineT' : this.insulineT,
             'dateTime' : this.dateTime,
-            'carboHydrates' : this.carboHydrates,
-            'carboHydratesU' : this.carboHydratesU,
+            'carbo' : this.carbo,
+            'carboU' : this.carboU,
             'food' : this.food,
             'tags' : this.tags,
             'note' : this.note,

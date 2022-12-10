@@ -2,8 +2,8 @@ import { store, get, remove, removeAll } from "../services/database";
 
 export default class Model {
 
-    static async find(targetCls, query, multiple = false) {
-        return get(targetCls.databaseType, query).then(result => {
+    static async find(targetCls, query, multiple = false, sort = null) {
+        return get(targetCls.databaseType, query, sort).then(result => {
             if(result === null || result.length == 0) {
                 return null;
             } 

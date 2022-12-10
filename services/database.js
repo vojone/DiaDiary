@@ -55,17 +55,28 @@ export async function update(type, query, update) {
  * 
  * @param {string} type 
  * @param {Object} query 
+ * @param {Object|null}
  * @returns 
  */
-export async function get(type, query) {
+export async function get(type, query, sort = null) {
     query._type = type;
 
-    return new Promise((resolve, reject) => {
-        db.find(query, (err, docs) => {
-            if(err) return reject(err);
-            resolve(docs);
+    if(sort == null) {
+        return new Promise((resolve, reject) => {
+            db.find(query, (err, docs) => {
+                if(err) return reject(err);
+                resolve(docs);
+            });
         });
-    });
+    }
+    else {
+        return new Promise((resolve, reject) => {
+            db.find(query).sort(sort).exec((err, docs) => {
+                if(err) return reject(err);
+                resolve(docs);
+            });
+        });
+    }
 }
 
 

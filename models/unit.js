@@ -2,7 +2,7 @@ import { store } from "../services/database";
 import Model from "./model";
 
 export class Unit extends Model {
-    static databaseType = 'units';
+    static databaseType = 'unit';
 
     /**
      * 
@@ -10,15 +10,27 @@ export class Unit extends Model {
      * @param {boolean} multiple 
      * @returns 
      */
-    static async find(unitType, query = {}, multiple = false) {
+    static async find(unitType, query = {}, multiple = false, sort = null) {
         query.unitType = unitType;
 
-        return super.find(Record, query, multiple);
+        return super.find(Unit, query, multiple, sort);
+    }
+
+    static async findById(id) {
+        return super.findById(Unit, id);
+    }
+
+    static async remove(query, multiple = false) {
+        return super.remove(Unit, query, multiple);
+    }
+
+    static async update(query, update) {
+        return super.update(Unit, query, update);
     }
 
     static async addUnits(unitArr) {
-        toBeStored = unitArr.map(unit => {
-            return unit.obj();
+        let toBeStored = unitArr.map(en => {
+            return en.obj();
         });
 
         return store(Unit.databaseType, toBeStored).then(
@@ -28,19 +40,17 @@ export class Unit extends Model {
     }
 
     constructor({
-        id = undefined, 
+        _id = undefined, 
         unitType = null,
-        value = null,
         label = null,
-        isPrimary = null, 
         isReference = null, 
         toReferenceCoef = null} = {}) {
 
-        this._id = id;
+        super();   
+
+        this._id = _id;
         this.unitType = unitType;
-        this.value = value;
         this.label = label;
-        this.isPrimary = isPrimary;
         this.isReference = isReference;
         this.toReferenceCoef = toReferenceCoef;
     }
@@ -49,15 +59,9 @@ export class Unit extends Model {
         return {
             '_id' : this._id,
             'unitType' : this.unitType,
-            'value' : this.value,
             'label' : this.label,
-            'isPrimary' : this.isPrimary,
             'isReference' : this.isReference,
             'toReferenceCoef' : this.toReferenceCoef,
         };
-    }
-
-    setPrimary(isPrimary = true) {
-        this.isPrimary = isPrimary;
     }
 }

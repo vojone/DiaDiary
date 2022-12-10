@@ -1,10 +1,11 @@
-import { useImperativeHandle, useState } from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles, bottomTabBarActiveBgColor, primaryColor } from "../styles/common";
 import { MultipleSelectList, SelectList } from "react-native-dropdown-select-list";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 import DropdownItem from "../components/DropdownItem";
+import { Tag } from "../models/tag";
 
 export default function OtherTab({ navigation, model, screenref }) {
     useImperativeHandle(screenref, () => ({
@@ -21,6 +22,18 @@ export default function OtherTab({ navigation, model, screenref }) {
     const [tags, setTags] = useState(model.tags);
     const [note, setNote] = useState(model.note);
 
+    const [tagsEnum, setTagsEnum] = useState([]);
+
+    useEffect(() => {
+        Tag.find({}, true).then((tags) => {
+            if(tags == null) {
+                setTagsEnum([]);
+            }
+            else {
+                setTagsEnum(tags);
+            }
+        })
+    }, []);
 
     const styles = addRecordStyles;
     return (
@@ -28,10 +41,10 @@ export default function OtherTab({ navigation, model, screenref }) {
         <View>
             <Text>Tagy</Text>
             <MultiSelect
-                data={[{ value: 1, label: 'Sport'}, { value: 2, label: 'Před spaním'}, { value: 3, label: 'Ráno'}]}
+                data={tagsEnum}
                 value={tags}
                 labelField="label"
-                valueField="value"
+                valueField="_id"
                 onChange={setTags}
                 onChangeText={() => {}}
                 search={false}
@@ -43,18 +56,6 @@ export default function OtherTab({ navigation, model, screenref }) {
                 containerStyle={{top: -25}}
             >
             </MultiSelect>
-
-            {/* <MultipleSelectList 
-                placeholder="Tagy"
-                setSelected={(value) => setTags(value)}
-                data={[{ key: '1', value: 'Snídaně'}, { key: '1', value: 'Oběd'}, { key: '1', value: 'Večeře'}, { key: '1', value: 'Snídaně'}]}
-                defaultOption={{ key: '4', value: 'Nejedl jsem'}}
-                search={false}
-                boxStyles={{borderRadius: 4 , borderColor: primaryColor}}
-                dropdownTextStyles={{fontSize: 14, borderColor: primaryColor }}
-                dropdownStyles={{ borderRadius: 4, borderColor: primaryColor }}
-                inputStyles={{borderRadius: 4, borderColor: primaryColor, fontSize: 14}}
-            /> */}
         </View>
 
         <View style={styles.inputwithtopgap}>

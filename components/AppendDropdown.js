@@ -24,7 +24,7 @@ export default function AppendDropdown(props) {
         <Dropdown
             data={props.data}
             labelField="label"
-            valueField="value"
+            valueField="_id"
             onChange={props.onChange}
             onChangeText={() => {}}
             search={false}
@@ -38,7 +38,7 @@ export default function AppendDropdown(props) {
                 paddingVertical: 7.5
             }}
             value={props.value}
-            placeholder={props.label}
+            placeholder={props.label ? props.label : '-'}
             renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={10}></DropdownItem>}
             containerStyle={{top: -25}}
         >

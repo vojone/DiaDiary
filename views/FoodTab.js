@@ -1,10 +1,12 @@
-import { useImperativeHandle, useState } from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from "../styles/common";
 import InputSpinner from "react-native-input-spinner";
 import { Dropdown } from "react-native-element-dropdown";
 import AppendDropdown from "../components/AppendDropdown";
 import DropdownItem from "../components/DropdownItem";
+import { Unit } from "../models/unit";
+import { Food } from "../models/food";
 
 
 export default function FoodTab({ navigation, model, screenref }) {
@@ -23,6 +25,33 @@ export default function FoodTab({ navigation, model, screenref }) {
     const [carbo, setCarbo] = useState(model.carboHydrates);
     const [carboU, setCarboU] = useState([model.carboHydratesU]);
     const [food, setFood] = useState([model.food]);
+
+    const [carboUEnum, setCarboUEnum] = useState([]);
+    const [foodEnum, setFoodEnum] = useState([]);
+
+    useEffect(() => {
+        Unit.find('mass', {}, true).then((massUnits) => {
+            if(massUnits == null) {
+                setCarboUEnum([]);
+            }
+            else {
+                setCarboUEnum(massUnits);
+                setCarboU(massUnits.find((u) => (u.isReference)));
+            }
+        })
+    }, []);
+
+    useEffect(() => {
+        Food.find({}, true, {order: 1}).then((foodTypes) => {
+            if(foodTypes == null) {
+                setFoodEnum([]);
+            }
+            else {
+                setFoodEnum(foodTypes);
+                setFood(foodTypes.find((f) => (f.isReference)));
+            }
+        })
+    }, []);
 
     const styles = addRecordStyles;
     return (
@@ -45,7 +74,7 @@ export default function FoodTab({ navigation, model, screenref }) {
                 onChange={setCarbo}
                 append={
                     <AppendDropdown
-                        data={[{value: '1', label: 'g'}, {value: '2', label: 'oz'}]}
+                        data={carboUEnum}
                         value={carboU}
                         onChange={setCarboU}
                     ></AppendDropdown>
@@ -55,9 +84,9 @@ export default function FoodTab({ navigation, model, screenref }) {
         <View style={styles.inputwithtopgap}>
             <Text>Jídlo</Text>
             <Dropdown
-                data={[{ value: '0', label: 'Nejedl jsem'}, { value: '1', label: 'Snídaně'}, { value: '2', label: 'Oběd'}, { value: '3', label: 'Večeře'}]}
+                data={foodEnum}
                 labelField="label"
-                valueField="value"
+                valueField="_id"
                 onChange={setFood}
                 onChangeText={() => {}}
                 search={false}
@@ -69,8 +98,8 @@ export default function FoodTab({ navigation, model, screenref }) {
                     paddingVertical: 10
                 }}
                 renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20}></DropdownItem>}
-                placeholder={food.label}
-                value={food.value}
+                placeholder={food ? food.label : '-'}
+                value={food}
                 containerStyle={{top: -25}}
             >
             </Dropdown>

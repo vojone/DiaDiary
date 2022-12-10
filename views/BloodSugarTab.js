@@ -1,8 +1,9 @@
-import { useState, useImperativeHandle, forwardRef } from 'react';
+import { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from '../styles/common';
 import InputSpinner from 'react-native-input-spinner';
 import AppendDropdown from '../components/AppendDropdown';
+import { Unit } from '../models/unit';
 
 
 export default function BloodSugarTab({ navigation, model, screenref }) {
@@ -17,24 +18,36 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
     }));
 
     const [glycemia, setGlycemia] = useState(model.bloodSugar);
-    const [glycemiaU, setGlycemiaU] = useState([model.bloodSugarU]);
+    const [glycemiaU, setGlycemiaU] = useState([]);
     const [insuline, setInsuline] = useState(model.insuline);
-    const [insulineU, setInsulineU] = useState([model.insulineU]);
+    const [insulineT, setInsulineT] = useState([]);
 
-    const shiftZeros = (str) => {
-        while(str.charAt(0) === '0')
-            str = str.substring(1);
-            
-        return str;
-    }
+    const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
+    const [insulineTEnum, setInsulineTEnum] = useState([]);
 
-    const glycemiaChanged = value => {
-        setGlycemia(value);
-    }
+    useEffect(() => {
+        Unit.find('glyc', {}, true).then((glycemiaUnits) => {
+            if(glycemiaUnits == null) {
+                setGlycemiaUEnum([]);
+            }
+            else {
+                setGlycemiaUEnum(glycemiaUnits);
+                setGlycemiaU(glycemiaUnits.find((u) => (u.isReference)));
+            }
+        })
+    }, []);
 
-    const insulineChanged = value => {
-        setInsuline(value)
-    }
+    useEffect(() => {
+        Unit.find('insuline', {}, true).then((insulineTypes) => {
+            if(insulineTypes == null) {
+                setInsulineT([]);
+            }
+            else {
+                setInsulineTEnum(insulineTypes);
+                setInsulineT(insulineTypes.find((i) => (i.isReference)));
+            }
+        })
+    }, []);
 
     const styles = addRecordStyles;
     return (
@@ -58,7 +71,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     fontSize={ 28 }
                     append={
                         <AppendDropdown
-                            data={[{value: '1', label: 'mmol/l'}, {value: '2', label: 'mg/l'}]}
+                            data={glycemiaUEnum}
                             value={glycemiaU}
                             onChange={setGlycemiaU}
                         ></AppendDropdown>
@@ -86,9 +99,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     fontSize={ 28 }
                     append={
                         <AppendDropdown
-                            data={[{value: '1', label: 'Fiasp'}, {value: '2', label: 'Novorapid'}]}
-                            value={insulineU}
-                            onChange={setInsulineU}
+                            data={insulineTEnum}
+                            value={insulineT}
+                            onChange={setInsulineT}
                         ></AppendDropdown>
                     }
                 />
