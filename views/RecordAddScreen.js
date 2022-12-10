@@ -94,6 +94,12 @@ export default function RecordAddScreen({ navigation }) {
         setDateTimeSync(false);
     };
 
+    const onDump = () => {
+        Record.find({}, true).then((result) => { 
+            console.log(result);
+        });
+    }
+
     const Tab = createMaterialTopTabNavigator();
 
     const styles = StyleSheet.create({
@@ -173,7 +179,6 @@ export default function RecordAddScreen({ navigation }) {
                     </Tab.Screen>
                     <Tab.Screen
                         name="other"
-                        component={OtherTab}
                         options={{
                             tabBarLabel: 'Ostatní',
                             tabBarLabelStyle: {
@@ -188,6 +193,7 @@ export default function RecordAddScreen({ navigation }) {
                             }
                         }}
                     >
+                        {props => <OtherTab {...props} model={record} screenref={foodTab}></OtherTab>}
                     </Tab.Screen>
                 </Tab.Navigator>
             </View>
@@ -215,6 +221,7 @@ export default function RecordAddScreen({ navigation }) {
             </View>
             <View style={styles.controlpanel}>
                 <ButtonSecondary title="Zahodit" onPress={onCancel}></ButtonSecondary>
+                <ButtonSecondary title="Záznamy" onPress={onDump}></ButtonSecondary>
                 <ButtonPrimary icon="plus" title="Přidat záznam" onPress={onSave}></ButtonPrimary>
             </View>
         </View>

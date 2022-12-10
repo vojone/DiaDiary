@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles, bottomTabBarActiveBgColor, primaryColor } from "../styles/common";
 import { MultipleSelectList, SelectList } from "react-native-dropdown-select-list";
@@ -6,9 +6,20 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 import DropdownItem from "../components/DropdownItem";
 
-export default function OtherTab() {
-    const [tags, setTags] = useState([]);
-    const [note, setNote] = useState('');
+export default function OtherTab({ navigation, model, screenref }) {
+    useImperativeHandle(screenref, () => ({
+        refresh: (model) => { 
+            setTags(model.tags);
+            setCarboU(model.note);
+        },
+        getData: () => {
+            return { tags: tags, note: note}
+        } 
+    }));
+
+
+    const [tags, setTags] = useState(model.tags);
+    const [note, setNote] = useState(model.note);
 
 
     const styles = addRecordStyles;
@@ -17,7 +28,7 @@ export default function OtherTab() {
         <View>
             <Text>Tagy</Text>
             <MultiSelect
-                data={[{ value: '1', label: 'Sport'}, { value: '2', label: 'Před spaním'}, { value: '3', label: 'Ráno'}]}
+                data={[{ value: 1, label: 'Sport'}, { value: 2, label: 'Před spaním'}, { value: 3, label: 'Ráno'}]}
                 value={tags}
                 labelField="label"
                 valueField="value"
@@ -27,7 +38,7 @@ export default function OtherTab() {
                 placeholder='Vybrat ze seznamu'
                 style={{borderColor: primaryColor, borderWidth: 1, borderRadius: 4, paddingHorizontal: 15, paddingVertical: 10}}
                 selectedStyle={{backgroundColor: primaryColor, borderRadius: 100}}
-                renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20}></DropdownItem>}
+                renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20} withIcon={true}></DropdownItem>}
                 selectedTextStyle={{color: 'white'}}
                 containerStyle={{top: -25}}
             >
@@ -53,6 +64,8 @@ export default function OtherTab() {
                 style={styles.multilineinput}
                 multiline={true}
                 numberOfLines={3}
+                value={note}
+                onChangeText={setNote}
             ></TextInput>
         </View>
     </View>);

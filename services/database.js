@@ -68,6 +68,23 @@ export async function remove(type, query) {
     });
 }
 
+/**
+ * 
+ * @param {string} type 
+ * @param {Object} query 
+ * @returns 
+ */
+export async function removeAll(type, query) {
+    query._type = type;
+
+    return new Promise((resolve, reject) => {
+        db.remove(query, { multi: true }, (err, num) => {
+            if(err) return reject(err);
+            resolve(num);
+        });
+    });
+}
+
 
 /**
  * 

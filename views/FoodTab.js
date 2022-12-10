@@ -11,15 +11,17 @@ export default function FoodTab({ navigation, model, screenref }) {
     useImperativeHandle(screenref, () => ({
         refresh: (model) => { 
             setCarbo(model.carboHydrates);
+            setCarboU(model.carboHydratesU);
+            setCarboU(model.food);
         },
         getData: () => {
-            return { carboHydrates: carbo }
+            return { carboHydrates: carbo, carboHydratesU: carboU, food: food }
         } 
     }));
 
 
     const [carbo, setCarbo] = useState(model.carboHydrates);
-    const [carboU, setCarboU] = useState([model.carboU]);
+    const [carboU, setCarboU] = useState([model.carboHydratesU]);
     const [food, setFood] = useState([model.food]);
 
     const styles = addRecordStyles;

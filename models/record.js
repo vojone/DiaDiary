@@ -20,11 +20,11 @@ export class Record {
             else {
                 if(multiple) {
                     return result.map(record => {
-                        return new Record({templateObj : record});
+                        return new Record(record);
                     });
                 }
                 else {
-                    let rec = new Record({templateObj : result[0]});
+                    let rec = new Record(result[0]);
                     return rec;
                 }
             }
@@ -42,17 +42,23 @@ export class Record {
                 return null;
             } 
             else {
-                return new Record({templateObj : result[0]});
+                return new Record(result[0]);
             }
         });
     }
 
     static default() {
         return new Record({
-            bloodSugar: 5.5, 
+            bloodSugar: 5.5,
+            bloodSugarU : { value: '1', label: 'mmol/l'}, 
             insuline: null, 
-            insulineU: null,
+            insulineU: { value: '1', label: 'Fiasp'},
+            carboHydrates: null,
+            carboHydratesU: { value: '1', label: 'g'},
             dateTime: new Date(),
+            food: null,
+            tags: [],
+            note: '',
         }); 
     }
 
@@ -62,45 +68,44 @@ export class Record {
      */
     constructor({
         id = undefined, 
-        key = null, 
         bloodSugar = null, 
+        bloodSugarU = null,
         insuline = null, 
         insulineU = null, 
         carboHydrates = null,
         carboHydratesU = null,
-        dateTime = null, 
-        templateObj = null} = {}) {
+        dateTime = null,
+        food = null,
+        tags = null,
+        note = null} = {}) {
 
-        if(templateObj) {
-            this._id = templateObj.id;
-            this.key = templateObj.key;
-            this.insuline = templateObj.insuline;
-            this.insulineU = templateObj.insulineU;
-            this.carboHydrates = templateObj.carboHydrates;
-            this.carboHydratesU = templateObj.carboHydratesU;
-            this.dateTime = templateObj.dateTime;
-        }
-        else {
-            this._id = id;
-            this.key = key;
-            this.bloodSugar = bloodSugar;
-            this.insuline = insuline;
-            this.insulineU = insulineU;
-            this.carboHydrates = carboHydrates;
-            this.carboHydratesU = carboHydratesU;
-            this.dateTime = dateTime;
-        }
+        this._id = id;
+        this.bloodSugar = bloodSugar;
+        this.bloodSugarU = bloodSugarU;
+        this.insuline = insuline;
+        this.insulineU = insulineU;
+        this.carboHydrates = carboHydrates;
+        this.carboHydratesU = carboHydratesU;
+        this.food = food;
+        this.tags = tags;
+        this.note = note;
+        this.dateTime = dateTime;
     }
 
 
     obj() {
         return {
             '_id' : this._id,
-            'key' : this.key,
             'bloodSugar' : this.bloodSugar,
+            'bloodSugarU' : this.bloodSugarU,
             'insuline' : this.insuline,
             'insulineU' : this.insulineU,
             'dateTime' : this.dateTime,
+            'carboHydrates' : this.carboHydrates,
+            'carboHydratesU' : this.carboHydratesU,
+            'food' : this.food,
+            'tags' : this.tags,
+            'note' : this.note,
         };
     }
 
