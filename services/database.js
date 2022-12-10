@@ -36,6 +36,25 @@ export async function store(type, toBeStored) {
  * 
  * @param {string} type 
  * @param {Object} query 
+ * @param {Object} update 
+ * @returns 
+ */
+export async function update(type, query, update) {
+    query._type = type;
+
+    return new Promise((resolve, reject) => {
+        db.update(query, update, (err, num) => {
+            if(err) return reject(err);
+            resolve(num);
+        });
+    });
+}
+
+
+/**
+ * 
+ * @param {string} type 
+ * @param {Object} query 
  * @returns 
  */
 export async function get(type, query) {

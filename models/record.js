@@ -90,8 +90,4 @@ export class Record extends Model {
             'note' : this.note,
         };
     }
-
-    async save() {
-        return super.save();
-    }
 }

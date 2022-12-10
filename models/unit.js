@@ -1,6 +1,7 @@
-import { store, get } from "../services/database";
+import { store } from "../services/database";
+import Model from "./model";
 
-export class Unit {
+export class Unit extends Model {
     static databaseType = 'units';
 
     /**
@@ -12,22 +13,7 @@ export class Unit {
     static async find(unitType, query = {}, multiple = false) {
         query.unitType = unitType;
 
-        return get(Unit.databaseType, query).then(result => {
-            if(result === null || result.length == 0) {
-                return null;
-            } 
-            else {
-                if(multiple) {
-                    return result.map(record => {
-                        return new Unit(record);
-                    });
-                }
-                else {
-                    let rec = new Unit(result[0]);
-                    return rec;
-                }
-            }
-        });
+        return super.find(Record, query, multiple);
     }
 
     static async addUnits(unitArr) {
@@ -73,14 +59,5 @@ export class Unit {
 
     setPrimary(isPrimary = true) {
         this.isPrimary = isPrimary;
-    }
-
-    async save() {
-        toBeStored = this.obj();
-
-        return store(Unit.databaseType, [toBeStored]).then(
-            (added) => { return added[0]; },
-            (err) => { console.error(err); return null; }
-        );
     }
 }

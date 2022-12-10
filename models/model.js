@@ -40,6 +40,12 @@ export default class Model {
         });
     }
 
+    static async update(targetCls, query, update) {
+        return this.update(targetCls.databaseType, query, update).then(result => {
+            return result;
+        });
+    }
+
     constructor() {
         if(this.constructor === Model) {
             throw new Error('Model class is abstract class!');
