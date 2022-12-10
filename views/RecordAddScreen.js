@@ -53,6 +53,9 @@ export default function RecordAddScreen({ navigation }) {
 
                 syncDateTime(true);
 
+                setIsTimeModified(false);
+                setIsDateModified(false);
+
                 Vibration.vibrate(200);
             },
             (error) => {
