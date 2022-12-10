@@ -1,9 +1,10 @@
-import { store, get } from "../services/database";
+import { store, get, remove, removeAll } from "../services/database";
+import Model from "./model";
 
 /**
  * 
  */
-export class Record {
+export class Record extends Model {
     static databaseType = 'record';
 
     /**
@@ -12,23 +13,8 @@ export class Record {
      * @param {boolean} multiple 
      * @returns 
      */
-    static async find(query, multiple = false) {
-        return get(Record.databaseType, query).then(result => {
-            if(result === null || result.length == 0) {
-                return null;
-            } 
-            else {
-                if(multiple) {
-                    return result.map(record => {
-                        return new Record({templateObj : record});
-                    });
-                }
-                else {
-                    let rec = new Record({templateObj : result[0]});
-                    return rec;
-                }
-            }
-        });
+    static async find(query, multiple = false, sort = null) {
+        return super.find(Record, query, multiple, sort);
     }
 
     /**
@@ -36,93 +22,76 @@ export class Record {
      * @param {string} id 
      * @returns 
      */
-    static findById(id) {
-        return get(Record.databaseType, {_id: id}).then(result => {
-            if(result === null || result.length == 0) {
-                return null;
-            } 
-            else {
-                return new Record({templateObj : result[0]});
-            }
-        });
+    static async findById(id) {
+        return super.findById(Record, id);
+    }
+
+    static async remove(query, multiple = false) {
+        return super.remove(Record, query, multiple);
+    }
+
+    static async update(query, update) {
+        return super.update(Record, query, update);
     }
 
     static default() {
         return new Record({
-            bloodSugar: 5.5, 
+            bloodSugar: 5.5,
+            bloodSugarU : { _id: '1', label: 'mmol/l'}, 
             insuline: null, 
-            insulineU: null,
+            insulineT: { _id: '1', label: 'Fiasp'},
+            carbo: null,
+            carboU: { _id: '1', label: 'g'},
             dateTime: new Date(),
+            food: null,
+            tags: [],
+            note: '',
         }); 
     }
 
-    /**
-     * 
-     * @param {Object} param0 
-     */
     constructor({
-        id = undefined, 
-        key = null, 
+        _id = undefined, 
         bloodSugar = null, 
+        bloodSugarU = null,
         insuline = null, 
-        insulineU = null, 
-        carboHydrates = null,
-        carboHydratesU = null,
-        dateTime = null, 
-        templateObj = null} = {}) {
+        insulineT = null, 
+        carbo = null,
+        carboU = null,
+        dateTime = null,
+        food = null,
+        tags = null,
+        note = null} = {}) {
 
-        if(templateObj) {
-            this._id = templateObj.id;
-            this.key = templateObj.key;
-            this.insuline = templateObj.insuline;
-            this.insulineU = templateObj.insulineU;
-            this.carboHydrates = templateObj.carboHydrates;
-            this.carboHydratesU = templateObj.carboHydratesU;
-            this.dateTime = templateObj.dateTime;
-        }
-        else {
-            this._id = id;
-            this.key = key;
-            this.bloodSugar = bloodSugar;
-            this.insuline = insuline;
-            this.insulineU = insulineU;
-            this.carboHydrates = carboHydrates;
-            this.carboHydratesU = carboHydratesU;
-            this.dateTime = dateTime;
-        }
+        super();
+
+        this._id = _id;
+        
+        this.bloodSugar = bloodSugar;
+        this.bloodSugarU = bloodSugarU;
+        this.insuline = insuline;
+        this.insulineT = insulineT;
+        this.carbo = carbo;
+        this.carboU = carboU;
+        this.food = food;
+        this.tags = tags;
+        this.note = note;
+        this.dateTime = dateTime;
     }
 
 
     obj() {
         return {
             '_id' : this._id,
-            'key' : this.key,
             'bloodSugar' : this.bloodSugar,
+            'bloodSugarU' : this.bloodSugarU,
             'insuline' : this.insuline,
-            'insulineU' : this.insulineU,
+            'insulineT' : this.insulineT,
             'dateTime' : this.dateTime,
+            'carbo' : this.carbo,
+            'carboU' : this.carboU,
+            'food' : this.food,
+            'tags' : this.tags,
+            'note' : this.note,
         };
-    }
-
-    /**
-     * 
-     * @param {Object} props 
-     */
-    setProperties(props) {
-        for(const key in props) {
-            if(this[key] !== undefined) {
-                this[key] = props[key];
-            }
-        }
-    }
-
-
-    async save() {
-        toBeStored = this.obj();
-
-        return store(Record.databaseType, [toBeStored]).then(
-            (added) => { return added[0]; },
-            (err) => { console.error(err); return null; }
-        );
     }
 }

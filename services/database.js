@@ -36,17 +36,47 @@ export async function store(type, toBeStored) {
  * 
  * @param {string} type 
  * @param {Object} query 
+ * @param {Object} update 
  * @returns 
  */
-export async function get(type, query) {
+export async function update(type, query, update) {
     query._type = type;
 
     return new Promise((resolve, reject) => {
-        db.find(query, (err, docs) => {
+        db.update(query, update, (err, num) => {
             if(err) return reject(err);
-            resolve(docs);
+            resolve(num);
         });
     });
+}
+
+
+/**
+ * 
+ * @param {string} type 
+ * @param {Object} query 
+ * @param {Object|null}
+ * @returns 
+ */
+export async function get(type, query, sort = null) {
+    query._type = type;
+
+    if(sort == null) {
+        return new Promise((resolve, reject) => {
+            db.find(query, (err, docs) => {
+                if(err) return reject(err);
+                resolve(docs);
+            });
+        });
+    }
+    else {
+        return new Promise((resolve, reject) => {
+            db.find(query).sort(sort).exec((err, docs) => {
+                if(err) return reject(err);
+                resolve(docs);
+            });
+        });
+    }
 }
 
 
@@ -62,6 +92,23 @@ export async function remove(type, query) {
 
     return new Promise((resolve, reject) => {
         db.remove(query, {}, (err, num) => {
+            if(err) return reject(err);
+            resolve(num);
+        });
+    });
+}
+
+/**
+ * 
+ * @param {string} type 
+ * @param {Object} query 
+ * @returns 
+ */
+export async function removeAll(type, query) {
+    query._type = type;
+
+    return new Promise((resolve, reject) => {
+        db.remove(query, { multi: true }, (err, num) => {
             if(err) return reject(err);
             resolve(num);
         });

@@ -20,8 +20,9 @@ function getDisplayDate(date) {
 }
 
 function getRecords(records, dateFrom, dateTo){
-    return records;
-    // return records.filter(i => (i.date > dateFrom || dateFrom === null) && (i.date > dateTo || dateTo === null))
+    // return records;
+    let recordsFiltered = records.filter(i => (i["dateTime"] > dateFrom || dateFrom === null) && (i["dateTime"] > dateTo || dateTo === null))
+    return recordsFiltered.sort((a,b) => b["dateTime"] - a["dateTime"]);
 }
 
 export default function HistoryScreen({ navigation }) {
@@ -33,12 +34,6 @@ export default function HistoryScreen({ navigation }) {
     // ];
     let [records, setRecords] = useState([]);
 
-    //create new record
-    // let record = new Record({bloodSugar: 100, insulineTaken: 2});
-    // record.save().then(result => {
-    //     console.log("record saved", result);
-    // });
-
     //load records from storage
     let i = 0;
     let cont = true;
@@ -46,6 +41,7 @@ export default function HistoryScreen({ navigation }) {
     const styles = StyleSheet.create({
         
     });
+    
     const [refreshing, setRefreshing] = useState(false);
     
     const [dateFrom, setDateFrom] = useState(null);
@@ -85,18 +81,22 @@ export default function HistoryScreen({ navigation }) {
         
         Record.find({}, true).then(result => {
             setRecords(result);
-            console.log("history",result);
+            // console.log("history",result);
         });
     }
 
     // loadRecords();
-
-    const onRefresh = React.useCallback(async () => {
+    const doRefresh = async () => {
         setRefreshing(true);
         loadRecords();    
         setRefreshing(false);
-    }, [refreshing]);
-    
+    }
+
+    const onRefresh = React.useCallback(doRefresh, [refreshing]);
+
+    // Record.find({}, true).then(result => {
+    //     setRecords(result);
+    // });
 
     return (
     <ScrollView style={{flex: 1}}
@@ -139,7 +139,14 @@ export default function HistoryScreen({ navigation }) {
             onConfirm={handleToConfirm}
             onCancel={hideToDatePicker}
         />
-        
+
+        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 30, paddingRight: 30, paddingBottom: 10, paddingTop: 20}}>
+            <Text style={{fontSize: 18, }}>Cukr</Text>
+            <Text style={{fontSize: 18, }}>Inzulín</Text>
+            <Text style={{fontSize: 18, }}>Datum</Text>
+        </View>
+
+
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
             <FlatList 
             style={{width: "100%"}}
@@ -147,7 +154,9 @@ export default function HistoryScreen({ navigation }) {
             renderItem={({item}) => 
                 <HistoryItem 
                 key={item["_id"]} record={item} 
-                onPress={() => {navigation.navigate('EntryDetail'); console.log('hi');}}>
+                onPress={() => {navigation.navigate('EntryDetail', {
+                    recordId: item["_id"],
+                })}}>
 
                 </HistoryItem>
             } />

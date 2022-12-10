@@ -11,7 +11,7 @@ export default function DateTimePickerWithText(props) {
     const getDateFormatted = () => {
         let year = props.value.getFullYear();
         let day = props.value.getDate();
-        let month = props.value.getMonth();
+        let month = props.value.getMonth() + 1; //January is 0 so +1
 
         return `${day}. ${month}. ${year}`; //Day. Month. Year
     }

@@ -10,8 +10,10 @@ import DateTimePickerWithText from '../components/DateTimePickerWithText';
 import ButtonSecondary from '../components/ButtonSecondary';
 import ButtonPrimary from '../components/ButtonPrimary';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { User } from '../models/user';
 
 export default function RecordAddScreen({ navigation }) {
+    //const [record, setRecord] = useState(Record.default());
     let record = Record.default();
     const content = useRef();
     const bloodSugarTab = useRef();
@@ -37,14 +39,22 @@ export default function RecordAddScreen({ navigation }) {
 
 
     const onSave = () => {
+        record.setProperties({dateTime: dateTime});
         record.setProperties(bloodSugarTab.current.getData());
+        record.setProperties(foodTab.current.getData());
+        record.setProperties(otherTab.current.getData());
 
         record.save().then(
             (newRec) => {
                 record = Record.default();
                 bloodSugarTab.current.refresh(record);
+                foodTab.current.refresh(record);
+                otherTab.current.refresh(record);
 
                 syncDateTime(true);
+
+                setIsTimeModified(false);
+                setIsDateModified(false);
 
                 Vibration.vibrate(200);
             },
@@ -93,6 +103,18 @@ export default function RecordAddScreen({ navigation }) {
         setIsTimeModified(true);
         setDateTimeSync(false);
     };
+
+    const onDump = () => {
+        Record.find({}, true).then((result) => { 
+            console.log(result);
+        });
+    }
+
+    const onClear = () => {
+        Record.remove({}, true).then((removedNum) => {
+            console.log(`Removed ${removedNum} records!`);
+        });
+    }
 
     const Tab = createMaterialTopTabNavigator();
 
@@ -173,7 +195,6 @@ export default function RecordAddScreen({ navigation }) {
                     </Tab.Screen>
                     <Tab.Screen
                         name="other"
-                        component={OtherTab}
                         options={{
                             tabBarLabel: 'Ostatní',
                             tabBarLabelStyle: {
@@ -188,6 +209,7 @@ export default function RecordAddScreen({ navigation }) {
                             }
                         }}
                     >
+                        {props => <OtherTab {...props} model={record} screenref={otherTab}></OtherTab>}
                     </Tab.Screen>
                 </Tab.Navigator>
             </View>
@@ -215,6 +237,8 @@ export default function RecordAddScreen({ navigation }) {
             </View>
             <View style={styles.controlpanel}>
                 <ButtonSecondary title="Zahodit" onPress={onCancel}></ButtonSecondary>
+                <ButtonSecondary title="Záznamy" onPress={onDump}></ButtonSecondary>
+                <ButtonSecondary title="Vyčistit" onPress={onClear}></ButtonSecondary>
                 <ButtonPrimary icon="plus" title="Přidat záznam" onPress={onSave}></ButtonPrimary>
             </View>
         </View>

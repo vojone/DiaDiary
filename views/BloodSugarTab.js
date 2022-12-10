@@ -1,8 +1,9 @@
-import { useState, useImperativeHandle, forwardRef } from 'react';
+import { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from '../styles/common';
 import InputSpinner from 'react-native-input-spinner';
 import AppendDropdown from '../components/AppendDropdown';
+import { Unit } from '../models/unit';
 
 
 export default function BloodSugarTab({ navigation, model, screenref }) {
@@ -10,29 +11,80 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         refresh: (model) => { 
             setGlycemia(model.bloodSugar);
             setInsuline(model.insuline);
+
+            setDefaultGlycUnit(glycemiaUEnum);
+            setDefaultInsulineType(insulineTEnum);
         },
         getData: () => {
-            return { bloodSugar: glycemia, insuline: insuline }
+            return { 
+                bloodSugar: glycemia, 
+                insuline: insuline 
+            }
         } 
     }));
 
     const [glycemia, setGlycemia] = useState(model.bloodSugar);
+    const [glycemiaU, setGlycemiaU] = useState([]);
     const [insuline, setInsuline] = useState(model.insuline);
+    const [insulineT, setInsulineT] = useState([]);
 
-    const shiftZeros = (str) => {
-        while(str.charAt(0) === '0')
-            str = str.substring(1);
-            
-        return str;
+    const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
+    const [insulineTEnum, setInsulineTEnum] = useState([]);
+
+    useEffect(() => {
+        Unit.find('glyc', {}, true).then((glycemiaUnits) => {
+            if(glycemiaUnits == null) {
+                setGlycemiaUEnum([]);
+            }
+            else {
+                setGlycemiaUEnum(glycemiaUnits);
+                setGlycemiaU(glycemiaUnits.find((u) => (u.isReference)));
+
+                setDefaultGlycUnit(glycemiaUnits);
+            }
+        })
+    }, [global.user]);
+
+    const setDefaultGlycUnit = (unitArr) => {
+        if(!unitArr) {
+            return;
+        }
+
+        if(global.user != null && global.user.glycemiaUnit) {
+            setGlycemiaU(unitArr.find((u) => (u._id == global.user.glycemiaUnit._id)));
+        }
+        else {
+            setGlycemiaU(unitArr.find((u) => (u.isReference)));
+        }
     }
 
-    const glycemiaChanged = value => {
-        setGlycemia(value);
+    useEffect(() => {
+        Unit.find('insuline', {}, true).then((insulineTypes) => {
+            if(insulineTypes == null) {
+                setInsulineT([]);
+            }
+            else {
+                setInsulineTEnum(insulineTypes);
+                setInsulineT(insulineTypes.find((i) => (i.isReference)));
+
+                setDefaultInsulineType(insulineTypes);
+            }
+        })
+    }, [global.user]);
+
+    const setDefaultInsulineType = (typeArr) => {
+        if(!typeArr) {
+            return;
+        }
+
+        if(global.user != null && global.user.insulineType) {
+            setInsulineT(typeArr.find((u) => (u._id == global.user.insulineType._id)));
+        }
+        else {
+            setInsulineT(typeArr.find((u) => (u.isReference)));
+        }
     }
 
-    const insulineChanged = value => {
-        setInsuline(value)
-    }
 
     const styles = addRecordStyles;
     return (
@@ -44,7 +96,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     showBorder={true}
                     precision={1}
                     placeholderTextColor={placeholderColor}
-                    placeholder="Nezadáno"
+                    placeholder="N"
                     type="real"
                     emptied={true}
                     min={0}
@@ -53,11 +105,12 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     color={primaryColor}
                     value={glycemia}
                     onChange={setGlycemia}
-                    fontSize={ 23 }
+                    fontSize={ 28 }
                     append={
                         <AppendDropdown
-                            options={['mmol/l', 'mg/dl']}
-                            defaultValue='mmol/l'
+                            data={glycemiaUEnum}
+                            value={glycemiaU}
+                            onChange={setGlycemiaU}
                         ></AppendDropdown>
                     } // Appended element
                 />
@@ -66,11 +119,11 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                 <Text>5.5</Text>
             </View> */}
             <View style={styles.inputwithtopgap}>
-                <Text>Podaný inzulín</Text>
+                <Text>Inzulín (jednotky)</Text>
                 <InputSpinner 
                     rounded= {false}
                     showBorder={true}
-                    placeholder="Nezadáno"
+                    placeholder="N"
                     placeholderTextColor={placeholderColor}
                     precision={1}
                     type="real"
@@ -80,11 +133,12 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     color={primaryColor}
                     value={insuline}
                     onChange={setInsuline}
-                    fontSize={ 23 }
+                    fontSize={ 28 }
                     append={
                         <AppendDropdown
-                            options={['Fiasp', 'Novorapid']}
-                            defaultValue='Fiasp'
+                            data={insulineTEnum}
+                            value={insulineT}
+                            onChange={setInsulineT}
                         ></AppendDropdown>
                     }
                 />
