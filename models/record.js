@@ -1,9 +1,10 @@
-import { store, get } from "../services/database";
+import { store, get, remove, removeAll } from "../services/database";
+import Model from "./model";
 
 /**
  * 
  */
-export class Record {
+export class Record extends Model {
     static databaseType = 'record';
 
     /**
@@ -13,22 +14,7 @@ export class Record {
      * @returns 
      */
     static async find(query, multiple = false) {
-        return get(Record.databaseType, query).then(result => {
-            if(result === null || result.length == 0) {
-                return null;
-            } 
-            else {
-                if(multiple) {
-                    return result.map(record => {
-                        return new Record(record);
-                    });
-                }
-                else {
-                    let rec = new Record(result[0]);
-                    return rec;
-                }
-            }
-        });
+        return super.find(Record, query, multiple);
     }
 
     /**
@@ -36,15 +22,12 @@ export class Record {
      * @param {string} id 
      * @returns 
      */
-    static findById(id) {
-        return get(Record.databaseType, {_id: id}).then(result => {
-            if(result === null || result.length == 0) {
-                return null;
-            } 
-            else {
-                return new Record(result[0]);
-            }
-        });
+    static async findById(id) {
+        return super.findById(Record, id);
+    }
+
+    static async remove(query, multiple = false) {
+        return super.remove(Record, query, multiple);
     }
 
     static default() {
@@ -62,12 +45,8 @@ export class Record {
         }); 
     }
 
-    /**
-     * 
-     * @param {Object} param0 
-     */
     constructor({
-        id = undefined, 
+        _id = undefined, 
         bloodSugar = null, 
         bloodSugarU = null,
         insuline = null, 
@@ -79,7 +58,10 @@ export class Record {
         tags = null,
         note = null} = {}) {
 
-        this._id = id;
+        super();
+
+        this._id = _id;
+        
         this.bloodSugar = bloodSugar;
         this.bloodSugarU = bloodSugarU;
         this.insuline = insuline;
@@ -109,25 +91,7 @@ export class Record {
         };
     }
 
-    /**
-     * 
-     * @param {Object} props 
-     */
-    setProperties(props) {
-        for(const key in props) {
-            if(this[key] !== undefined) {
-                this[key] = props[key];
-            }
-        }
-    }
-
-
     async save() {
-        toBeStored = this.obj();
-
-        return store(Record.databaseType, [toBeStored]).then(
-            (added) => { return added[0]; },
-            (err) => { console.error(err); return null; }
-        );
+        return super.save();
     }
 }

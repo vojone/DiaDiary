@@ -12,6 +12,7 @@ import ButtonPrimary from '../components/ButtonPrimary';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function RecordAddScreen({ navigation }) {
+    //const [record, setRecord] = useState(Record.default());
     let record = Record.default();
     const content = useRef();
     const bloodSugarTab = useRef();
@@ -97,6 +98,12 @@ export default function RecordAddScreen({ navigation }) {
     const onDump = () => {
         Record.find({}, true).then((result) => { 
             console.log(result);
+        });
+    }
+
+    const onClear = () => {
+        Record.remove({}, true).then((removedNum) => {
+            console.log(removedNum);
         });
     }
 
@@ -222,6 +229,7 @@ export default function RecordAddScreen({ navigation }) {
             <View style={styles.controlpanel}>
                 <ButtonSecondary title="Zahodit" onPress={onCancel}></ButtonSecondary>
                 <ButtonSecondary title="Záznamy" onPress={onDump}></ButtonSecondary>
+                <ButtonSecondary title="Vyčistit" onPress={onClear}></ButtonSecondary>
                 <ButtonPrimary icon="plus" title="Přidat záznam" onPress={onSave}></ButtonPrimary>
             </View>
         </View>
