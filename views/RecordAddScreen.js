@@ -10,6 +10,7 @@ import DateTimePickerWithText from '../components/DateTimePickerWithText';
 import ButtonSecondary from '../components/ButtonSecondary';
 import ButtonPrimary from '../components/ButtonPrimary';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { User } from '../models/user';
 
 export default function RecordAddScreen({ navigation }) {
     //const [record, setRecord] = useState(Record.default());
