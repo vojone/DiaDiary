@@ -1,8 +1,8 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { formatOneDecimal } from '../utils';
-import { addRecordStyles } from '../styles/common';
+import { StyleSheet, Text, View } from 'react-native';
+import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from '../styles/common';
 import InputSpinner from 'react-native-input-spinner';
+import AppendDropdown from '../components/AppendDropdown';
 
 
 export default function BloodSugarTab({ navigation, model, screenref }) {
@@ -42,34 +42,51 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                 <InputSpinner 
                     rounded= {false}
                     showBorder={true}
-                    placeholder="Nezadáno"
                     precision={1}
+                    placeholderTextColor={placeholderColor}
+                    placeholder="Nezadáno"
                     type="real"
                     emptied={true}
                     min={0}
                     step={0.1}
-                    color= "#674fa5"
+                    max={100}
+                    color={primaryColor}
                     value={glycemia}
                     onChange={setGlycemia}
+                    fontSize={ 23 }
+                    append={
+                        <AppendDropdown
+                            options={['mmol/l', 'mg/dl']}
+                            defaultValue='mmol/l'
+                        ></AppendDropdown>
+                    } // Appended element
                 />
             </View>
             {/* <View>
                 <Text>5.5</Text>
             </View> */}
-            <View style={styles.inputwrapper}>
+            <View style={styles.inputwithtopgap}>
                 <Text>Podaný inzulín</Text>
                 <InputSpinner 
                     rounded= {false}
                     showBorder={true}
                     placeholder="Nezadáno"
+                    placeholderTextColor={placeholderColor}
                     precision={1}
                     type="real"
                     emptied={true}
                     min={0}
                     step={1}
-                    color= "#674fa5"
+                    color={primaryColor}
                     value={insuline}
                     onChange={setInsuline}
+                    fontSize={ 23 }
+                    append={
+                        <AppendDropdown
+                            options={['Fiasp', 'Novorapid']}
+                            defaultValue='Fiasp'
+                        ></AppendDropdown>
+                    }
                 />
             </View>
         </View>);

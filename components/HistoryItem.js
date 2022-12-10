@@ -35,13 +35,13 @@ export default function HistoryItem(props) {
         <TouchableWithoutFeedback  onPress={props.onPress}>
             <View style={styles.text}>
                 <Text style={styles.sugar}>
-                    Sugar: {record.bloodSugar}
+                    Sugar: {record["carboHydrates"]}
                 </Text> 
                 <Text style={styles.insuline}>
-                    Insuline: {record.insulineTaken}
+                    Insuline: {record["insuline"]}
                 </Text>
                 <Text>
-                    Date: {record.date.toLocaleTimeString()}
+                    Date: {}
                 </Text>
             </View>
         </TouchableWithoutFeedback >

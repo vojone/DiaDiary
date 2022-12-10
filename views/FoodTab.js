@@ -36,7 +36,7 @@ export default function FoodTab({ navigation, model, screenref }) {
                 onChange={setCarbo}
             />
             </View>
-        <View style={styles.inputwrapper}>
+        <View style={styles.inputwithtopgap}>
             <Text>Jídlo</Text>
             <TextInput placeholder="Snídaně"></TextInput>
         </View>

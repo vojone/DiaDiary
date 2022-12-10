@@ -6,6 +6,10 @@ import InputSpinner from "react-native-input-spinner";
 import { Button } from 'react-native-paper';
 import { primaryColor } from '../styles/common';
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import ModalDropdown from 'react-native-modal-dropdown';
+import DateTimePickerWithText from '../components/DateTimePickerWithText';
+
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function EntryDetail({ navigation }) {
   const [expanded, setExpanded] = React.useState(true);
@@ -123,6 +127,7 @@ export default function EntryDetail({ navigation }) {
         <View style={styles.list_flex}>
 
           <InputSpinner 
+          style={{maxWidth: '100%'}}
           rounded= {false}
           showBorder={true}
           placeholder="Nezadáno"
@@ -130,65 +135,77 @@ export default function EntryDetail({ navigation }) {
           type="real"
           emptied={true}
           min={0}
-          step={1}
+          max={100}
+          step={0.1}
           color={primaryColor}
+          fontSize={26}
+          append={
+            <ModalDropdown
+              textStyle={{fontSize: 20}} // text style of the dropdown
+
+              dropdownTextStyle={{fontSize: 20, margin: 10, textAlign: 'center'}} // text style of the dropdown options
+              dropdownStyle={{margin: -12, height: 140}} // style of the dropdown
+
+              options={['mmol/l', 'mg/dl']} // options to choose from
+              style={{margin: 10}} // style of the dropdown
+              defaultValue="Jednotky" // default text of the dropdown
+              isFullWidth={true}
+              renderRightComponent={() => <MaterialCommunityIcons name="chevron-down" size={24} color="black"/>} // Dropdown icon
+
+            />} // Appended element
           />
         </View>
         
         <Text style={styles.text_style.normal}>Podaný inzulín</Text>
         <View style={styles.list_flex}>
           <InputSpinner 
-          rounded= {false} // makes the spinner square duh
+          rounded= {false} // makes the spinner not round duh
           showBorder={true} // shows the border of the spinner
           emptied={true} // if input can be empy, not sure if it works the way I think it does
           precision={1} // how many decimals can be inputted
           type="real" // type of input, gets the decimal point
-           // style of the input
+          max={9999999}
           placeholder="Nezadáno" // placeholder text when empty
           min={0} // minimum value
-          step={1} // step size of the number
+          step={0.1} // step size of the number
           color={primaryColor} // color of the spinner
+          fontSize={26} // text size of the spinner
+
+          append={ // Appended element, right side of the spinner
+            <ModalDropdown
+              style={{margin: 10}} // style of the dropdown
+              textStyle={{fontSize: 20}} // text style of the dropdown
+
+              dropdownTextStyle={{fontSize: 20, margin: 10, textAlign: 'center'}} // text style of the dropdown options
+              dropdownStyle={{margin: -12, height: 140}} // style of the dropdown options
+
+              options={['Fiasp', 'option 2']} // options to choose from
+              defaultValue="Jednotky" // default text of the dropdown
+              isFullWidth={true} // should make the dropdown options be the same width as the dropdown but it doesn't work
+
+              renderRightComponent={() => <MaterialCommunityIcons name="chevron-down" size={24} color="black"/>} // Dropdown icon
+
+            />} // Appended element
           /> 
         </View>
 
         
         <View style={styles.timeinputcontainer}>
-            <View>
-              <Text>Datum</Text>
-              <Text
-                onPress={showDatePicker}
-              >
-                {getDateFormatted()}
-              </Text>
-              <DateTimePicker 
-                date={dateTime}
-                mode="date"
-                isVisible={isDatePickerVisible}
-                onCancel={hideDatePicker}
-                onConfirm={dateSelectionConfirm}
-                datePickerDialogTheme="#674fa5"
-              >
-              </DateTimePicker>
-            </View>
-            <View>
-              <Text style={styles.rightaligned}>Čas</Text>
-              <Text
-                onPress={showTimePicker}
-              >
-                {getTimeFormatted()}
-              </Text>
-              <DateTimePicker 
-                date={dateTime}
-                mode="time"
-                isVisible={isTimePickerVisible}
-                onCancel={hideTimePicker}
-                colorAccent="#674fa5"
-                colorBackground="#674fa5"
-                onConfirm={timeSelectionConfirm}
-              >
-              </DateTimePicker>
-            </View>
-          </View>
+          <DateTimePickerWithText
+            value={dateTime}
+            mode="date"
+            label="Datum"
+            onConfirm={timeSelectionConfirm}
+          >
+          </DateTimePickerWithText>
+          <DateTimePickerWithText
+            value={dateTime}
+            mode="time"
+            label="Čas"
+            onConfirm={timeSelectionConfirm}
+          >
+          </DateTimePickerWithText>
+        </View>
 
         <View style={styles.confirm_buttons_flex}>
         <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" onPress={() => navigation.navigate('Home')}>

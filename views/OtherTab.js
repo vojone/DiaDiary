@@ -12,7 +12,7 @@ export default function OtherTab() {
                 placeholder="Tag"
             ></TextInput>
         </View>
-        <View>
+        <View style={styles.inputwithtopgap}>
             <Text>Poznámky</Text>
             <TextInput 
                 placeholder="Text..."
