@@ -11,10 +11,13 @@ export default function OtherTab({ navigation, model, screenref }) {
     useImperativeHandle(screenref, () => ({
         refresh: (model) => { 
             setTags(model.tags);
-            setCarboU(model.note);
+            setNote(model.note);
         },
         getData: () => {
-            return { tags: tags, note: note}
+            return { 
+                tags: tags, 
+                note: note,
+            }
         } 
     }));
 

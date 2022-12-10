@@ -16,7 +16,10 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
             setDefaultInsulineType(insulineTEnum);
         },
         getData: () => {
-            return { bloodSugar: glycemia, insuline: insuline }
+            return { 
+                bloodSugar: glycemia, 
+                insuline: insuline 
+            }
         } 
     }));
 

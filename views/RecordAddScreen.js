@@ -39,12 +39,17 @@ export default function RecordAddScreen({ navigation }) {
 
 
     const onSave = () => {
+        record.setProperties({dateTime: dateTime});
         record.setProperties(bloodSugarTab.current.getData());
+        record.setProperties(foodTab.current.getData());
+        record.setProperties(otherTab.current.getData());
 
         record.save().then(
             (newRec) => {
                 record = Record.default();
                 bloodSugarTab.current.refresh(record);
+                foodTab.current.refresh(record);
+                otherTab.current.refresh(record);
 
                 syncDateTime(true);
 
@@ -104,7 +109,7 @@ export default function RecordAddScreen({ navigation }) {
 
     const onClear = () => {
         Record.remove({}, true).then((removedNum) => {
-            console.log(removedNum);
+            console.log(`Removed ${removedNum} records!`);
         });
     }
 
@@ -201,7 +206,7 @@ export default function RecordAddScreen({ navigation }) {
                             }
                         }}
                     >
-                        {props => <OtherTab {...props} model={record} screenref={foodTab}></OtherTab>}
+                        {props => <OtherTab {...props} model={record} screenref={otherTab}></OtherTab>}
                     </Tab.Screen>
                 </Tab.Navigator>
             </View>

@@ -17,7 +17,11 @@ export default function FoodTab({ navigation, model, screenref }) {
             setDefaultFoodType(foodEnum);
         },
         getData: () => {
-            return { carboHydrates: carbo, carboHydratesU: carboU, food: food }
+            return { 
+                carbo: carbo, 
+                carboU: carboU, 
+                food: food 
+            }
         } 
     }));
 
