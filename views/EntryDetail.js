@@ -19,14 +19,15 @@ export default function EntryDetail({ route, navigation}) {
   const [recordDetail, setRecordDetail] = useState({});
   const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
 
-  Record.findById(recordId).then((record) => {console.log(record); setRecordDetail(record);});
+  useEffect(() => {
+    Record.findById(recordId).then((record) => {console.log(record); setRecordDetail(record);});
+  }, []);
 
   
   function updatedBloodSugar(value) {
-    setRecordDetail({
-      ...recordDetail,
-      bloodSugar: value.target.value
-    });
+    setRecordDetail(rec => ({
+      ...rec, bloodSugar: value
+    }));
   }
 
   function updatedBloodSugarU(value) {
