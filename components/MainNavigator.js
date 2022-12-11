@@ -2,9 +2,11 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet } from 'react-native';
 import { headerHeight, navTextSize, sideNavTextSize } from '../styles/common';
+import InitSettingsScreen from '../views/InitialSettings';
 import StackNavigator from './StackNavigator';
 
 const SideMenu = createDrawerNavigator();
+
 
 export default function MainDrawerNavigator({ navigation }) {
     const styles = StyleSheet.create({
@@ -26,11 +28,13 @@ export default function MainDrawerNavigator({ navigation }) {
             />
             <SideMenu.Screen 
                 name='settings' 
-                component={StackNavigator}
+                component={InitSettingsScreen}
                 options={{
+                    headerShown: false,
                     headerTitle: '',
                     drawerLabelStyle: styles.navitemlabel,
                     drawerLabel: 'Export',
+                    swipeEnabled: false,
                 }}
             />
         </SideMenu.Navigator>

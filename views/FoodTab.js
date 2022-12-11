@@ -93,7 +93,7 @@ export default function FoodTab({ navigation, model, screenref }) {
                 type="real"
                 emptied={true}
                 min={0}
-                step={1}
+                step={carboU && carboU.step ? carboU.step : 0.1}
                 color= "#674fa5"
                 value={carbo}
                 fontSize={ 28 }

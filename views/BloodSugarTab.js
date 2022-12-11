@@ -102,7 +102,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     type="real"
                     emptied={true}
                     min={0}
-                    step={0.1}
+                    step={glycemiaU && glycemiaU.step ? glycemiaU.step : 0.1}
                     max={100}
                     color={primaryColor}
                     value={glycemia}
@@ -131,7 +131,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     type="real"
                     emptied={true}
                     min={0}
-                    step={1}
+                    step={insulineT && insulineT.step ? insulineT.step : 1}
                     color={primaryColor}
                     value={insuline}
                     onChange={setInsuline}
