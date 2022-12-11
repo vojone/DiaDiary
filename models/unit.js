@@ -45,7 +45,8 @@ export class Unit extends Model {
         label = null,
         isReference = null, 
         toReferenceCoef = null,
-        step = 1} = {}) {
+        step = 1,
+        title = null} = {}) {
 
         super();   
 
@@ -55,6 +56,7 @@ export class Unit extends Model {
         this.isReference = isReference;
         this.toReferenceCoef = toReferenceCoef;
         this.step = step;
+        this.title = title;
     }
 
     obj() {
@@ -65,6 +67,7 @@ export class Unit extends Model {
             'isReference' : this.isReference,
             'toReferenceCoef' : this.toReferenceCoef,
             'step' : this.step,
+            'title' : this.title,
         };
     }
 }

@@ -30,8 +30,8 @@ export default function seedData(clearData) {
         if(result === null || clearData) {
             //Seeding data
             Unit.addUnits([
-                new Unit({unitType: 'mass', label: 'g', isReference: true}),
-                new Unit({unitType: 'mass', label: 'oz', toReferenceCoef: 28.35, step: 0.1}),
+                new Unit({unitType: 'mass', label: 'g', isReference: true, title: 'g (gram)'}),
+                new Unit({unitType: 'mass', label: 'oz', toReferenceCoef: 28.35, step: 0.1, title: 'oz (unce)'}),
 
                 new Unit({unitType: 'glyc', label: 'mmol/l', isReference: true, step: 0.1}),
                 new Unit({unitType: 'glyc', label: 'mg/dL', toReferenceCoef: 0.055}),

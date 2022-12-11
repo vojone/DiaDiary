@@ -10,7 +10,7 @@ export default function DropdownItem(props) {
             padding: props.padding, 
             backgroundColor: props.selected ? bottomTabBarActiveBgColor : 'white' }}
             >
-            <Text style={{ flex: 1,  }}>{props.item.label}</Text>
+            <Text style={{ flex: 1, ...props.textStyle }}>{props.labelField ? props.item[props.labelField] : props.item.label}</Text>
             <Text>{props.withIcon && props.selected ? (<MaterialCommunityIcons name="check"></MaterialCommunityIcons>) : ('') }</Text>
         </View>
     );
