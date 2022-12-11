@@ -18,7 +18,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         getData: () => {
             return { 
                 bloodSugar: glycemia, 
-                insuline: insuline 
+                bloodSugarU: glycemiaU,
+                insuline: insuline,
+                insulineT: insulineT, 
             }
         } 
     }));

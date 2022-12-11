@@ -8,6 +8,9 @@ export const primaryColor = '#674fa5';
 export const pressUnderlayColor = '#cdc4e3';
 export const bottomTabBarActiveBgColor = '#f2eef7';
 
+export const successColor = '#28a745';
+export const warningColor = '#ffc107';
+
 export const topBarHeight = 50;
 
 export const headerHeight = 100;
