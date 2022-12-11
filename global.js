@@ -5,6 +5,7 @@ import { User } from "./models/user";
 import { getAS, storeAS } from './services/store';
 
 global.user = null;
+global.settingsChanged = false;
 
 export default function seedData(clearData) {
     console.log('Intialization');

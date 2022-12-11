@@ -10,6 +10,7 @@ export const bottomTabBarActiveBgColor = '#f2eef7';
 
 export const successColor = '#28a745';
 export const warningColor = '#ffc107';
+export const dangerColor = '#dc3545';
 
 export const topBarHeight = 50;
 

@@ -7,10 +7,13 @@ export default function ButtonSecondary(props) {
         <Button 
             icon={props.icon} 
             mode="outlined" 
+            isVidi
             onPress={props.onPress}
             loading={props.loading}
             disabled={props.disabled}
-            style={StyleSheet.create({borderColor: primaryColor})}
+            textColor={props.borderColor ? props.borderColor : primaryColor}
+            style={StyleSheet.create({borderColor: props.borderColor ? props.borderColor : primaryColor})}
+            contentStyle={props.contentStyle}
             >
             {props.title}
         </Button>

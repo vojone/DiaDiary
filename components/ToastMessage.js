@@ -25,8 +25,10 @@ export function ToastMessage({props, children}) {
             animation={true}
             hideOnPress={true}
             delay={0}
+            style={{ backgroundColor: props.backgroundColor, flexDirection: 'row',  }}
         >
-            {children}
+            <Text>{props.icon ? (<MaterialCommunityIcons name="check" color={props.textColor}></MaterialCommunityIcons>) : ('') }</Text>
+            <Text style={{color: props.textColor}}>{children}</Text>
         </Toast>
     );
 }
