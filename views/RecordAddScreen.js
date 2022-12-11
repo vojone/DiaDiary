@@ -146,7 +146,7 @@ export default function RecordAddScreen({ navigation }) {
 
         maincontainer: {
             flex: 1,
-            minHeight: Dimensions.get('screen').height - bottomBarHeight - topBarHeight - headerHeight,
+            minHeight: Dimensions.get('window').height - bottomBarHeight - topBarHeight,
         },
 
         timeinputcontainer: {
@@ -154,6 +154,7 @@ export default function RecordAddScreen({ navigation }) {
             flexDirection: 'row',
             justifyContent: 'space-between',
             padding: 20,
+            marginTop: '-100%',
         },
     
         rightaligned: {
@@ -161,9 +162,18 @@ export default function RecordAddScreen({ navigation }) {
         },
     });
 
+    const [verticalScrollEnabled, setVerticalScrollEnabled] = useState(false);
+
+    Keyboard.addListener('keyboardDidShow', () => {
+        setVerticalScrollEnabled(true);
+    });
+
+    Keyboard.addListener('keyboardDidHide', () => {
+        setVerticalScrollEnabled(false);
+    })
     
     return (
-        <KeyboardAwareScrollView>
+        <KeyboardAwareScrollView scrollEnabled={verticalScrollEnabled}>
         <View style={styles.maincontainer}>
             <View style={styles.tabcontainer}>            
                 <Tab.Navigator>
