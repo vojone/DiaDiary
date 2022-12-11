@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet } from 'react-native';
 import { headerHeight, navTextSize, sideNavTextSize } from '../styles/common';
 import StackNavigator from './StackNavigator';
+import ExportScreen from '../views/ExportScreen';
 
 const SideMenu = createDrawerNavigator();
 
@@ -26,7 +27,7 @@ export default function MainDrawerNavigator({ navigation }) {
             />
             <SideMenu.Screen 
                 name='settings' 
-                component={StackNavigator}
+                component={ExportScreen}
                 options={{
                     headerTitle: '',
                     drawerLabelStyle: styles.navitemlabel,
