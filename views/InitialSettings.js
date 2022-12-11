@@ -1,15 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, SafeAreaView, StatusBar, Platform, FlatList, ScrollView, Dimensions } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import { set } from 'react-native-reanimated';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions } from 'react-native';
 import ButtonPrimary from '../components/ButtonPrimary';
 import ButtonSecondary from '../components/ButtonSecondary';
-import DropdownItem from '../components/DropdownItem';
 import EditableList from '../components/EditableList';
 import InitSettingsDropdown from '../components/InitSettingsDropdown';
+import { showToastMessage, ToastMessage } from '../components/ToastMessage';
 import { Unit } from '../models/unit';
 import { User } from '../models/user';
-import { primaryColor } from '../styles/common';
+import { dangerColor, primaryColor, successColor } from '../styles/common';
 
 export default function InitSettingsScreen({ navigation }) {
     const [user, setUser] = useState(new User());
@@ -21,47 +19,65 @@ export default function InitSettingsScreen({ navigation }) {
 
     const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
+    const [saving, setSaving] = useState(false);
+
     const flatList = useRef();
 
     useEffect(() => {
-        Unit.find('mass', {}, true).then((result) => {
-            if(result !== null) {
-                setMassUnitsEnum(result);
+        const unsubscribe = navigation.addListener('focus', () => {
+            setSaving(false);
 
-                let initialMassUnit = result.filter(u => u.isReference);
-                if(!initialMassUnit.length) {
-                    initialMassUnit = result[0];
+            Unit.find('mass', {}, true).then((result) => {
+                if(result !== null) {
+                    setMassUnitsEnum(result);
+    
+                    let initialMassUnit = result.filter(u => u.isReference);
+                    if(!initialMassUnit.length) {
+                        initialMassUnit = result[0];
+                    }
+                    else {
+                        initialMassUnit = initialMassUnit[0];
+                    }
+    
+                    setUser(user => ({...user, massUnit: initialMassUnit}));
                 }
-                else {
-                    initialMassUnit = initialMassUnit[0];
+            });
+    
+            Unit.find('glyc', {}, true).then((result) => {
+                if(result !== null) {
+                    setGlycUnitsEnum(result);
+    
+                    let initialGlycUnit = result.filter(u => u.isReference);
+                    if(!initialGlycUnit.length) {
+                        initialGlycUnit = result[0];
+                    }
+                    else {
+                        initialGlycUnit = initialGlycUnit[0];
+                    }
+    
+                    setUser(user => ({...user, glycemiaUnit: initialGlycUnit}));
                 }
+            });
+    
+            Unit.find('insuline', {}, true).then((result) => {
+                if(result !== null) {
+                    result.forEach((ins, i) => {
+                        ins.key = i;
+                    });
+    
+                    setInsulineTypesEnum(result);
 
-                setUser(user => ({...user, massUnit: initialMassUnit}));
-            }
+                    setUser(user => ({...user, insulineType: result[0]}));
+                }
+            });
+    
+            flatList.current.scrollToIndex({animated: false, index: 0});
+    
+            setCurrentTabIndex(0);
         });
 
-        Unit.find('glyc', {}, true).then((result) => {
-            if(result !== null) {
-                setGlycUnitsEnum(result);
-
-                let initialGlycUnit = result.filter(u => u.isReference);
-                if(!initialGlycUnit.length) {
-                    initialGlycUnit = result[0];
-                }
-                else {
-                    initialGlycUnit = initialGlycUnit[0];
-                }
-
-                setUser(user => ({...user, glycemiaUnit: initialGlycUnit}));
-            }
-        });
-
-        Unit.find('insuline', {}, true).then((result) => {
-            if(result !== null) {
-                setInsulineTypesEnum(result);
-            }
-        });
-    }, []);
+        return unsubscribe;
+    }, [navigation]);
 
     const insulineTypeAdded = () => {
         if(newInsulineType.trim() == '') {
@@ -69,25 +85,22 @@ export default function InitSettingsScreen({ navigation }) {
         }
 
         let newUnit = new Unit({unitType: 'insuline', label: newInsulineType});
-        newUnit.save().then((newU) => {
-            if(newU) {
-                setInsulineTypesEnum(arr => [...arr, newU]);
-
-                global.settingsChanged = !global.settingsChanged;
-            }
+        
+        let maxVal = 0;
+        insulineTypesEnum.forEach(element => {
+            if(element.key && element.key > maxVal)
+                maxVal = element.key;
         });
+
+        newUnit.key = maxVal + 1;
+
+        setInsulineTypesEnum(type => ([...type, newUnit]));
 
         setNewInsulineType('');
     }
 
-    const insulineRemoved = (id) => {
-        Unit.remove({unitType: 'insuline', _id : id}, false).then((num) => {
-            if(num) {
-                setInsulineTypesEnum(arr => arr.filter(e => e._id !== id));
-
-                global.settingsChanged = !global.settingsChanged;
-            }
-        });
+    const insulineRemoved = (key) => {
+        setInsulineTypesEnum(arr => arr.filter(e => e.key !== key));
     }
 
     const nextSlide = () => {
@@ -108,6 +121,49 @@ export default function InitSettingsScreen({ navigation }) {
         flatList.current.scrollToIndex({animated: true, index: currentTabIndex - 1});
 
         setCurrentTabIndex(currentTabIndex - 1);
+    }
+
+    const savingDone = (success = true) => {
+        global.settingsChanged = !global.settingsChanged;
+
+        if(success) {
+            showToastMessage('Nastavení bylo úspěšně uloženo!', successColor, 'white');
+        }
+        else {
+            showToastMessage('Při ukládání došlo k chybě', dangerColor, 'white');
+        }
+
+        navigation.navigate('Records');
+        setSaving(false);
+    }
+    
+    const saveSettings = () => {
+        setSaving(true);
+        let insulineProm = Unit.remove({ unitType: 'insuline'}, true).then(() => { return Unit.addUnits(insulineTypesEnum)});
+
+        insulineProm.then(
+            insuline => {
+                let newUserSettings = new User(user);
+
+                let prefInsuline = insuline.filter(el => el.label == user.insulineType.label);
+                if(prefInsuline) {
+                    newUserSettings.newInsulineType;
+                }
+
+                newUserSettings.save().then(
+                    (newUser) => {
+                        global.user = newUser;
+                        savingDone();
+                },
+                error => {
+                    console.error(error);
+                    savingDone(false);
+                });
+            },
+            error => {
+                console.error(error);
+                savingDone(false);
+        });
     }
 
     const styles = StyleSheet.create({
@@ -228,12 +284,12 @@ export default function InitSettingsScreen({ navigation }) {
                             data={insulineTypesEnum}
                             onAdd={insulineTypeAdded}
                             onRemove={insulineRemoved}
-                            height={Dimensions.get('window').height*0.3}
+                            height={Dimensions.get('window').height*0.35}
                             labelField="label"
                             textColor="white"
                             textListColor={primaryColor}
                             backgroundColor="white"
-                            idField="_id"
+                            idField="key"
                         >
                         </EditableList>
                     </View>
@@ -241,9 +297,9 @@ export default function InitSettingsScreen({ navigation }) {
                     <View style={styles.formitem}>
                         <Text style={styles.label}>Který druh nejčastěji?</Text>
                         <InitSettingsDropdown
-                            data={glycUnitsEnum}
-                            onValueChange={(gUnit) => { setUser(user => ({...user, glycemiaUnit: gUnit})) }}
-                            value={user.glycemiaUnit}
+                            data={insulineTypesEnum}
+                            onValueChange={(type) => { setUser(user => ({...user, insulineType: type})) }}
+                            value={user.insulineType ? user.insulineType : insulineTypesEnum[0]}
                         >
                         </InitSettingsDropdown>
                     </View>
@@ -256,39 +312,11 @@ export default function InitSettingsScreen({ navigation }) {
         return (
             <View style={{flex: 1}}>
                 <View>
-                    <Text style={styles.heading}>Značky</Text>
+                    <Text style={styles.heading}>Zadávání hodnot</Text>
                 </View>
                 <View style={styles.form}>
                     <View>
-                        <Text style={styles.label}>V jakých jednotkách měříš svou glykémii?</Text>
-                        <InitSettingsDropdown
-                            data={glycUnitsEnum}
-                            onValueChange={(gUnit) => { setUser(user => ({...user, glycemiaUnit: gUnit})) }}
-                            value={user.glycemiaUnit}
-                        >
-                        </InitSettingsDropdown>
-
-                        <Text style={styles.label}>Jaké jednotky hmotnosti preferuješ?</Text>
-                        <InitSettingsDropdown
-                            labelField="title"
-                            data={massUnitsEnum}
-                            onValueChange={(mUnit) => { setUser(user => ({...user, massUnit: mUnit})) }}
-                            value={user.massUnit}
-                        >
-                        </InitSettingsDropdown>
-
-                        <Text style={styles.label}>Které druhy inzulínu používáš?</Text>
-                        <EditableList
-                            newItemValue={newInsulineType}
-                            onChangeNewItemValue={setNewInsulineType}
-                            data={insulineTypesEnum}
-                            onAdd={insulineTypeAdded}
-                            onRemove={insulineRemoved}
-                            maxHeight={Dimensions.get('window').height*0.3}
-                            labelField="label"
-                            idField="_id"
-                        >
-                        </EditableList>
+                        
                     </View>
                 </View>
             </View>);
@@ -344,9 +372,11 @@ export default function InitSettingsScreen({ navigation }) {
                 >
                 </ButtonSecondary>}
                 {currentTabIndex + 1 == tabs.length && <ButtonPrimary 
+                    loading={saving}
+                    disabled={saving}
                     fillColor="white"
                     icon="check"
-                    onPress={() => {}} title="Hotovo"
+                    onPress={saveSettings} title="Hotovo"
                 >
                 </ButtonPrimary>}
             </View>

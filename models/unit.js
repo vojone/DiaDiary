@@ -25,7 +25,7 @@ export class Unit extends Model {
     }
 
     static async update(query, update) {
-        return super.update(Unit, query, update);
+        return super.updateModel(Unit, query, update);
     }
 
     static async addUnits(unitArr) {

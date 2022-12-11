@@ -1,9 +1,11 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet } from 'react-native';
-import { headerHeight, navTextSize, sideNavTextSize } from '../styles/common';
+import { bottomTabBarActiveBgColor, headerHeight, navTextSize, primaryColor, sideNavTextSize } from '../styles/common';
 import InitSettingsScreen from '../views/InitialSettings';
 import StackNavigator from './StackNavigator';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const SideMenu = createDrawerNavigator();
 
@@ -16,25 +18,31 @@ export default function MainDrawerNavigator({ navigation }) {
     });
 
     return (
-        <SideMenu.Navigator initialRouteName='home'>
+        <SideMenu.Navigator initialRouteName='Records'>
             <SideMenu.Screen
-                name='home'
+                name='Records'
                 component={StackNavigator}
                 options={{
                     headerTitle: '',
                     drawerLabelStyle: styles.navitemlabel,
+                    drawerIcon: () => { return(<MaterialCommunityIcons name="pencil" size={sideNavTextSize}></MaterialCommunityIcons>); },
                     drawerLabel: 'Záznamy',
+                    drawerActiveBackgroundColor: bottomTabBarActiveBgColor,
+                    drawerActiveTintColor: primaryColor,
                 }}
             />
             <SideMenu.Screen 
-                name='settings' 
+                name='Settings' 
                 component={InitSettingsScreen}
                 options={{
                     headerShown: false,
                     headerTitle: '',
                     drawerLabelStyle: styles.navitemlabel,
-                    drawerLabel: 'Export',
+                    drawerLabel: 'Nastavení',
+                    drawerIcon: () => { return(<FontAwesome name="gear" size={sideNavTextSize}></FontAwesome>); },
                     swipeEnabled: false,
+                    drawerActiveBackgroundColor: bottomTabBarActiveBgColor,
+                    drawerActiveTintColor: primaryColor,
                 }}
             />
         </SideMenu.Navigator>

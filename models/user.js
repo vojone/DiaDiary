@@ -22,7 +22,7 @@ export class User extends Model {
     }
 
     static async update(query, update) {
-        return super.update(User, query, update);
+        return super.updateModel(User, query, update);
     }
     
     constructor({

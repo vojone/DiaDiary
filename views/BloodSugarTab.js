@@ -45,7 +45,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                 setDefaultGlycUnit(glycemiaUnits);
             }
         })
-    }, [global.user]);
+    }, [global.user, global.settingsChanged]);
 
     const setDefaultGlycUnit = (unitArr) => {
         if(!unitArr) {
