@@ -11,6 +11,7 @@
   "dependencies": {
     "@mdi/font": "^7.0.96",
     "@react-native-async-storage/async-storage": "github:react-native-async-storage/async-storage",
+    "@react-native-community/datetimepicker": "6.5.2",
     "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/bottom-tabs": "^6.5.0",
     "@react-navigation/drawer": "^6.5.4",
@@ -22,6 +23,9 @@
     "expo-status-bar": "~1.4.2",
     "react": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-chart-kit": "^6.12.0",
+    "react-native-collapsible": "^1.6.0",
+    "react-native-echarts-wrapper": "^2.0.0",
     "react-native-dropdown-select-list": "^2.0.4",
     "react-native-element-dropdown": "^2.5.0",
     "react-native-input-spinner": "^1.7.12",
@@ -35,8 +39,11 @@
     "react-native-root-toast": "^3.3.1",
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
+    "react-native-svg": "13.4.0",
+    "react-native-svg-transformer": "^1.0.0",
     "react-native-tab-view": "^3.3.3",
-    "react-native-vector-icons": "^9.2.0"
+    "react-native-vector-icons": "^9.2.0",
+    "react-native-webview": "11.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

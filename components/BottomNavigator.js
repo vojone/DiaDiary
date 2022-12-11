@@ -8,6 +8,7 @@ import { StyleSheet } from 'react-native';
 import { bottomBarHeight, bottomTabBarActiveBgColor, navTextSize, pressUnderlayColor, primaryColor } from '../styles/common';
 import RecordAddScreen from '../views/RecordAddScreen';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import ChartScreen from '../views/ChartScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,7 +42,7 @@ export default function BottomNavigator({ navigation }) {
             />
             <Tab.Screen 
                 name='Graf' 
-                component={HistoryScreen}
+                component={ChartScreen}
                 options={{ 
                     lazy: true,
                     tabBarLabelStyle: styles.navbutton,
@@ -64,7 +65,7 @@ export default function BottomNavigator({ navigation }) {
                 options={{ 
                     lazy: true,
                     tabBarLabelStyle: styles.navbutton,
-                    tabBarLabel: 'Histore',
+                    tabBarLabel: 'Historie',
                     tabBarIcon: ({color, size}) => (
                         <Entypo name="back-in-time" color={color} size={size} /> 
                     ),

@@ -1,222 +1,204 @@
-import { StyleSheet, Text, View, TextInput, FlatList } from 'react-native';
-import EntryItem from '../components/EntryItem';
-import React, {useState} from 'react';
-import InputSpinner from "react-native-input-spinner";
-
-import { Button } from 'react-native-paper';
-import { primaryColor } from '../styles/common';
-import DateTimePicker from 'react-native-modal-datetime-picker';
-import ModalDropdown from 'react-native-modal-dropdown';
+import { StyleSheet, View, Vibration, Keyboard, Dimensions} from 'react-native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { Record } from '../models/record';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import EntryDetailBSTab from './EntryDetailBSTab';
+import EntryDetailFTab from './EntryDetailFTab';
+import EntryDetailOtherTab from './EntryDetailOtherTab';
+import { bottomBarHeight, headerHeight, primaryColor, successColor, topBarHeight, warningColor } from '../styles/common';
 import DateTimePickerWithText from '../components/DateTimePickerWithText';
+import ButtonSecondary from '../components/ButtonSecondary';
+import ButtonPrimary from '../components/ButtonPrimary';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { showToastMessage } from '../components/ToastMessage';
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function EntryDetail({ navigation }) {
-  const [expanded, setExpanded] = React.useState(true);
+export default function EntryDetail({ route, navigation }) {
 
-  const handlePress = () => setExpanded(!expanded);
+  const {recordId} = route.params;
 
-  const [dateTime, setDateTime] = useState(new Date());
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [recordDetail, setRecordDetail] = useState({});
 
-  const onSave = () => {
-      Vibration.vibrate([1000]);
-  }
+  useEffect(() => {
+    Record.findById(recordId).then((record) => {setRecordDetail(record);});
+  }, []);
 
-  const onRetrieve = () => {
-      
-  }
+    //const [record, setRecord] = useState(Record.default());
+    
+    const bloodSugarTab = useRef();
+    const foodTab = useRef();
+    const otherTab = useRef();
 
-  const inputChange = text => {
-      
-  }
+    const [dateTime, setDateTime] = useState(recordDetail.dateTime);
+    const [isDateModified, setIsDateModified] = useState(false);
+    const [isTimeModified, setIsTimeModified] = useState(false);
+    const [isDateTimeSync, setDateTimeSync] = useState(true);
 
-  const getDateFormatted = () => {
-      let year = dateTime.getFullYear();
-      let day = dateTime.getDate();
-      let month = dateTime.getMonth();
+    
+    const syncDateTime = (setSync = false) => {
+        if(setSync) {
+            setDateTimeSync(true);
+        }
 
-      return `${day}. ${month}. ${year}`; //Day. Month. Year
-  }
+        setDateTime(new Date());
+    }
 
-  const getTimeFormatted = () => {
-      let hours = dateTime.getHours();
-      let minutes = dateTime.getMinutes();
+    const onDateTimeSelectionOpen = () => {
+        setDateTimeSync(false);
+    }
 
-      return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`; //Hours:Minutes
-  }
+    const onDateTimeSelectionCancel = () => {
+        if(isDateModified != true && isTimeModified != true) {
+            syncDateTime(true);
+        }
+    }
 
-  const showDatePicker = () => {
-      setDatePickerVisibility(true);
-  }
+    const dateSelectionConfirm = (date) => {
+        setDateTime(date);
+        setIsDateModified(true);
+        setDateTimeSync(false);
+    };
 
-  const hideDatePicker = () => {
-      setDatePickerVisibility(false);
-  }
+    const timeSelectionConfirm = (time) => {
+        setDateTime(time);
+        setIsTimeModified(true);
+        setDateTimeSync(false);
+    };
 
-  const showTimePicker = () => {
-      setTimePickerVisibility(true);
-  }
+    const Tab = createMaterialTopTabNavigator();
 
-  const hideTimePicker = () => {
-      setTimePickerVisibility(false);
-  }
-
-  const dateSelectionConfirm = (date) => {
-      hideDatePicker();
-
-      setDateTime(date);
-  };
-
-  const timeSelectionConfirm = (time) => {
-      hideTimePicker();
-
-      setDateTime(time);
-  };
-
-    //let props=[{record: records}];
-    //load records from storage
-    let i = 0;
-    let cont = true;
+    //console.log(recordDetail);
 
     const styles = StyleSheet.create({
-      list_flex: {
-        flexDirection: 'row',
-        alignContent: 'center',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-      },
-
-      timeinputcontainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 20,
-      },
-
-      text_style: {
-        header: {
-          fontSize: 20,
-          fontWeight: 'bold',
+        tabcontainer: {
+            flex: 1,
         },
-        normal: {
-          marginTop: 20,
-          marginBottom: 5,
-          fontSize: 16,
-        }
-      },
 
-      confirm_buttons_flex: {
-        flexDirection: 'row',
-        alignContent: 'center',
-        marginTop: 20,
-        justifyContent: 'space-between',
-        
-        save_button: {
-          minWidth: 150,
+        controlpanel: {
+            height: 80,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+
+            paddingLeft: 20,
+            paddingRight: 20,
         },
-      }
+
+        maincontainer: {
+            flex: 1,
+            minHeight: Dimensions.get('screen').height - bottomBarHeight - topBarHeight - headerHeight,
+        },
+
+        timeinputcontainer: {
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: 20,
+        },
+    
+        rightaligned: {
+            textAlign: 'right',
+        },
     });
 
+    
     return (
-      <View style={{ margin: 20}}>
-        <Text style={styles.text_style.header}>Detail záznamu</Text>
-
-        <Text style={styles.text_style.normal}>Hladina cukru</Text>
-        <View style={styles.list_flex}>
-
-          <InputSpinner 
-          style={{maxWidth: '100%'}}
-          rounded= {false}
-          showBorder={true}
-          placeholder="Nezadáno"
-          precision={1}
-          type="real"
-          emptied={true}
-          min={0}
-          max={100}
-          step={0.1}
-          color={primaryColor}
-          fontSize={26}
-          append={
-            <ModalDropdown
-              textStyle={{fontSize: 20}} // text style of the dropdown
-
-              dropdownTextStyle={{fontSize: 20, margin: 10, textAlign: 'center'}} // text style of the dropdown options
-              dropdownStyle={{margin: -12, height: 140}} // style of the dropdown
-
-              options={['mmol/l', 'mg/dl']} // options to choose from
-              style={{margin: 10}} // style of the dropdown
-              defaultValue="Jednotky" // default text of the dropdown
-              isFullWidth={true}
-              renderRightComponent={() => <MaterialCommunityIcons name="chevron-down" size={24} color="black"/>} // Dropdown icon
-
-            />} // Appended element
-          />
+        <KeyboardAwareScrollView>
+        <View style={styles.maincontainer}>
+            {
+                recordDetail.bloodSugar &&
+            <View style={styles.tabcontainer}>            
+                <Tab.Navigator>
+                    <Tab.Screen
+                        name="glycemia"
+                        options={{
+                            tabBarLabel: 'Hladina cukru',
+                            tabBarLabelStyle: {
+                                textTransform: 'capitalize',
+                            },
+                            tabBarIndicatorStyle: StyleSheet.create({
+                                borderTopColor: primaryColor,
+                                borderTopWidth: 3,
+                            }),
+                            tabBarStyle: {
+                                height: topBarHeight,
+                            }
+                        }}
+                    >
+                        {props => <EntryDetailBSTab {...props} model={recordDetail} screenref={bloodSugarTab}></EntryDetailBSTab>}
+                    </Tab.Screen>
+                    <Tab.Screen
+                        name="food"
+                        options={{
+                            tabBarLabel: 'Jídlo',
+                            tabBarLabelStyle: {
+                                textTransform: 'capitalize',
+                            },
+                            tabBarIndicatorStyle: StyleSheet.create({
+                                borderTopColor: primaryColor,
+                                borderTopWidth: 3,
+                            }),
+                            tabBarStyle: {
+                                height: topBarHeight,
+                            }
+                        }}
+                    >
+                        {props => <EntryDetailFTab {...props} model={recordDetail} screenref={foodTab}></EntryDetailFTab>}
+                    </Tab.Screen>
+                    <Tab.Screen
+                        name="other"
+                        options={{
+                            tabBarLabel: 'Ostatní',
+                            tabBarLabelStyle: {
+                                textTransform: 'capitalize',
+                            },
+                            tabBarIndicatorStyle: StyleSheet.create({
+                                borderTopColor: primaryColor,
+                                borderTopWidth: 3,
+                            }),
+                            tabBarStyle: {
+                                height: topBarHeight,
+                            }
+                        }}
+                    >
+                        {props => <EntryDetailOtherTab {...props} model={recordDetail} screenref={otherTab}></EntryDetailOtherTab>}
+                    </Tab.Screen>
+                </Tab.Navigator>
+            </View>
+            }
+            {
+                recordDetail.dateTime &&
+            <View style={styles.timeinputcontainer}>
+                <DateTimePickerWithText
+                    value={recordDetail.dateTime}
+                    mode="date"
+                    label={`Datum`}
+                    onConfirm={dateSelectionConfirm}
+                    onOpen={onDateTimeSelectionOpen}
+                    onCancel={onDateTimeSelectionCancel}
+                    isModified={isDateModified}
+                >
+                </DateTimePickerWithText>
+                <DateTimePickerWithText
+                    value={recordDetail.dateTime}
+                    mode="time"
+                    label={`Čas`}
+                    onConfirm={timeSelectionConfirm}
+                    onOpen={onDateTimeSelectionOpen}
+                    onCancel={onDateTimeSelectionCancel}
+                    isModified={isTimeModified}
+                >
+                </DateTimePickerWithText>
+            </View>
+            }
+            <View style={styles.controlpanel}>
+                
+                <ButtonPrimary icon="check" title="Uložit změny"  ></ButtonPrimary>
+                <ButtonPrimary title="Zrušit změny" icon="close" mode="contained" onPress={() => navigation.navigate('History')}></ButtonPrimary>
+            </View>
         </View>
-        
-        <Text style={styles.text_style.normal}>Podaný inzulín</Text>
-        <View style={styles.list_flex}>
-          <InputSpinner 
-          rounded= {false} // makes the spinner not round duh
-          showBorder={true} // shows the border of the spinner
-          emptied={true} // if input can be empy, not sure if it works the way I think it does
-          precision={1} // how many decimals can be inputted
-          type="real" // type of input, gets the decimal point
-          max={9999999}
-          placeholder="Nezadáno" // placeholder text when empty
-          min={0} // minimum value
-          step={0.1} // step size of the number
-          color={primaryColor} // color of the spinner
-          fontSize={26} // text size of the spinner
-
-          append={ // Appended element, right side of the spinner
-            <ModalDropdown
-              style={{margin: 10}} // style of the dropdown
-              textStyle={{fontSize: 20}} // text style of the dropdown
-
-              dropdownTextStyle={{fontSize: 20, margin: 10, textAlign: 'center'}} // text style of the dropdown options
-              dropdownStyle={{margin: -12, height: 140}} // style of the dropdown options
-
-              options={['Fiasp', 'option 2']} // options to choose from
-              defaultValue="Jednotky" // default text of the dropdown
-              isFullWidth={true} // should make the dropdown options be the same width as the dropdown but it doesn't work
-
-              renderRightComponent={() => <MaterialCommunityIcons name="chevron-down" size={24} color="black"/>} // Dropdown icon
-
-            />} // Appended element
-          /> 
-        </View>
-
-        
-        <View style={styles.timeinputcontainer}>
-          <DateTimePickerWithText
-            value={dateTime}
-            mode="date"
-            label="Datum"
-            onConfirm={timeSelectionConfirm}
-          >
-          </DateTimePickerWithText>
-          <DateTimePickerWithText
-            value={dateTime}
-            mode="time"
-            label="Čas"
-            onConfirm={timeSelectionConfirm}
-          >
-          </DateTimePickerWithText>
-        </View>
-
-        <View style={styles.confirm_buttons_flex}>
-        <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" onPress={() => navigation.navigate('Home')}>
-          Save
-        </Button>
-
-        <Button icon="close" mode="contained" onPress={() => navigation.navigate('Home')}>
-          Back
-        </Button>
-        </View>
-
-      </View>
+        </KeyboardAwareScrollView>
     );
 }
+    
