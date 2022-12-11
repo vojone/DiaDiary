@@ -5,12 +5,13 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import BloodSugarTab from './BloodSugarTab';
 import FoodTab from './FoodTab';
 import OtherTab from './OtherTab';
-import { bottomBarHeight, headerHeight, primaryColor, topBarHeight } from '../styles/common';
+import { bottomBarHeight, headerHeight, primaryColor, successColor, topBarHeight, warningColor } from '../styles/common';
 import DateTimePickerWithText from '../components/DateTimePickerWithText';
 import ButtonSecondary from '../components/ButtonSecondary';
 import ButtonPrimary from '../components/ButtonPrimary';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { User } from '../models/user';
+import { showToastMessage } from '../components/ToastMessage';
+
 
 export default function RecordAddScreen({ navigation }) {
     //const [record, setRecord] = useState(Record.default());
@@ -24,6 +25,7 @@ export default function RecordAddScreen({ navigation }) {
     const [isDateModified, setIsDateModified] = useState(false);
     const [isTimeModified, setIsTimeModified] = useState(false);
     const [isDateTimeSync, setDateTimeSync] = useState(true);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         const int = setInterval(() => {
@@ -39,6 +41,8 @@ export default function RecordAddScreen({ navigation }) {
 
 
     const onSave = () => {
+        setSaving(true);
+
         record.setProperties({dateTime: dateTime});
         record.setProperties(bloodSugarTab.current.getData());
         record.setProperties(foodTab.current.getData());
@@ -57,6 +61,10 @@ export default function RecordAddScreen({ navigation }) {
                 setIsDateModified(false);
 
                 Vibration.vibrate(200);
+
+                setSaving(false);
+
+                showToastMessage('Záznam byl uložen!', successColor, 'black');
             },
             (error) => {
                 console.error(error);
@@ -71,6 +79,8 @@ export default function RecordAddScreen({ navigation }) {
 
         setIsTimeModified(false);
         setIsDateModified(false);
+
+        showToastMessage('Záznam byl zahozen!', warningColor, 'black');
     }
 
 
@@ -239,7 +249,7 @@ export default function RecordAddScreen({ navigation }) {
                 <ButtonSecondary title="Zahodit" onPress={onCancel}></ButtonSecondary>
                 <ButtonSecondary title="Záznamy" onPress={onDump}></ButtonSecondary>
                 <ButtonSecondary title="Vyčistit" onPress={onClear}></ButtonSecondary>
-                <ButtonPrimary icon="plus" title="Přidat záznam" onPress={onSave}></ButtonPrimary>
+                <ButtonPrimary icon="plus" title="Přidat záznam" loading={saving} disabled={saving} onPress={onSave}></ButtonPrimary>
             </View>
         </View>
         </KeyboardAwareScrollView>
