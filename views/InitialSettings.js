@@ -284,6 +284,7 @@ export default function InitSettingsScreen({ navigation }) {
                             data={insulineTypesEnum}
                             onAdd={insulineTypeAdded}
                             onRemove={insulineRemoved}
+                            placeholderColor="rgba(255, 255, 255, 0.5)"
                             height={Dimensions.get('window').height*0.35}
                             labelField="label"
                             textColor="white"

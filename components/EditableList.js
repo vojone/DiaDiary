@@ -18,6 +18,7 @@ export default function EditableList(props) {
                     placeholder='Nový typ'
                     value={props.newItemValue}
                     onChangeText={props.onChangeNewItemValue}
+                    placeholderTextColor={props.placeholderColor}
                     style={{
                         borderWidth: 1,
                         padding: 10,
