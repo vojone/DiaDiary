@@ -17,40 +17,39 @@ export default function EntryDetail({ route, navigation}) {
   const {recordId} = route.params;
 
   const [recordDetail, setRecordDetail] = useState({});
-  const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
+ 
 
   useEffect(() => {
-    Record.findById(recordId).then((record) => {console.log(record); setRecordDetail(record);});
+    Record.findById(recordId).then((record) => {setRecordDetail(record);});
   }, []);
 
-  
+  console.log(recordDetail);
+
   function updatedBloodSugar(value) {
-    setRecordDetail(rec => ({
-      ...rec, bloodSugar: value
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, bloodSugar: value
     }));
   }
 
   function updatedBloodSugarU(value) {
-    setRecordDetail({
-      ...recordDetail,
-      bloodSugarU: value.target.value
-    });
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, bloodSugarU: value
+    }))
   }
 
   function updatedInsuline(value) {
-    setRecordDetail({
-      ...recordDetail,
-      insuline: value.target.value
-    });
+    ssetRecordDetail(recordDetail => ({
+      ...recordDetail, insuline: value
+    }))
   }
 
   function updatedInsulineT(value) {
-    setRecordDetail({
-      ...recordDetail,
-      insulineU: value.target.value
-    });
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, insulineT: value
+    }))
   }
 
+  const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
   useEffect(() => {
     Unit.find('glyc', {}, true).then((glycemiaUnits) => {
       if(glycemiaUnits == null) {
@@ -91,14 +90,28 @@ export default function EntryDetail({ route, navigation}) {
   };
 
     const styles = StyleSheet.create({
+      maincontainer: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        justifyContent: 'flex-start',
+
+        padding: 20,
+
+        flex: 1,
+    },
+
       list_flex: {
         flexDirection: 'row',
         alignContent: 'center',
         alignItems: 'flex-end',
         justifyContent: 'space-between',
+        
       },
 
       timeinputcontainer: {
+        marginTop: 160,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -130,7 +143,7 @@ export default function EntryDetail({ route, navigation}) {
     });
 
     return (
-      <View style={{ margin: 20}}>
+      <View style={styles.maincontainer}>
         <Text style={styles.text_style.header}>Detail záznamu</Text>
 
         <Text style={styles.text_style.normal}>Hladina cukru</Text>
@@ -152,6 +165,7 @@ export default function EntryDetail({ route, navigation}) {
             onChange={updatedBloodSugar}
             fontSize={ 28 }
             append={
+              recordDetail.bloodSugarU &&
               <AppendDropdown
                 data={glycemiaUEnum}
                 value={recordDetail.bloodSugarU}
@@ -179,6 +193,7 @@ export default function EntryDetail({ route, navigation}) {
             onChange={updatedInsuline}
             fontSize={ 28 }
             append={
+              recordDetail.insulineT &&
             <AppendDropdown
               data={insulineTEnum}
               value={recordDetail.insulineT}
@@ -189,29 +204,35 @@ export default function EntryDetail({ route, navigation}) {
         </View>
 
         <View style={styles.timeinputcontainer}>
+          {recordDetail.dateTime &&
           <DateTimePickerWithText
-            value={dateTime}
+            value={recordDetail.dateTime}
             mode="date"
             label="Datum"
             onConfirm={timeSelectionConfirm}
           >
+          
           </DateTimePickerWithText>
+          }
+          {
+            recordDetail.dateTime &&
           <DateTimePickerWithText
-            value={dateTime}
+            value={recordDetail.dateTime}
             mode="time"
             label="Čas"
             onConfirm={timeSelectionConfirm}
           >
           </DateTimePickerWithText>
+          }
         </View>
 
         <View style={styles.confirm_buttons_flex}>
         <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" onPress={() => navigation.navigate('Home')}>
-          Save
+          Uložit změny
         </Button>
 
         <Button icon="close" mode="contained" onPress={() => navigation.navigate('Home')}>
-          Back
+          Zrušit
         </Button>
         </View>
 
