@@ -1,17 +1,18 @@
-import { StyleSheet, Text, View, TextInput, FlatList } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar, TextInput} from 'react-native';
 import React, { useState, useImperativeHandle, useRef, useEffect } from 'react';
 import InputSpinner from "react-native-input-spinner";
 
 import { Button } from 'react-native-paper';
 import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from '../styles/common';
-import DateTimePicker from 'react-native-modal-datetime-picker';
-import ModalDropdown from 'react-native-modal-dropdown';
+
 import DateTimePickerWithText from '../components/DateTimePickerWithText';
 import AppendDropdown from '../components/AppendDropdown';
+import { Dropdown, MultiSelect } from "react-native-element-dropdown";
+import DropdownItem from "../components/DropdownItem";
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Record } from '../models/record';
 import { Unit } from '../models/unit';
+import { Tag } from "../models/tag";
 
 export default function EntryDetail({ route, navigation}) {
   const {recordId} = route.params;
@@ -23,7 +24,7 @@ export default function EntryDetail({ route, navigation}) {
     Record.findById(recordId).then((record) => {setRecordDetail(record);});
   }, []);
 
-  console.log(recordDetail);
+
 
   function updatedBloodSugar(value) {
     setRecordDetail(recordDetail => ({
@@ -38,7 +39,7 @@ export default function EntryDetail({ route, navigation}) {
   }
 
   function updatedInsuline(value) {
-    ssetRecordDetail(recordDetail => ({
+    setRecordDetail(recordDetail => ({
       ...recordDetail, insuline: value
     }))
   }
@@ -49,6 +50,10 @@ export default function EntryDetail({ route, navigation}) {
     }))
   }
 
+  // Stuff for the blood sugar
+  const [bloodSugarU, setBloodSugarU] = useState([]);
+  const [insulineT, setInsulineT] = useState([]);
+
   const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
   useEffect(() => {
     Unit.find('glyc', {}, true).then((glycemiaUnits) => {
@@ -57,6 +62,8 @@ export default function EntryDetail({ route, navigation}) {
       }
       else {
         setGlycemiaUEnum(glycemiaUnits);
+        if(recordDetail.insulineT != null)
+            setBloodSugarU(glycemiaUnits.find((u) => (u.label == recordDetail.bloodSugarU.label)));
       }
     })
   }, []);
@@ -70,24 +77,68 @@ export default function EntryDetail({ route, navigation}) {
       }
       else {
         setInsulineTEnum(insulineTypes);
+        if(recordDetail.insulineT != null)
+            setInsulineT(insulineTypes.find((i) => (i.label == recordDetail.insulineT.label)));
       }
     })
   }, []);
 
+  // Stuff for the food section
+  const [carbo, setCarbo] = useState(recordDetail.carbo);
+  const [carboU, setCarboU] = useState([recordDetail.carboHydratesU]);
+  const [food, setFood] = useState([recordDetail.food]);
 
-  const [expanded, setExpanded] = React.useState(true);
+  const [carboUEnum, setCarboUEnum] = useState([]);
+  const [foodEnum, setFoodEnum] = useState([]);
 
+  
+  // Stuff for the tags section
+  const [tags, setTags] = useState(recordDetail.tags);
+  const [note, setNote] = useState(recordDetail.note);
+
+  const [tagsEnum, setTagsEnum] = useState([]);
+
+  useEffect(() => {
+      Tag.find({}, true).then((tags) => {
+          if(tags == null) {
+              setTagsEnum([]);
+          }
+          else {
+              setTagsEnum(tags);
+          }
+      })
+  }, []);
+
+
+  // Stuff for the date and time section
   const handlePress = () => setExpanded(!expanded);
 
-  const [dateTime, setDateTime] = useState(new Date());
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [dateTime, setDateTime] = useState(recordDetail.dateTime);
+  const [isDateModified, setIsDateModified] = useState(false);
+  const [isTimeModified, setIsTimeModified] = useState(false);
+  const [isDateTimeSync, setDateTimeSync] = useState(true);
 
-  const timeSelectionConfirm = (time) => {
-      hideTimePicker();
+  const dateSelectionConfirm = (date) => {
+    setDateTime(date);
+    setIsDateModified(true);
+    setDateTimeSync(false);
+};
 
-      setDateTime(time);
-  };
+const timeSelectionConfirm = (time) => {
+    setDateTime(time);
+    setIsTimeModified(true);
+    setDateTimeSync(false);
+};
+
+const onDateTimeSelectionOpen = () => {
+    setDateTimeSync(false);
+}
+
+const onDateTimeSelectionCancel = () => {
+    if(isDateModified != true && isTimeModified != true) {
+        syncDateTime(true);
+    }
+}
 
     const styles = StyleSheet.create({
       maincontainer: {
@@ -111,7 +162,7 @@ export default function EntryDetail({ route, navigation}) {
       },
 
       timeinputcontainer: {
-        marginTop: 160,
+        marginTop: 80,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -122,6 +173,12 @@ export default function EntryDetail({ route, navigation}) {
         header: {
           fontSize: 20,
           fontWeight: 'bold',
+          middle: {
+            marginTop: 60,
+            fontSize: 20,
+            fontWeight: 'bold',
+
+          }
         },
         normal: {
           marginTop: 20,
@@ -139,16 +196,37 @@ export default function EntryDetail({ route, navigation}) {
         save_button: {
           minWidth: 150,
         },
-      }
+      },
+
+      textinput: {
+        textAlign: 'left',
+        textAlignVertical: 'top',
+
+        padding: 15,
+
+        fontSize: 20,
+
+        minHeight: 100,
+
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
+
+        borderColor: primaryColor,
+        borderRadius: 4,
+    }
     });
 
     return (
       <View style={styles.maincontainer}>
-        <Text style={styles.text_style.header}>Detail záznamu</Text>
+        <SafeAreaView>
+        <ScrollView>
+        <Text style={styles.text_style.header}>Hladina cukru</Text>
 
         <Text style={styles.text_style.normal}>Hladina cukru</Text>
         <View style={styles.list_flex}>
-
+        { recordDetail.bloodSugar &&
         <InputSpinner 
             rounded= {false}
             showBorder={true}
@@ -168,16 +246,17 @@ export default function EntryDetail({ route, navigation}) {
               recordDetail.bloodSugarU &&
               <AppendDropdown
                 data={glycemiaUEnum}
-                value={recordDetail.bloodSugarU}
-                onChange={updatedBloodSugarU}
+                value={bloodSugarU}
+                onChange={setBloodSugarU}
               ></AppendDropdown>
             } // Appended element
           />
+        }
         </View>
-        
+
         <Text style={styles.text_style.normal}>Inzulín (jednotky)</Text>
         <View style={styles.list_flex}>
-          
+          { recordDetail.bloodSugar &&
           <InputSpinner 
             rounded= {false}
             showBorder={true}
@@ -196,35 +275,125 @@ export default function EntryDetail({ route, navigation}) {
               recordDetail.insulineT &&
             <AppendDropdown
               data={insulineTEnum}
-              value={recordDetail.insulineT}
-              onChange={updatedInsulineT}
+              value={insulineT}
+              onChange={setInsulineT}
             ></AppendDropdown>
             }
           />
+        }
         </View>
 
-        <View style={styles.timeinputcontainer}>
-          {recordDetail.dateTime &&
-          <DateTimePickerWithText
-            value={recordDetail.dateTime}
-            mode="date"
-            label="Datum"
-            onConfirm={timeSelectionConfirm}
-          >
-          
-          </DateTimePickerWithText>
-          }
-          {
-            recordDetail.dateTime &&
-          <DateTimePickerWithText
-            value={recordDetail.dateTime}
-            mode="time"
-            label="Čas"
-            onConfirm={timeSelectionConfirm}
-          >
-          </DateTimePickerWithText>
-          }
+        <Text style={styles.text_style.header.middle}>Jídlo</Text>
+
+        <View>
+            <Text style={styles.text_style.normal}>Sacharidy</Text>
+            <InputSpinner 
+                rounded= {false}
+                showBorder={true}
+                placeholder="N"
+                precision={1}
+                type="real"
+                emptied={true}
+                min={0}
+                step={1}
+                color= "#674fa5"
+                value={recordDetail.carbo}
+                fontSize={ 28 }
+                placeholderTextColor={ placeholderColor }
+                onChange={setCarbo}
+                append={
+                    <AppendDropdown
+                        data={carboUEnum}
+                        value={carboU}
+                        onChange={setCarboU}
+                    ></AppendDropdown>
+                } // Appended element
+            />
+            </View>
+        <View style={styles.inputwithtopgap}>
+            <Text style={styles.text_style.normal}>Jídlo</Text>
+            <Dropdown
+                data={foodEnum}
+                labelField="label"
+                valueField="_id"
+                onChange={setFood}
+                onChangeText={() => {}}
+                search={false}
+                style={{
+                    borderColor: primaryColor, 
+                    borderWidth: 1, 
+                    borderRadius: 4, 
+                    paddingHorizontal: 15, 
+                    paddingVertical: 10
+                }}
+                renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20}></DropdownItem>}
+                placeholder={food ? food.label : '-'}
+                value={food}
+                containerStyle={{top: -25}}
+            >
+            </Dropdown>
         </View>
+
+
+        <Text style={styles.text_style.header.middle}>Ostatní</Text>
+
+        <View>
+            <Text style={styles.text_style.normal}>Tagy</Text>
+            <MultiSelect
+                data={tagsEnum}
+                value={tags}
+                labelField="label"
+                valueField="_id"
+                onChange={setTags}
+                onChangeText={() => {}}
+                search={false}
+                placeholder='Vybrat ze seznamu'
+                style={{borderColor: primaryColor, borderWidth: 1, borderRadius: 4, paddingHorizontal: 15, paddingVertical: 10}}
+                selectedStyle={{backgroundColor: primaryColor, borderRadius: 100}}
+                renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20} withIcon={true}></DropdownItem>}
+                selectedTextStyle={{color: 'white'}}
+                containerStyle={{top: -25}}
+            >
+            </MultiSelect>
+        </View>
+        
+
+        <View>
+            <Text style={styles.text_style.normal}>Poznámky</Text>
+            <TextInput 
+                placeholder="Text..."
+                style={styles.textinput}
+                multiline={true}
+                numberOfLines={3}
+                value={note}
+                onChangeText={setNote}
+            ></TextInput>
+        </View>
+
+          {recordDetail.dateTime &&
+          <View style={styles.timeinputcontainer}>
+          <DateTimePickerWithText
+              value={recordDetail.dateTime}
+              mode="date"
+              label={`Datum`}
+              onConfirm={dateSelectionConfirm}
+              onOpen={onDateTimeSelectionOpen}
+              onCancel={onDateTimeSelectionCancel}
+              isModified={isDateModified}
+          >
+          </DateTimePickerWithText>
+          <DateTimePickerWithText
+              value={recordDetail.dateTime}
+              mode="time"
+              label={`Čas`}
+              onConfirm={timeSelectionConfirm}
+              onOpen={onDateTimeSelectionOpen}
+              onCancel={onDateTimeSelectionCancel}
+              isModified={isTimeModified}
+          >
+          </DateTimePickerWithText>
+          </View>
+        }
 
         <View style={styles.confirm_buttons_flex}>
         <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" onPress={() => navigation.navigate('Home')}>
@@ -235,7 +404,8 @@ export default function EntryDetail({ route, navigation}) {
           Zrušit
         </Button>
         </View>
-
+        </ScrollView>
+        </SafeAreaView>
       </View>
     );
 }
