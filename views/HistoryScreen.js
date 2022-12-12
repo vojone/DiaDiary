@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Button, TextInput, FlatList, RefreshControl, ScrollView } from 'react-native';
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Button, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
+import React, { useState, useEffect } from 'react'
 
 import { List } from 'react-native-paper';
 
@@ -21,7 +21,7 @@ function getDisplayDate(date) {
 
 function getRecords(records, dateFrom, dateTo){
     // return records;
-    let recordsFiltered = records.filter(i => (i["dateTime"] > dateFrom || dateFrom === null) && (i["dateTime"] > dateTo || dateTo === null))
+    let recordsFiltered = records.filter(i => (i["dateTime"] > dateFrom || dateFrom === null) && (i["dateTime"] < dateTo || dateTo === null))
     return recordsFiltered.sort((a,b) => b["dateTime"] - a["dateTime"]);
 }
 
@@ -41,7 +41,7 @@ export default function HistoryScreen({ navigation }) {
     const styles = StyleSheet.create({
         
     });
-    
+
     const [refreshing, setRefreshing] = useState(false);
     
     const [dateFrom, setDateFrom] = useState(null);
@@ -68,12 +68,10 @@ export default function HistoryScreen({ navigation }) {
 
     const handleFromConfirm = (date) => {
         setDateFrom(date);
-        console.warn("A date has been picked: ", dateFrom);
         hideFromDatePicker();
     };
     const handleToConfirm = (date) => {
         setDateTo(date);
-        console.warn("A date has been picked: ", dateTo);
         hideToDatePicker();
     };
 
@@ -94,9 +92,11 @@ export default function HistoryScreen({ navigation }) {
 
     const onRefresh = React.useCallback(doRefresh, [refreshing]);
 
-    // Record.find({}, true).then(result => {
-    //     setRecords(result);
-    // });
+    useEffect(() => {
+        //causes infinite loop
+        loadRecords();
+        console.log("useEffect");
+    }, []);
 
     return (
     <ScrollView style={{flex: 1}}
@@ -106,7 +106,8 @@ export default function HistoryScreen({ navigation }) {
         refreshing={refreshing}
         onRefresh={onRefresh}
         />
-    }>
+    }
+    >
         <Text style={{textAlign: "left", width: "100%", padding: 20, fontSize: 30, fontWeight: "bold"}}>Historie záznamů</Text>
 
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
@@ -148,9 +149,9 @@ export default function HistoryScreen({ navigation }) {
 
 
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
-            <FlatList 
+            <FlatList
             style={{width: "100%"}}
-            data={getRecords(records, dateFrom, dateTo)} 
+            data={getRecords(records, dateFrom, dateTo)}
             renderItem={({item}) => 
                 <HistoryItem 
                 key={item["_id"]} record={item} 

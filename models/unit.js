@@ -25,7 +25,7 @@ export class Unit extends Model {
     }
 
     static async update(query, update) {
-        return super.update(Unit, query, update);
+        return super.updateModel(Unit, query, update);
     }
 
     static async addUnits(unitArr) {
@@ -44,7 +44,9 @@ export class Unit extends Model {
         unitType = null,
         label = null,
         isReference = null, 
-        toReferenceCoef = null} = {}) {
+        toReferenceCoef = null,
+        step = 1,
+        title = null} = {}) {
 
         super();   
 
@@ -53,6 +55,8 @@ export class Unit extends Model {
         this.label = label;
         this.isReference = isReference;
         this.toReferenceCoef = toReferenceCoef;
+        this.step = step;
+        this.title = title;
     }
 
     obj() {
@@ -62,6 +66,8 @@ export class Unit extends Model {
             'label' : this.label,
             'isReference' : this.isReference,
             'toReferenceCoef' : this.toReferenceCoef,
+            'step' : this.step,
+            'title' : this.title,
         };
     }
 }

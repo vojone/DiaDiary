@@ -3,7 +3,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useState } from "react";
-import { pressUnderlayColor, primaryColor } from "../styles/common";
+import { modifiedColor, pressUnderlayColor, primaryColor } from "../styles/common";
 
 export default function DateTimePickerWithText(props) {
     const [isPickerVisible, setPickerVisibility] = useState(false);
@@ -70,7 +70,7 @@ export default function DateTimePickerWithText(props) {
     return (
     <View>
         <Text>{props.label}</Text>
-        <TouchableHighlight onPress={showPicker} underlayColor={pressUnderlayColor}>
+        <TouchableHighlight onPress={showPicker} style={{borderRadius: 4}} underlayColor={pressUnderlayColor}>
         <View 
             style={StyleSheet.create({
                 borderBottomColor: primaryColor,
@@ -83,7 +83,7 @@ export default function DateTimePickerWithText(props) {
                 fontSize: 20,
                 display: 'flex',
                 flexDirection: 'row',
-                backgroundColor: props.isModified === true ? pressUnderlayColor : 'transparent',
+                backgroundColor: props.isModified === true ? modifiedColor : 'transparent',
             })}
         >
             <AntDesign 

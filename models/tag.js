@@ -23,7 +23,7 @@ export class Tag extends Model {
     }
 
     static async update(query, update) {
-        return super.update(Tag, query, update);
+        return super.updateModel(Tag, query, update);
     }
 
     static async addTags(tagArr) {

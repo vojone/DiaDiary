@@ -15,11 +15,9 @@ import { Unit } from '../models/unit';
 import { Food } from "../models/food";
 import { Tag } from "../models/tag";
 
-export default function EntryDetail({ route, navigation}) {
   const {recordId} = route.params;
 
   const [recordDetail, setRecordDetail] = useState({});
- 
 
   useEffect(() => {
     Record.findById(recordId).then((record) => {setRecordDetail(record);});
@@ -202,25 +200,25 @@ const onDateTimeSelectionCancel = () => {
 }
 
     const styles = StyleSheet.create({
-      maincontainer: {
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        justifyContent: 'flex-start',
+        tabcontainer: {
+            flex: 1,
+        },
 
-        padding: 20,
+        controlpanel: {
+            height: 80,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
 
-        flex: 1,
-    },
+            paddingLeft: 20,
+            paddingRight: 20,
+        },
 
-      list_flex: {
-        flexDirection: 'row',
-        alignContent: 'center',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-        
-      },
+        maincontainer: {
+            flex: 1,
+            minHeight: Dimensions.get('screen').height - bottomBarHeight - topBarHeight - headerHeight,
+        },
 
       timeinputcontainer: {
         marginTop: 80,
@@ -296,6 +294,7 @@ const onDateTimeSelectionCancel = () => {
     }
     });
 
+    
     return (
       <View style={styles.maincontainer}>
         <SafeAreaView>
@@ -497,3 +496,4 @@ const onDateTimeSelectionCancel = () => {
       </View>
     );
 }
+    

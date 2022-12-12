@@ -31,7 +31,7 @@ export class Record extends Model {
     }
 
     static async update(query, update) {
-        return super.update(Record, query, update);
+        return super.updateModel(Record, query, update);
     }
 
     static default() {

@@ -1,5 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { useEffect } from 'react';
+import { createRef, useEffect } from 'react';
 
 import { View, Text, StyleSheet, Button } from 'react-native';
 import MainDrawerNavigator from './components/MainNavigator';
@@ -7,11 +7,11 @@ import seedData from './global';
 
 const clearData = true;
 
-// const Tab = createBottomTabNavigator();
+const navigationRef = createRef();
 
 export default function App() {
     useEffect(() => {
-        seedData(clearData);
+        seedData(navigationRef, clearData);
     }, [clearData]);
 
     const styles = StyleSheet.create({
@@ -23,7 +23,7 @@ export default function App() {
 
     return (
         <View style={styles.main}>
-            <NavigationContainer>
+            <NavigationContainer ref={navigationRef}>
                 <MainDrawerNavigator/>
             </NavigationContainer>
         </View>

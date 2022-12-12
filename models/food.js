@@ -23,7 +23,7 @@ export class Food extends Model {
     }
 
     static async update(query, update) {
-        return super.update(Food, query, update);
+        return super.updateModel(Food, query, update);
     }
 
     static async addFood(foodArr) {

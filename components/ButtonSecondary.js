@@ -6,11 +6,14 @@ export default function ButtonSecondary(props) {
     return (
         <Button 
             icon={props.icon} 
-            mode="outlined" 
+            mode={props.mode ? props.mode : "outlined"} 
+            labelStyle={{fontSize: props.fontSize}}
             onPress={props.onPress}
             loading={props.loading}
             disabled={props.disabled}
-            style={StyleSheet.create({borderColor: primaryColor})}
+            textColor={props.borderColor ? props.borderColor : primaryColor}
+            style={StyleSheet.create({borderColor: props.borderColor ? props.borderColor : primaryColor})}
+            contentStyle={props.contentStyle}
             >
             {props.title}
         </Button>

@@ -1,11 +1,12 @@
 import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
-import { addRecordStyles, bottomTabBarActiveBgColor, primaryColor } from "../styles/common";
+import { addRecordStyles, backgroundColor, backgroundColor2, placeholderColor, primaryColor } from "../styles/common";
 import { MultipleSelectList, SelectList } from "react-native-dropdown-select-list";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 import DropdownItem from "../components/DropdownItem";
 import { Tag } from "../models/tag";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function OtherTab({ navigation, model, screenref }) {
     useImperativeHandle(screenref, () => ({
@@ -36,10 +37,11 @@ export default function OtherTab({ navigation, model, screenref }) {
                 setTagsEnum(tags);
             }
         })
-    }, []);
+    }, [global.settingsChanged]);
 
     const styles = addRecordStyles;
     return (
+    <LinearGradient colors={[backgroundColor, backgroundColor2]} style={{ flex: 1}}>
     <View style={styles.maincontainer}>
         <View>
             <Text>Tagy</Text>
@@ -65,6 +67,7 @@ export default function OtherTab({ navigation, model, screenref }) {
             <Text>Poznámky</Text>
             <TextInput 
                 placeholder="Text..."
+                placeholderTextColor={placeholderColor}
                 style={styles.multilineinput}
                 multiline={true}
                 numberOfLines={3}
@@ -72,5 +75,6 @@ export default function OtherTab({ navigation, model, screenref }) {
                 onChangeText={setNote}
             ></TextInput>
         </View>
-    </View>);
+    </View>
+    </LinearGradient>);
 } 
