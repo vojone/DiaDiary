@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, Button, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
 import React, { useState, useEffect } from 'react'
 
+import ChooseDateRange from '../components/ChooseDateRange';
+
 import { List } from 'react-native-paper';
 
 import { Record } from '../models/record';
@@ -20,18 +22,14 @@ function getDisplayDate(date) {
 }
 
 function getRecords(records, dateFrom, dateTo){
-    // return records;
+    if(records == null)
+        return [];
     let recordsFiltered = records.filter(i => (i["dateTime"] > dateFrom || dateFrom === null) && (i["dateTime"] < dateTo || dateTo === null))
     return recordsFiltered.sort((a,b) => b["dateTime"] - a["dateTime"]);
 }
 
 export default function HistoryScreen({ navigation }) {
-    // let records = [
-    //         {id: 0, carboHydrates: 100, insuline: 2, dateTime: new Date()},
-    //         {id: 1, carboHydrates: 200, insuline: 1, dateTime: new Date()},
-    //         {id: 2, carboHydrates: 120, insuline: 3, dateTime: new Date()},
-    //         {id: 3, carboHydrates: 50, insuline: 2, dateTime: new Date()},
-    // ];
+
     let [records, setRecords] = useState([]);
 
     //load records from storage
@@ -48,32 +46,6 @@ export default function HistoryScreen({ navigation }) {
     const [dateTo, setDateTo] = useState(null);
 
     const [isCollapsed, setIsCollapsed] = useState(true);
-
-    const [isFromDatePickerVisible, setFromDatePickerVisibility] = useState(false);
-    const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
-
-    const showFromDatePicker = () => {
-        setFromDatePickerVisibility(true);
-    };
-    const showToDatePicker = () => {
-        setToDatePickerVisibility(true);
-    };
-
-    const hideFromDatePicker = () => {
-        setFromDatePickerVisibility(false);
-    };
-    const hideToDatePicker = () => {
-        setToDatePickerVisibility(false);
-    };
-
-    const handleFromConfirm = (date) => {
-        setDateFrom(date);
-        hideFromDatePicker();
-    };
-    const handleToConfirm = (date) => {
-        setDateTo(date);
-        hideToDatePicker();
-    };
 
     const loadRecords = () => {
         
@@ -110,36 +82,7 @@ export default function HistoryScreen({ navigation }) {
     >
         <Text style={{textAlign: "left", width: "100%", padding: 20, fontSize: 30, fontWeight: "bold"}}>Historie záznamů</Text>
 
-        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
-            <Text>Datum od: {getDisplayDate(dateFrom)}</Text>
-            <View style={{flexDirection: "row"}}>
-                <Button title="Změnit" onPress={showFromDatePicker} />
-                <Button onPress={ () => {setDateFrom(null)}} title="zrušit"/>
-            </View>
-        </View>
-
-        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
-            <Text>Datum do: {getDisplayDate(dateTo)}</Text>
-            <View style={{flexDirection: "row"}}>
-                <Button title="Změnit" onPress={showToDatePicker} />
-                <Button onPress={ () => {setDateTo(null)}} title="zrušit"/>
-            </View>
-        </View>
-
-
-        <DateTimePickerModal
-            isVisible={isFromDatePickerVisible}
-            mode="date"
-            onConfirm={handleFromConfirm}
-            onCancel={hideFromDatePicker}
-        />
-
-        <DateTimePickerModal
-            isVisible={isToDatePickerVisible}
-            mode="date"
-            onConfirm={handleToConfirm}
-            onCancel={hideToDatePicker}
-        />
+        <ChooseDateRange onChange={(val) => {setDateFrom(val.dateFrom); setDateTo(val.dateTo);}} />
 
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 30, paddingRight: 30, paddingBottom: 10, paddingTop: 20}}>
             <Text style={{fontSize: 18, }}>Cukr</Text>

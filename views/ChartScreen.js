@@ -20,6 +20,8 @@ import { func } from "prop-types";
 // import { Dots, Line } from '@/screens/AreaChartScreen/chartAdds'
 
 import BottomSheet from '@gorhom/bottom-sheet';
+import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
+import ChooseDateRange from "../components/ChooseDateRange";
 
 function getDaysBack(date,n = 1){
     let d = new Date(date)
@@ -171,32 +173,6 @@ export default function ChartScreen({ navigation }) {
   const [dateFrom, setDateFrom] = useState(null);
   const [dateTo, setDateTo] = useState(null);
 
-  const [isFromDatePickerVisible, setFromDatePickerVisibility] = useState(false);
-  const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
-
-  const showFromDatePicker = () => {
-    setFromDatePickerVisibility(true);
-  };
-  const showToDatePicker = () => {
-      setToDatePickerVisibility(true);
-  };
-
-  const hideFromDatePicker = () => {
-      setFromDatePickerVisibility(false);
-  };
-  const hideToDatePicker = () => {
-      setToDatePickerVisibility(false);
-  };
-
-  const handleFromConfirm = (date) => {
-    setDateFrom(date);
-    hideFromDatePicker();
-  };
-  const handleToConfirm = (date) => {
-    setDateTo(date);
-    hideToDatePicker();
-  };
-
   let [data, setData] = useState([])
 
     const today = new Date();
@@ -313,26 +289,20 @@ export default function ChartScreen({ navigation }) {
     }}>
 
       <Text style={{ fontSize: 24, fontWeight: "bold", marginHorizontal: 20, marginBottom: 10 }}>Záznamy</Text>
-
-      <DateTimePickerModal
-          isVisible={isFromDatePickerVisible}
-          mode="date"
-          onConfirm={handleFromConfirm}
-          onCancel={hideFromDatePicker}
-      />
-
-      <DateTimePickerModal
-          isVisible={isToDatePickerVisible}
-          mode="date"
-          onConfirm={handleToConfirm}
-          onCancel={hideToDatePicker}
-      />
     
       <View style={{
         backgroundColor: "white",
         borderRadius: 30,
         padding: 20,
         marginHorizontal: 10,
+        shadowColor: "grey",
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 6.27,
+        elevation: 4,
       }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
         <Text 
@@ -399,10 +369,12 @@ export default function ChartScreen({ navigation }) {
         </View>
       </View>
 
-      <View style={{ justifyContent: "space-between", flexDirection: "row", alignItems: "center", marginHorizontal: 20, marginTop: 20 }}>
+      <TouchableWithoutFeedback 
+      style={{ justifyContent: "space-between", flexDirection: "row", alignItems: "center", marginHorizontal: 10, marginTop: 20 }}
+      onPress={() => navigation.navigate("Historie")}>
         <Text style={{ fontSize: 24, fontWeight: "bold", marginHorizontal: 10, marginBottom: 10 }}>Seznam záznamů</Text>
-        <MaterialCommunityIcons name="arrow-right" size={24} color="black" onPress={() => navigation.navigate("Historie")} />
-      </View>
+        <MaterialCommunityIcons name="arrow-right" size={24} color="black" style={{marginHorizontal: 10}}/>
+      </TouchableWithoutFeedback>
     </View>
 
     <BottomSheet
@@ -411,25 +383,12 @@ export default function ChartScreen({ navigation }) {
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
       enablePanDownToClose={true}
-    >
+      style={{
+      }}>
       <View style={styles.contentContainer}>
         <Text style={{marginBottom: 10}}>Nastavení grafu 🎉</Text>
 
-        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
-          <Text>Datum od: {getDisplayDate(dateFrom)}</Text>
-          <View style={{flexDirection: "row"}}>
-              <Button title="Změnit" onPress={showFromDatePicker} />
-              <Button onPress={ () => {setDateFrom(null)}} title="zrušit"/>
-          </View>
-        </View>
-
-        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
-          <Text>Datum do: {getDisplayDate(dateTo)}</Text>
-          <View style={{flexDirection: "row"}}>
-              <Button title="Změnit" onPress={showToDatePicker} />
-              <Button onPress={ () => {setDateTo(null)}} title="zrušit"/>
-          </View>
-        </View>
+        <ChooseDateRange onChange={(val) => {setDateFrom(val.dateFrom); setDateTo(val.dateTo);}} />
 
       </View>
     </BottomSheet>
