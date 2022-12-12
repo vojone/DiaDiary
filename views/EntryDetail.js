@@ -1,4 +1,7 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar, TextInput} from 'react-native';
+// EntryDetail.js
+// Autor: Tomáš Dvořák
+
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Dimensions, StatusBar, TextInput} from 'react-native';
 import React, { useState, useImperativeHandle, useRef, useEffect } from 'react';
 import InputSpinner from "react-native-input-spinner";
 
@@ -15,12 +18,16 @@ import { Unit } from '../models/unit';
 import { Food } from "../models/food";
 import { Tag } from "../models/tag";
 
+
+export default function EntryDetail({route, navigation}) {
+
   const {recordId} = route.params;
 
   const [recordDetail, setRecordDetail] = useState({});
+  const [recordDetailOld, setRecordDetailOld] = useState({});
 
   useEffect(() => {
-    Record.findById(recordId).then((record) => {setRecordDetail(record);});
+    Record.findById(recordId).then((record) => {setRecordDetail(record); setRecordDetailOld(record); setDateTime(record.dateTime)});
   }, []);
 
   // Function to update the record
@@ -35,7 +42,7 @@ import { Tag } from "../models/tag";
       ...recordDetail, bloodSugarU: value
     }))
   }
-  console.log(recordDetail);
+  
   function updatedInsuline(value) {
     setRecordDetail(recordDetail => ({
       ...recordDetail, insuline: value
@@ -78,15 +85,43 @@ import { Tag } from "../models/tag";
     }))
   }
 
+  const updateRecord = () => {
+    delete recordDetail._id;
+    console.log("Record Detail", recordDetail);
+    console.log("\n Record detail old", recordDetailOld, "\n");
+    Record.update({_id:recordId}, recordDetail).then((change) => { 
+
+      console.log(change);
+      // code for toast can be applied here
+      if(change == 0)
+        console.log("Record not updated");
+      else
+      console.log("Record updated");});
+  };
+
   // Stuff for the blood sugar
   const [bloodSugarU, setBloodSugarU] = useState([]);
   const [insulineT, setInsulineT] = useState([]);
 
   const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
   const [insulineTEnum, setInsulineTEnum] = useState([]);
+
+  // Stuff for the food section
+  const [carbo, setCarbo] = useState(recordDetail.carbo);
+  const [carboU, setCarboU] = useState([recordDetail.carboHydratesU]);
+  const [food, setFood] = useState([recordDetail.food]);
+
+  const [carboUEnum, setCarboUEnum] = useState([]);
+  const [foodEnum, setFoodEnum] = useState([]);
+
+  // Stuff for the tags section
+  const [tags, setTags] = useState(recordDetail.tags);
+  const [note, setNote] = useState(recordDetail.note);
+
+  const [tagsEnum, setTagsEnum] = useState([]);
+
   useEffect(() => {
     Unit.find('glyc', {}, true).then((glycemiaUnits) => {
-      
       if(glycemiaUnits == null) {
         setGlycemiaUEnum([]);
       }
@@ -106,90 +141,58 @@ import { Tag } from "../models/tag";
           setInsulineT(insulineTypes.find((i) => (i.label == recordDetail.insulineT.label)));
       }
     })
-  }, [recordDetail]);
-
-
-  //if(recordDetail.bloodSugarU != null)
-    //console.log(recordDetail.bloodSugarU.label);
-
-  // Stuff for the food section
-  const [carbo, setCarbo] = useState(recordDetail.carbo);
-  const [carboU, setCarboU] = useState([recordDetail.carboHydratesU]);
-  const [food, setFood] = useState([recordDetail.food]);
-
-  const [carboUEnum, setCarboUEnum] = useState([]);
-  const [foodEnum, setFoodEnum] = useState([]);
-
-  useEffect(() => {
-    // Get the carbo hydrates units
-    Unit.find('mass', {}, true).then((massUnits) => {
-        //console.log(massUnits);
-        if(massUnits == null) {
-            setCarboUEnum([]);
-        }
-        else {
-            setCarboUEnum(massUnits);
-            if(recordDetail.insulineT != null)
-              setCarboU(massUnits.find((u) => (u.label == recordDetail.carboU.label)));
-        }
-    })
-    // Get the food types
-    Food.find({}, true, {order: 1}).then((foodTypes) => {
-      if(foodTypes == null) {
-          setFoodEnum([]);
+     // Get the carbo hydrates units
+     Unit.find('mass', {}, true).then((massUnits) => {
+      //console.log(massUnits);
+      if(massUnits == null) {
+          setCarboUEnum([]);
       }
       else {
-          setFoodEnum(foodTypes);
+          setCarboUEnum(massUnits);
           if(recordDetail.insulineT != null)
-            setFood(foodTypes.find((t) => (t.label == recordDetail.food.label)));
+            setCarboU(massUnits.find((u) => (u.label == recordDetail.carboU.label)));
       }
   })
-}, [recordDetail]);
-
-  // Stuff for the tags section
-  const [tags, setTags] = useState(recordDetail.tags);
-  const [note, setNote] = useState(recordDetail.note);
-
-  const [tagsEnum, setTagsEnum] = useState([]);
-
-  useEffect(() => {
-      Tag.find({}, true).then((tags) => {
-          if(tags == null) {
-              setTagsEnum([]);
+  // Get the food types
+  Food.find({}, true, {order: 1}).then((foodTypes) => {
+    if(foodTypes == null) {
+        setFoodEnum([]);
+    }
+    else {
+        setFoodEnum(foodTypes);
+        if(recordDetail.insulineT != null)
+          setFood(foodTypes.find((t) => (t.label == recordDetail.food.label)));
+    }
+  })
+    Tag.find({}, true).then((tags) => {
+      if(tags == null) {
+          setTagsEnum([]);
+      }
+      else {
+          setTagsEnum(tags);
+          if(recordDetail.tags != null){
+            
+            setTags(recordDetail.tags)
           }
-          else {
-              setTagsEnum(tags);
-              if(recordDetail.tags != null){
-                
-                setTags(recordDetail.tags)
-              }
-          }
-      })
-  }, [recordDetail]);
+      }
+  })
+  
+  }, [recordDetailOld]);
+
+  console.log(recordDetail);
+  //if(recordDetail.bloodSugarU != null)
+    //console.log(recordDetail.bloodSugarU.label);
 
   //console.log(recordDetail);
 
   // Stuff for the date and time section
   const handlePress = () => setExpanded(!expanded);
-
-  const [dateTime, setDateTime] = useState(recordDetail.dateTime);
+  const [dateTime, setDateTime] = useState(new Date());
   const [isDateModified, setIsDateModified] = useState(false);
   const [isTimeModified, setIsTimeModified] = useState(false);
   const [isDateTimeSync, setDateTimeSync] = useState(true);
 
-  const dateSelectionConfirm = (date) => {
-    setDateTime(date);
-    setIsDateModified(true);
-    setDateTimeSync(false);
-};
-
-const timeSelectionConfirm = (time) => {
-    setDateTime(time);
-    setIsTimeModified(true);
-    setDateTimeSync(false);
-};
-
-const onDateTimeSelectionOpen = () => {
+  const onDateTimeSelectionOpen = () => {
     setDateTimeSync(false);
 }
 
@@ -198,6 +201,26 @@ const onDateTimeSelectionCancel = () => {
         syncDateTime(true);
     }
 }
+
+const dateSelectionConfirm = (date) => {
+    setDateTime(date);
+    setIsDateModified(true);
+    setDateTimeSync(false);
+
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, dateTime: date
+    }))
+};
+
+const timeSelectionConfirm = (time) => {
+    setDateTime(time);
+    setIsTimeModified(true);
+    setDateTimeSync(false);
+
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, dateTime: time
+    }))
+};
 
     const styles = StyleSheet.create({
         tabcontainer: {
@@ -216,8 +239,7 @@ const onDateTimeSelectionCancel = () => {
         },
 
         maincontainer: {
-            flex: 1,
-            minHeight: Dimensions.get('screen').height - bottomBarHeight - topBarHeight - headerHeight,
+            padding : 15,
         },
 
       timeinputcontainer: {
@@ -296,9 +318,10 @@ const onDateTimeSelectionCancel = () => {
 
     
     return (
-      <View style={styles.maincontainer}>
-        <SafeAreaView>
+      <SafeAreaView style={{margin: 5}}>
         <ScrollView>
+          <View style={styles.maincontainer}>
+        
         <Text style={styles.text_style.header}>Hladina cukru</Text>
 
         <Text style={styles.text_style.normal}>Hladina cukru</Text>
@@ -418,7 +441,7 @@ const onDateTimeSelectionCancel = () => {
             <Text style={styles.text_style.normal}>Tagy</Text>
             <MultiSelect
                 data={tagsEnum}
-                value={tags}
+                value={recordDetail.tags}
                 labelField="label"
                 valueField="_id"
                 onChange={updatedTags}
@@ -458,7 +481,7 @@ const onDateTimeSelectionCancel = () => {
         {recordDetail.dateTime &&
         <View style={styles.timeinputcontainer}>   
           <DateTimePickerWithText
-              value={recordDetail.dateTime}
+              value={dateTime}
               mode="date"
               label={`Datum`}
               onConfirm={dateSelectionConfirm}
@@ -469,7 +492,7 @@ const onDateTimeSelectionCancel = () => {
           </DateTimePickerWithText>
           
           <DateTimePickerWithText
-              value={recordDetail.dateTime}
+              value={dateTime}
               mode="time"
               label={`Čas`}
               onConfirm={timeSelectionConfirm}
@@ -477,13 +500,13 @@ const onDateTimeSelectionCancel = () => {
               onCancel={onDateTimeSelectionCancel}
               isModified={isTimeModified}
           >
-          </DateTimePickerWithText>  
+          </DateTimePickerWithText>
         </View>
         }
         
 
         <View style={styles.confirm_buttons_flex}>
-        <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" onPress={() => navigation.navigate('Home')}>
+        <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" onPress={updateRecord}>
           Uložit změny
         </Button>
 
@@ -491,9 +514,9 @@ const onDateTimeSelectionCancel = () => {
           Zrušit
         </Button>
         </View>
-        </ScrollView>
-        </SafeAreaView>
       </View>
+      </ScrollView>
+      </SafeAreaView>
     );
 }
     
