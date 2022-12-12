@@ -6,8 +6,8 @@ export default function ButtonSecondary(props) {
     return (
         <Button 
             icon={props.icon} 
-            mode="outlined" 
-            isVidi
+            mode={props.mode ? props.mode : "outlined"} 
+            labelStyle={{fontSize: props.fontSize}}
             onPress={props.onPress}
             loading={props.loading}
             disabled={props.disabled}

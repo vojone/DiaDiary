@@ -1,6 +1,6 @@
 import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
-import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from "../styles/common";
+import { addRecordStyles, activeColor, placeholderColor, primaryColor } from "../styles/common";
 import InputSpinner from "react-native-input-spinner";
 import { Dropdown } from "react-native-element-dropdown";
 import AppendDropdown from "../components/AppendDropdown";

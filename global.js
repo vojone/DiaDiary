@@ -5,7 +5,7 @@ import { User } from "./models/user";
 import { seedDemoUser, seedFood, seedTags, seedUnits } from "./seeder";
 import { getAS, storeAS } from './services/store';
 
-global.user = null;
+global.user = {};
 global.firstLaunch = false;
 global.settingsChanged = false;
 
@@ -29,10 +29,10 @@ export default function seedData(navigationRef, clearData, seedDemoData = false)
                         });
                     }
                     else {
-                        console.log(units);
-                        console.log(food);
-                        console.log(tag);
-                        navigationRef.current?.navigate('Settings');
+                        // console.log(units);
+                        // console.log(food);
+                        // console.log(tag);
+                        navigationRef.current?.navigate('InitialSettings');
                     }
             });
         }

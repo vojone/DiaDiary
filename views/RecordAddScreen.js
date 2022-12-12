@@ -5,13 +5,15 @@ import { useState, useRef, useEffect, useLayoutEffect, useReducer } from 'react'
 import BloodSugarTab from './BloodSugarTab';
 import FoodTab from './FoodTab';
 import OtherTab from './OtherTab';
-import { bottomBarHeight, headerHeight, primaryColor, successColor, topBarHeight, warningColor } from '../styles/common';
+import { backgroundColor, bottomBarHeight, headerHeight, primaryColor, successColor, topBarHeight, warningColor } from '../styles/common';
 import DateTimePickerWithText from '../components/DateTimePickerWithText';
 import ButtonSecondary from '../components/ButtonSecondary';
 import ButtonPrimary from '../components/ButtonPrimary';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { showToastMessage, showToastMessageDanger, showToastMessageSuccess, showToastMessageWarning } from '../components/ToastMessage';
 
+
+const debuggingMode = false;
 
 export default function RecordAddScreen({ navigation }) {
     //const [record, setRecord] = useState(Record.default());
@@ -268,8 +270,6 @@ export default function RecordAddScreen({ navigation }) {
             </View>
             <View style={styles.controlpanel}>
                 <ButtonSecondary title="Zahodit" onPress={onCancel}></ButtonSecondary>
-                <ButtonSecondary title="Záznamy" onPress={onDump}></ButtonSecondary>
-                <ButtonSecondary title="Vyčistit" onPress={onClear}></ButtonSecondary>
                 <ButtonPrimary 
                     icon="plus" 
                     title="Přidat záznam" 
@@ -280,6 +280,11 @@ export default function RecordAddScreen({ navigation }) {
                     textColor="white"
                 >
                 </ButtonPrimary>
+            </View>
+
+            <View style={styles.controlpanel}>
+                <ButtonSecondary title="Záznamy" onPress={onDump}></ButtonSecondary>
+                <ButtonSecondary title="Vyčistit" onPress={onClear}></ButtonSecondary>
             </View>
         </View>
         </KeyboardAwareScrollView>

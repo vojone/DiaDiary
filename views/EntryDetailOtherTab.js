@@ -1,6 +1,6 @@
 import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
-import { addRecordStyles, bottomTabBarActiveBgColor, primaryColor } from "../styles/common";
+import { addRecordStyles, activeColor, primaryColor } from "../styles/common";
 import { MultipleSelectList, SelectList } from "react-native-dropdown-select-list";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Dropdown, MultiSelect } from "react-native-element-dropdown";

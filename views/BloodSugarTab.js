@@ -1,10 +1,11 @@
 import { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor, primaryColor2, primaryColor2Pressed } from '../styles/common';
+import { addRecordStyles, backgroundColor, backgroundColor2, placeholderColor } from '../styles/common';
 import InputSpinner from 'react-native-input-spinner';
 import AppendDropdown from '../components/AppendDropdown';
 import { Unit } from '../models/unit';
 import NumericSpinner from '../components/NumericSpinner';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 export default function BloodSugarTab({ navigation, model, screenref }) {
@@ -52,16 +53,20 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         if(!unitArr) {
             return;
         }
-        else if(unitArr.length == 1) {
-            setInsulineT(unitArr[0]);
-            return;
-        }
 
+        let defGlycU = null;
         if(global.user != null && global.user.glycemiaUnit) {
-            setGlycemiaU(unitArr.find((u) => (u._id == global.user.glycemiaUnit._id)));
+            defGlycU = unitArr.find((u) => (u._id == global.user.glycemiaUnit._id));
         }
         else {
-            setGlycemiaU(unitArr.find((u) => (u.isReference)));
+            defGlycU = unitArr.find((u) => (u.isReference));
+        }
+
+        if(!defGlycU) {
+            setGlycemiaU(unitArr[0]);
+        }
+        else {
+            setGlycemiaU(defGlycU);
         }
     }
 
@@ -105,8 +110,8 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
 
     const styles = addRecordStyles;
     return (
+        <LinearGradient colors={[backgroundColor, backgroundColor2]} style={{ flex: 1}}>
         <View style={styles.maincontainer}>
-
             <View>
                 <Text>Hladina cukru</Text>
                 <NumericSpinner
@@ -145,5 +150,6 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     } // Appended element
                 ></NumericSpinner>
             </View>
-        </View>);
+        </View>
+        </LinearGradient>);
 }

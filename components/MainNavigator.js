@@ -1,12 +1,13 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StyleSheet } from 'react-native';
-import { bottomTabBarActiveBgColor, headerHeight, navTextSize, primaryColor, sideNavTextSize } from '../styles/common';
+import { StyleSheet, View } from 'react-native';
+import { activeColor, headerHeight, navTextSize, primaryColor, sideNavTextSize } from '../styles/common';
 import InitSettingsScreen from '../views/InitialSettings';
 import StackNavigator from './StackNavigator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ExportScreen from '../views/ExportScreen';
+import SettingsScreen from '../views/SettingsScreen';
 
 const SideMenu = createDrawerNavigator();
 
@@ -28,7 +29,7 @@ export default function MainDrawerNavigator({ navigation }) {
                     drawerLabelStyle: styles.navitemlabel,
                     drawerIcon: () => { return(<MaterialCommunityIcons name="pencil" size={sideNavTextSize}></MaterialCommunityIcons>); },
                     drawerLabel: 'Záznamy',
-                    drawerActiveBackgroundColor: bottomTabBarActiveBgColor,
+                    drawerActiveBackgroundColor: activeColor,
                     drawerActiveTintColor: primaryColor,
                 }}
             />
@@ -41,14 +42,13 @@ export default function MainDrawerNavigator({ navigation }) {
                     drawerLabelStyle: styles.navitemlabel,
                     drawerLabel: 'Export',
                     drawerIcon: () => { return(<MaterialCommunityIcons name="export" size={sideNavTextSize}></MaterialCommunityIcons>); },
-                    swipeEnabled: false,
-                    drawerActiveBackgroundColor: bottomTabBarActiveBgColor,
+                    drawerActiveBackgroundColor: activeColor,
                     drawerActiveTintColor: primaryColor,
                 }}
             />
             <SideMenu.Screen 
                 name='Settings' 
-                component={InitSettingsScreen}
+                component={SettingsScreen}
                 options={{
                     headerShown: false,
                     headerTitle: '',
@@ -56,8 +56,18 @@ export default function MainDrawerNavigator({ navigation }) {
                     drawerLabel: 'Nastavení',
                     drawerIcon: () => { return(<FontAwesome name="gear" size={sideNavTextSize}></FontAwesome>); },
                     swipeEnabled: false,
-                    drawerActiveBackgroundColor: bottomTabBarActiveBgColor,
+                    drawerActiveBackgroundColor: activeColor,
                     drawerActiveTintColor: primaryColor,
+                }}
+            />
+            <SideMenu.Screen 
+                name='InitialSettings' 
+                component={InitSettingsScreen}
+                options={{ 
+                    drawerItemStyle: {padding: 0, margin: 0, width: 0, height: 0},
+                    headerShown: false,
+                    drawerLabel: () => {return <View style={{height: 0}}></View>},
+                    swipeEnabled: false,
                 }}
             />
         </SideMenu.Navigator>

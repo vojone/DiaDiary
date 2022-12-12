@@ -5,20 +5,19 @@ import ButtonPrimary from '../components/ButtonPrimary';
 import ButtonSecondary from '../components/ButtonSecondary';
 import EditableList from '../components/EditableList';
 import InitSettingsDropdown from '../components/InitSettingsDropdown';
-import { showToastMessage, showToastMessageDanger, showToastMessageSuccess, ToastMessage } from '../components/ToastMessage';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { showToastMessageDanger, showToastMessageSuccess, ToastMessage } from '../components/ToastMessage';
 import { Unit } from '../models/unit';
 import { User } from '../models/user';
-import { dangerColor, primaryColor, primaryColor2, successColor } from '../styles/common';
+import { dangerColor, primaryColor, primaryColor2 } from '../styles/common';
 
-export default function InitSettingsScreen({ navigation }) {
-    const [user, setUser] = useState(new User());
+export default function SettingsScreen({ navigation }) {
+    const [user, setUser] = useState(global.user);
 
     const [massUnitsEnum, setMassUnitsEnum] = useState([]);
     const [glycUnitsEnum, setGlycUnitsEnum] = useState([]);
     const [insulineTypesEnum, setInsulineTypesEnum] = useState([]);
     const [newInsulineType, setNewInsulineType] = useState('');
-
-    const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
     const [saving, setSaving] = useState(false);
 
@@ -31,32 +30,12 @@ export default function InitSettingsScreen({ navigation }) {
             Unit.find('mass', {}, true).then((result) => {
                 if(result !== null) {
                     setMassUnitsEnum(result);
-    
-                    let initialMassUnit = result.filter(u => u.isReference);
-                    if(!initialMassUnit.length) {
-                        initialMassUnit = result[0];
-                    }
-                    else {
-                        initialMassUnit = initialMassUnit[0];
-                    }
-    
-                    setUser(user => ({...user, massUnit: initialMassUnit}));
                 }
             });
     
             Unit.find('glyc', {}, true).then((result) => {
                 if(result !== null) {
                     setGlycUnitsEnum(result);
-    
-                    let initialGlycUnit = result.filter(u => u.isReference);
-                    if(!initialGlycUnit.length) {
-                        initialGlycUnit = result[0];
-                    }
-                    else {
-                        initialGlycUnit = initialGlycUnit[0];
-                    }
-    
-                    setUser(user => ({...user, glycemiaUnit: initialGlycUnit}));
                 }
             });
     
@@ -67,14 +46,10 @@ export default function InitSettingsScreen({ navigation }) {
                     });
     
                     setInsulineTypesEnum(result);
-
-                    setUser(user => ({...user, insulineType: result[0]}));
                 }
             });
     
             flatList.current.scrollToIndex({animated: false, index: 0});
-    
-            setCurrentTabIndex(0);
         });
 
         return unsubscribe;
@@ -104,30 +79,14 @@ export default function InitSettingsScreen({ navigation }) {
         setInsulineTypesEnum(arr => arr.filter(e => e.key !== key));
     }
 
-    const nextSlide = () => {
-        if(currentTabIndex >= tabs.length - 1) {
-            return;
-        }
-
-        flatList.current.scrollToIndex({animated: true, index: currentTabIndex + 1});
-
-        setCurrentTabIndex(currentTabIndex + 1);
-    }
-
-    const prevSlide = () => {
-        if(currentTabIndex <= 0) {
-            return;
-        }
-
-        flatList.current.scrollToIndex({animated: true, index: currentTabIndex - 1});
-
-        setCurrentTabIndex(currentTabIndex - 1);
+    const goBack = () => {
+        navigation.navigate('Records');
     }
 
     const savingDone = (success = true) => {
         global.settingsChanged = !global.settingsChanged;
 
-        if(success) {
+        if(success == true) {
             showToastMessageSuccess('Nastavení bylo úspěšně uloženo');
         }
         else {
@@ -140,7 +99,17 @@ export default function InitSettingsScreen({ navigation }) {
     
     const saveSettings = () => {
         setSaving(true);
-        let insulineProm = Unit.remove({ unitType: 'insuline'}, true).then(() => { return Unit.addUnits(insulineTypesEnum)});
+        let insulineProm = Unit.remove({ unitType: 'insuline'}, true).then(
+            (removed) => { 
+                let toBeInserted = insulineTypesEnum.map(e => {return e; });
+
+                return Unit.addUnits(toBeInserted)
+            },
+            (error) => {
+                console.error(error);
+                savingDone(false);
+            }
+        );
 
         insulineProm.then(
             insuline => {
@@ -151,9 +120,10 @@ export default function InitSettingsScreen({ navigation }) {
                     newUserSettings.newInsulineType;
                 }
 
-                newUserSettings.save().then(
+                User.update({_id: newUserSettings._id}, newUserSettings).then(
                     (newUser) => {
-                        global.user = newUser;
+                        global.user = newUserSettings;
+
                         savingDone();
                 },
                 error => {
@@ -175,19 +145,25 @@ export default function InitSettingsScreen({ navigation }) {
         },
 
         heading: {
-            fontSize: 36,
+            fontSize: 24,
+            color: 'white',
+            fontFamily: 'sans-serif-light',
+        },
+
+        mainheading: {
+            fontSize: 28,
             color: 'white',
             fontFamily: 'sans-serif-light',
         },
 
         form: {
-            marginTop: 30,
+            marginTop: 20,
             flex: 1,
             justifyContent: 'flex-start',
         },
 
         formitem: {
-            marginBottom: 50,
+            marginBottom: 30,
         },
 
         regular: {
@@ -214,9 +190,11 @@ export default function InitSettingsScreen({ navigation }) {
 
         intro: {
             borderBottomColor: 'white',
-            paddingBottom: 20,
+            padding: 20,
             marginBottom: 20,
             borderBottomWidth: 1,
+            display: 'flex',
+            flexDirection: 'row',
         },
 
         controlpanel : {
@@ -226,22 +204,18 @@ export default function InitSettingsScreen({ navigation }) {
             justifyContent: 'space-between',
         },
 
-        controlpanelleftmost: {
-            flexDirection: 'row',
-            padding: 20,
+        topcontrolpanel : {
+            paddingHorizontal: 20,
 
-            justifyContent: 'flex-end',
-        }
+            flexDirection: 'row',
+
+            justifyContent: 'space-between',
+        },
     });
 
     const unitForm = (item) => {
         return (
             <View  style={{ flex: 1 }}>
-                <View style={styles.intro}>
-                    <Text style={styles.heading}>Ahoj!</Text>
-                    <Text style={styles.regular}>Jsem tvůj diabetický deník DiaDiary a budu ti pomáhat s monitorováním tvého zdravotního stavu.</Text>
-                    <Text style={styles.regular}>Abych ti práci se mnou maximálně zpříjemnil, nastav si, prosím, některé údaje...</Text>
-                </View>
                 <View style={{ flex: 1 }}>
                     <Text style={styles.heading}>Jednotky</Text>
                     <View style={styles.form}>
@@ -286,7 +260,7 @@ export default function InitSettingsScreen({ navigation }) {
                             onAdd={insulineTypeAdded}
                             onRemove={insulineRemoved}
                             placeholderColor="rgba(255, 255, 255, 0.5)"
-                            height={Dimensions.get('window').height*0.32}
+                            height={Dimensions.get('window').height*0.25}
                             labelField="label"
                             textColor="white"
                             textListColor={primaryColor}
@@ -311,7 +285,7 @@ export default function InitSettingsScreen({ navigation }) {
     }
 
 
-    const tagsForm = (item) => {
+    const inputForm = (item) => {
         return (
             <View style={{flex: 1}}>
                 <View>
@@ -325,10 +299,58 @@ export default function InitSettingsScreen({ navigation }) {
             </View>);
     }
 
+    const tagsForm = (item) => {
+        return (
+            <View style={{flex: 1}}>
+                <View>
+                    <Text style={styles.heading}>Značky</Text>
+                </View>
+                <View style={styles.form}>
+                    <View>
+                        
+                    </View>
+                </View>
+            </View>);
+    }
+
+
+    const dangerForm = (item) => {
+        return (
+            <View style={{flex: 1}}>
+                <View>
+                    <Text style={styles.heading}><FontAwesome name="exclamation-triangle" size={24}></FontAwesome>  Nebezpečná zóna</Text>
+                </View>
+                <View style={styles.form}>
+                    <View>
+                        <View style={styles.formitem}>
+                        <ButtonPrimary
+                            fillColor={dangerColor}
+                            textColor='white'
+                            title='Vymazat záznamy'
+                            onPress={() => {}}
+                        >
+                        </ButtonPrimary>
+                        </View>
+                        <View style={styles.formitem}>
+                        <ButtonPrimary
+                            fillColor={dangerColor}
+                            textColor='white'
+                            title='Resetovat aplikaci'
+                            onPress={() => {}}
+                        >
+                        </ButtonPrimary>
+                        </View>
+                    </View>
+                </View>
+            </View>);
+    }
+
     const tabs = [
         {num: 0, component: unitForm},
         {num: 1, component: insulineForm},
-        {num: 2, component: tagsForm}
+        {num: 2, component: inputForm},
+        {num: 3, component: tagsForm},
+        {num: 4, component: dangerForm}
     ]
 
     return (
@@ -336,13 +358,32 @@ export default function InitSettingsScreen({ navigation }) {
         <SafeAreaView
             style={styles.container}
         >
+            <View style={styles.topcontrolpanel}>
+                <ButtonSecondary 
+                    fontSize={12}
+                    borderColor="white"
+                    icon="arrow-left"
+                    onPress={goBack} title="Zpět"
+                >
+                </ButtonSecondary>
+            </View>
+            <View style={styles.intro}>
+                <Text style={styles.mainheading}><FontAwesome name="gear" size={24}></FontAwesome>  Nastavení</Text>
+            </View>
             <FlatList
                 ref={flatList}
                 horizontal={true}
-                scrollEnabled={false}
+                scrollEnabled={true}
+                persistentScrollbar={true}
+                disableIntervalMomentum={true}
                 snapToAlignment="start"
                 data={tabs}
-                pagingEnabled={true}
+                snapToOffsets={[
+                    0, 
+                    Dimensions.get('window').width + 100, 
+                    (Dimensions.get('window').width + 100)*2,
+                    (Dimensions.get('window').width + 100)*3
+                ]}
                 keyExtractor={(item) => item.num}
                 ItemSeparatorComponent={() => {
                     return (
@@ -360,29 +401,21 @@ export default function InitSettingsScreen({ navigation }) {
             >
             
             </FlatList>
-            <View style={currentTabIndex > 0 ? styles.controlpanel : styles.controlpanelleftmost}>
-                {currentTabIndex > 0 && <ButtonSecondary 
+            <View style={styles.controlpanel}>
+                <ButtonSecondary 
                     borderColor="white"
-                    icon="arrow-left"
-                    onPress={prevSlide} title="Zpět"
+                    icon="close"
+                    onPress={goBack} title="Zrušit"
                 >
                 </ButtonSecondary>
-                }
-                {currentTabIndex + 1 < tabs.length && <ButtonSecondary 
-                    borderColor="white"
-                    contentStyle={{ flexDirection: "row-reverse" }}
-                    icon="arrow-right"
-                    onPress={nextSlide} title="Další"
-                >
-                </ButtonSecondary>}
-                {currentTabIndex + 1 == tabs.length && <ButtonPrimary 
+                <ButtonPrimary 
                     loading={saving}
                     disabled={saving}
                     fillColor="white"
                     icon="check"
-                    onPress={saveSettings} title="Hotovo"
+                    onPress={saveSettings} title="Uložit"
                 >
-                </ButtonPrimary>}
+                </ButtonPrimary>
             </View>
         </SafeAreaView>
         </LinearGradient>
