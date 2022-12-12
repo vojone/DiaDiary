@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Button, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
-import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, View, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 
 import ChooseDateRange from '../components/ChooseDateRange';
 
@@ -8,7 +8,9 @@ import { List } from 'react-native-paper';
 import { Record } from '../models/record';
 import HistoryItem from '../components/HistoryItem';
 
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import BottomSheet from '@gorhom/bottom-sheet';
 
 import Accordion from 'react-native-collapsible/Accordion';
 import { getRelativeCoords } from 'react-native-reanimated';
@@ -70,8 +72,26 @@ export default function HistoryScreen({ navigation }) {
         console.log("useEffect");
     }, []);
 
+    // ref
+    const bottomSheetRef = useRef(null);
+
+    // variables
+    const snapPoints = useMemo(() => ['30%', '35%'], []);
+
+    // callbacks
+    const handleSheetChanges = useCallback((index) => {}, []);
+
+    function optionsClick(){
+        bottomSheetRef.current.expand();
+    }
+
+    useEffect(() => {
+        bottomSheetRef.current.close();
+    }, []);
+
     return (
-    <ScrollView style={{flex: 1}}
+    <View style={{flex: 1, height: "100%"}}>
+    <ScrollView style={{flex: 1, height: "100%"}}
     contentContainerStyle={styles.scrollView}
     refreshControl={
         <RefreshControl
@@ -80,9 +100,10 @@ export default function HistoryScreen({ navigation }) {
         />
     }
     >
-        <Text style={{textAlign: "left", width: "100%", padding: 20, fontSize: 30, fontWeight: "bold"}}>Historie záznamů</Text>
-
-        <ChooseDateRange onChange={(val) => {setDateFrom(val.dateFrom); setDateTo(val.dateTo);}} />
+        <View style={{justifyContent: "space-between", flexDirection: "row", alignItems: "center", width: "100%", padding: 20}}>
+            <Text style={{textAlign: "left", fontSize: 30, fontWeight: "bold"}}>Historie záznamů</Text>
+            <MaterialCommunityIcons name="dots-vertical" size={24} color="black" onPress={() => {optionsClick()} } />
+        </View>
 
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 30, paddingRight: 30, paddingBottom: 10, paddingTop: 20}}>
             <Text style={{fontSize: 18, }}>Cukr</Text>
@@ -106,5 +127,22 @@ export default function HistoryScreen({ navigation }) {
             } />
         </View>
     </ScrollView>
+
+    <BottomSheet
+        ref={bottomSheetRef}
+        index={1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        enablePanDownToClose={true}
+        style={{
+            position: "absolute",
+        }}>
+        <View style={{paddingHorizontal: 24}}>
+            <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>Filtrování a řazení 🎉</Text>
+
+            <ChooseDateRange onChange={(val) => {setDateFrom(val.dateFrom); setDateTo(val.dateTo);}} />
+        </View>
+        </BottomSheet>
+    </View>
     );
 }

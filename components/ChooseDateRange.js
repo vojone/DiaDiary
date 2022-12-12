@@ -1,7 +1,8 @@
 import { View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useState } from "react";
-import { Button, Text } from "react-native";
+import {  Text } from "react-native";
+import { Button } from 'react-native-paper';
 
 function getDisplayDate(date) {
     if (date == null) {
@@ -76,19 +77,19 @@ export default function ChooseDateRange(props) {
             onCancel={hideToDatePicker}
         />
 
-        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
+        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingBottom: 10}}>
             <Text>Datum od: {getDisplayDate(dateFrom)}</Text>
             <View style={{flexDirection: "row"}}>
-                <Button title="Změnit" onPress={showFromDatePicker} />
-                <Button onPress={ () => {handleFromConfirm(null)}} title="zrušit"/>
+                <Button onPress={showFromDatePicker} mode="contained">Změnit</Button>
+                <Button onPress={ () => {handleFromConfirm(null)}}>Zrušit</Button>
             </View>
         </View>
 
-        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
+        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingBottom: 10}}>
             <Text>Datum do: {getDisplayDate(dateTo)}</Text>
             <View style={{flexDirection: "row"}}>
-                <Button title="Změnit" onPress={showToDatePicker} />
-                <Button onPress={ () => {handleToConfirm(null)}} title="zrušit"/>
+                <Button onPress={showToDatePicker} mode="contained">Změnit</Button>
+                <Button onPress={ () => {handleToConfirm(null)}}>Zrušit</Button>
             </View>
         </View>
     </View>

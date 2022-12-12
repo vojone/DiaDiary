@@ -224,6 +224,19 @@ export default function ChartScreen({ navigation }) {
     return labels;
   }
 
+  function generateEmoji(){
+    if( data== null || data.length == 0)
+      return "😀";
+    let emoji = "😀";
+    let glucose = data[data.length - 1]["bloodSugar"];
+    if(glucose < 3.9){
+      emoji = "😔";
+    } else if(glucose > 5.5){
+      emoji = "😡";
+    }
+    return emoji;
+  }
+
   console.log("data", data[0]);
 
   //open the bottom sheet
@@ -257,6 +270,7 @@ export default function ChartScreen({ navigation }) {
     contentContainer: {
       flex: 1,
       alignItems: 'center',
+      paddingHorizontal: 24,
     },
   });
  
@@ -271,11 +285,19 @@ export default function ChartScreen({ navigation }) {
         fontWeight: "normal",
         marginTop: 30,
         marginHorizontal: 20,
-      }}>Poslední záznam hladiny cukru v krvi: { lastUpdate && lastUpdate["bloodSugarU"] ? lastUpdate["bloodSugar"]+" "+lastUpdate["bloodSugarU"]["label"] : "neznámá" }</Text>
+        fontWeight: "300",
+      }}>Poslední záznam hladiny cukru v krvi: &nbsp;
+      <Text style={{ fontSize: 30, fontWeight: "bold", color: "white", marginHorizontal: 20 }}>
+       { lastUpdate && lastUpdate["bloodSugarU"] ? lastUpdate["bloodSugar"] : "neznámá" } &nbsp;
+      </Text>
+      { lastUpdate && lastUpdate["bloodSugarU"] ? lastUpdate["bloodSugarU"]["label"] : "" }
+      &nbsp; {generateEmoji()}
+      </Text>
+      
       <Text style={{
         color: "white",
         fontSize: 20,
-        fontWeight: "normal",
+        fontWeight: "300",
         marginTop: 10,
         marginHorizontal: 20,
       }}>Aktualizace: { lastUpdate ? getDisplayDate(lastUpdate["dateTime"]) : "neznámo" }</Text>
@@ -386,7 +408,7 @@ export default function ChartScreen({ navigation }) {
       style={{
       }}>
       <View style={styles.contentContainer}>
-        <Text style={{marginBottom: 10}}>Nastavení grafu 🎉</Text>
+        <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>Nastavení grafu 🎉</Text>
 
         <ChooseDateRange onChange={(val) => {setDateFrom(val.dateFrom); setDateTo(val.dateTo);}} />
 
