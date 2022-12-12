@@ -10,7 +10,12 @@ export default function ButtonPrimary(props) {
             onPress={props.onPress}
             loading={props.loading}
             disabled={props.disabled}
-            style={StyleSheet.create({borderColor: primaryColor})}
+            textColor={props.textColor ? props.textColor : primaryColor}
+            style={StyleSheet.create({
+                borderColor: props.borderColor ? props.borderColor : primaryColor,
+                backgroundColor: props.fillColor
+            })}
+            contentStyle={props.contentStyle}
             >
             {props.title}
         </Button>

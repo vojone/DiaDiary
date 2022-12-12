@@ -22,7 +22,7 @@ export class User extends Model {
     }
 
     static async update(query, update) {
-        return super.update(User, query, update);
+        return super.updateModel(User, query, update);
     }
     
     constructor({
@@ -30,7 +30,8 @@ export class User extends Model {
         massUnit = null,
         insulineType = null,
         glycemiaUnit = null,
-        name = null} = {}) {
+        name = null,
+        inputType = 0} = {}) {
 
         super();   
 
@@ -39,6 +40,7 @@ export class User extends Model {
         this.insulineType = insulineType;
         this.glycemiaUnit = glycemiaUnit;
         this.name = name;
+        this.inputType = inputType;
     }
 
     obj() {
@@ -48,6 +50,7 @@ export class User extends Model {
             'insulineType' : this.insulineType,
             'glycemiaUnit' : this.glycemiaUnit,
             'name' : this.name,
+            'inputType' : this.inputType,
         };
     }
 }

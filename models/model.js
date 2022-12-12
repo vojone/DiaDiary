@@ -1,4 +1,4 @@
-import { store, get, remove, removeAll } from "../services/database";
+import { store, get, remove, update, removeAll } from "../services/database";
 
 export default class Model {
 
@@ -14,8 +14,7 @@ export default class Model {
                     });
                 }
                 else {
-                    let rec = new targetCls(result[0]);
-                    return rec;
+                    return new targetCls(result[0]);
                 }
             }
         });
@@ -40,8 +39,8 @@ export default class Model {
         });
     }
 
-    static async update(targetCls, query, update) {
-        return this.update(targetCls.databaseType, query, update).then(result => {
+    static async updateModel(targetCls, query, upd) {
+        return update(targetCls.databaseType, query, upd).then(result => {
             return result;
         });
     }

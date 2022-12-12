@@ -1,6 +1,6 @@
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
-import { bottomTabBarActiveBgColor, primaryColor } from '../styles/common';
+import { activeColor, primaryColor } from '../styles/common';
 import { View, Text } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useEffect, useState } from 'react';
@@ -46,7 +46,7 @@ export default function AppendDropdown(props) {
         // <ModalDropdown
         //     textStyle={{fontSize: 16}} 
         //     dropdownTextStyle={{fontSize: 20, padding: 20, textAlign: 'center'}}
-        //     dropdownTextHighlightStyle={{backgroundColor: bottomTabBarActiveBgColor}}
+        //     dropdownTextHighlightStyle={{backgroundColor: activeColor}}
         //     dropdownStyle={{marginTop: -20, minWidth: 50}}
         //     options={props.options} 
         //     style={{padding: 10}}

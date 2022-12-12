@@ -1,220 +1,204 @@
-import { StyleSheet, Text, View, TextInput, FlatList } from 'react-native';
-import React, { useState, useImperativeHandle, useRef, useEffect } from 'react';
-import InputSpinner from "react-native-input-spinner";
-
-import { Button } from 'react-native-paper';
-import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from '../styles/common';
-import DateTimePicker from 'react-native-modal-datetime-picker';
-import ModalDropdown from 'react-native-modal-dropdown';
-import DateTimePickerWithText from '../components/DateTimePickerWithText';
-import AppendDropdown from '../components/AppendDropdown';
-
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StyleSheet, View, Vibration, Keyboard, Dimensions} from 'react-native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Record } from '../models/record';
-import { Unit } from '../models/unit';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import EntryDetailBSTab from './EntryDetailBSTab';
+import EntryDetailFTab from './EntryDetailFTab';
+import EntryDetailOtherTab from './EntryDetailOtherTab';
+import { bottomBarHeight, headerHeight, primaryColor, successColor, topBarHeight, warningColor } from '../styles/common';
+import DateTimePickerWithText from '../components/DateTimePickerWithText';
+import ButtonSecondary from '../components/ButtonSecondary';
+import ButtonPrimary from '../components/ButtonPrimary';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { showToastMessage } from '../components/ToastMessage';
 
-export default function EntryDetail({ route, navigation}) {
+
+export default function EntryDetail({ route, navigation }) {
+
   const {recordId} = route.params;
 
   const [recordDetail, setRecordDetail] = useState({});
-  const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
 
   useEffect(() => {
-    Record.findById(recordId).then((record) => {console.log(record); setRecordDetail(record);});
+    Record.findById(recordId).then((record) => {setRecordDetail(record);});
   }, []);
 
-  
-  function updatedBloodSugar(value) {
-    setRecordDetail(rec => ({
-      ...rec, bloodSugar: value
-    }));
-  }
+    //const [record, setRecord] = useState(Record.default());
+    
+    const bloodSugarTab = useRef();
+    const foodTab = useRef();
+    const otherTab = useRef();
 
-  function updatedBloodSugarU(value) {
-    setRecordDetail({
-      ...recordDetail,
-      bloodSugarU: value.target.value
-    });
-  }
+    const [dateTime, setDateTime] = useState(recordDetail.dateTime);
+    const [isDateModified, setIsDateModified] = useState(false);
+    const [isTimeModified, setIsTimeModified] = useState(false);
+    const [isDateTimeSync, setDateTimeSync] = useState(true);
 
-  function updatedInsuline(value) {
-    setRecordDetail({
-      ...recordDetail,
-      insuline: value.target.value
-    });
-  }
+    
+    const syncDateTime = (setSync = false) => {
+        if(setSync) {
+            setDateTimeSync(true);
+        }
 
-  function updatedInsulineT(value) {
-    setRecordDetail({
-      ...recordDetail,
-      insulineU: value.target.value
-    });
-  }
+        setDateTime(new Date());
+    }
 
-  useEffect(() => {
-    Unit.find('glyc', {}, true).then((glycemiaUnits) => {
-      if(glycemiaUnits == null) {
-        setGlycemiaUEnum([]);
-      }
-      else {
-        setGlycemiaUEnum(glycemiaUnits);
-      }
-    })
-  }, []);
+    const onDateTimeSelectionOpen = () => {
+        setDateTimeSync(false);
+    }
 
-  const [insulineTEnum, setInsulineTEnum] = useState([]);
+    const onDateTimeSelectionCancel = () => {
+        if(isDateModified != true && isTimeModified != true) {
+            syncDateTime(true);
+        }
+    }
 
-  useEffect(() => {
-    Unit.find('insuline', {}, true).then(insulineTypes => {
-      if(insulineTypes == null) {
-        setInsulineTEnum([]);
-      }
-      else {
-        setInsulineTEnum(insulineTypes);
-      }
-    })
-  }, []);
+    const dateSelectionConfirm = (date) => {
+        setDateTime(date);
+        setIsDateModified(true);
+        setDateTimeSync(false);
+    };
 
+    const timeSelectionConfirm = (time) => {
+        setDateTime(time);
+        setIsTimeModified(true);
+        setDateTimeSync(false);
+    };
 
-  const [expanded, setExpanded] = React.useState(true);
+    const Tab = createMaterialTopTabNavigator();
 
-  const handlePress = () => setExpanded(!expanded);
-
-  const [dateTime, setDateTime] = useState(new Date());
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-
-  const timeSelectionConfirm = (time) => {
-      hideTimePicker();
-
-      setDateTime(time);
-  };
+    //console.log(recordDetail);
 
     const styles = StyleSheet.create({
-      list_flex: {
-        flexDirection: 'row',
-        alignContent: 'center',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-      },
-
-      timeinputcontainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 20,
-      },
-
-      text_style: {
-        header: {
-          fontSize: 20,
-          fontWeight: 'bold',
+        tabcontainer: {
+            flex: 1,
         },
-        normal: {
-          marginTop: 20,
-          marginBottom: 5,
-          fontSize: 16,
-        }
-      },
 
-      confirm_buttons_flex: {
-        flexDirection: 'row',
-        alignContent: 'center',
-        marginTop: 20,
-        justifyContent: 'space-between',
-        
-        save_button: {
-          minWidth: 150,
+        controlpanel: {
+            height: 80,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+
+            paddingLeft: 20,
+            paddingRight: 20,
         },
-      }
+
+        maincontainer: {
+            flex: 1,
+            minHeight: Dimensions.get('screen').height - bottomBarHeight - topBarHeight - headerHeight,
+        },
+
+        timeinputcontainer: {
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: 20,
+        },
+    
+        rightaligned: {
+            textAlign: 'right',
+        },
     });
 
+    
     return (
-      <View style={{ margin: 20}}>
-        <Text style={styles.text_style.header}>Detail záznamu</Text>
-
-        <Text style={styles.text_style.normal}>Hladina cukru</Text>
-        <View style={styles.list_flex}>
-
-        <InputSpinner 
-            rounded= {false}
-            showBorder={true}
-            precision={1}
-            placeholderTextColor={placeholderColor}
-            placeholder="N"
-            type="real"
-            emptied={true}
-            min={0}
-            step={0.1}
-            max={100}
-            color={primaryColor}
-            value={recordDetail.bloodSugar}
-            onChange={updatedBloodSugar}
-            fontSize={ 28 }
-            append={
-              <AppendDropdown
-                data={glycemiaUEnum}
-                value={recordDetail.bloodSugarU}
-                onChange={updatedBloodSugarU}
-              ></AppendDropdown>
-            } // Appended element
-          />
-        </View>
-        
-        <Text style={styles.text_style.normal}>Inzulín (jednotky)</Text>
-        <View style={styles.list_flex}>
-          
-          <InputSpinner 
-            rounded= {false}
-            showBorder={true}
-            placeholder="N"
-            placeholderTextColor={placeholderColor}
-            precision={1}
-            type="real"
-            emptied={true}
-            min={0}
-            step={1}
-            color={primaryColor}
-            value={recordDetail.insuline}
-            onChange={updatedInsuline}
-            fontSize={ 28 }
-            append={
-            <AppendDropdown
-              data={insulineTEnum}
-              value={recordDetail.insulineT}
-              onChange={updatedInsulineT}
-            ></AppendDropdown>
+        <KeyboardAwareScrollView>
+        <View style={styles.maincontainer}>
+            {
+                recordDetail.bloodSugar &&
+            <View style={styles.tabcontainer}>            
+                <Tab.Navigator>
+                    <Tab.Screen
+                        name="glycemia"
+                        options={{
+                            tabBarLabel: 'Hladina cukru',
+                            tabBarLabelStyle: {
+                                textTransform: 'capitalize',
+                            },
+                            tabBarIndicatorStyle: StyleSheet.create({
+                                borderTopColor: primaryColor,
+                                borderTopWidth: 3,
+                            }),
+                            tabBarStyle: {
+                                height: topBarHeight,
+                            }
+                        }}
+                    >
+                        {props => <EntryDetailBSTab {...props} model={recordDetail} screenref={bloodSugarTab}></EntryDetailBSTab>}
+                    </Tab.Screen>
+                    <Tab.Screen
+                        name="food"
+                        options={{
+                            tabBarLabel: 'Jídlo',
+                            tabBarLabelStyle: {
+                                textTransform: 'capitalize',
+                            },
+                            tabBarIndicatorStyle: StyleSheet.create({
+                                borderTopColor: primaryColor,
+                                borderTopWidth: 3,
+                            }),
+                            tabBarStyle: {
+                                height: topBarHeight,
+                            }
+                        }}
+                    >
+                        {props => <EntryDetailFTab {...props} model={recordDetail} screenref={foodTab}></EntryDetailFTab>}
+                    </Tab.Screen>
+                    <Tab.Screen
+                        name="other"
+                        options={{
+                            tabBarLabel: 'Ostatní',
+                            tabBarLabelStyle: {
+                                textTransform: 'capitalize',
+                            },
+                            tabBarIndicatorStyle: StyleSheet.create({
+                                borderTopColor: primaryColor,
+                                borderTopWidth: 3,
+                            }),
+                            tabBarStyle: {
+                                height: topBarHeight,
+                            }
+                        }}
+                    >
+                        {props => <EntryDetailOtherTab {...props} model={recordDetail} screenref={otherTab}></EntryDetailOtherTab>}
+                    </Tab.Screen>
+                </Tab.Navigator>
+            </View>
             }
-          />
+            {
+                recordDetail.dateTime &&
+            <View style={styles.timeinputcontainer}>
+                <DateTimePickerWithText
+                    value={recordDetail.dateTime}
+                    mode="date"
+                    label={`Datum`}
+                    onConfirm={dateSelectionConfirm}
+                    onOpen={onDateTimeSelectionOpen}
+                    onCancel={onDateTimeSelectionCancel}
+                    isModified={isDateModified}
+                >
+                </DateTimePickerWithText>
+                <DateTimePickerWithText
+                    value={recordDetail.dateTime}
+                    mode="time"
+                    label={`Čas`}
+                    onConfirm={timeSelectionConfirm}
+                    onOpen={onDateTimeSelectionOpen}
+                    onCancel={onDateTimeSelectionCancel}
+                    isModified={isTimeModified}
+                >
+                </DateTimePickerWithText>
+            </View>
+            }
+            <View style={styles.controlpanel}>
+                
+                <ButtonPrimary icon="check" title="Uložit změny"  ></ButtonPrimary>
+                <ButtonPrimary title="Zrušit změny" icon="close" mode="contained" onPress={() => navigation.navigate('History')}></ButtonPrimary>
+            </View>
         </View>
-
-        <View style={styles.timeinputcontainer}>
-          <DateTimePickerWithText
-            value={dateTime}
-            mode="date"
-            label="Datum"
-            onConfirm={timeSelectionConfirm}
-          >
-          </DateTimePickerWithText>
-          <DateTimePickerWithText
-            value={dateTime}
-            mode="time"
-            label="Čas"
-            onConfirm={timeSelectionConfirm}
-          >
-          </DateTimePickerWithText>
-        </View>
-
-        <View style={styles.confirm_buttons_flex}>
-        <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" onPress={() => navigation.navigate('Home')}>
-          Save
-        </Button>
-
-        <Button icon="close" mode="contained" onPress={() => navigation.navigate('Home')}>
-          Back
-        </Button>
-        </View>
-
-      </View>
+        </KeyboardAwareScrollView>
     );
 }
+    

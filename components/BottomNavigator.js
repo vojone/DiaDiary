@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HistoryScreen from '../views/HistoryScreen';
 
 import { StyleSheet } from 'react-native';
-import { bottomBarHeight, bottomTabBarActiveBgColor, navTextSize, pressUnderlayColor, primaryColor } from '../styles/common';
+import { bottomBarHeight, activeColor, navTextSize, pressUnderlayColor, primaryColor, bottomTabBarActiveColor } from '../styles/common';
 import RecordAddScreen from '../views/RecordAddScreen';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ChartScreen from '../views/ChartScreen';
@@ -37,7 +37,7 @@ export default function BottomNavigator({ navigation }) {
                         height: bottomBarHeight,
                     },
                     tabBarActiveTintColor: primaryColor,
-                    tabBarActiveBackgroundColor: bottomTabBarActiveBgColor,
+                    tabBarActiveBackgroundColor: bottomTabBarActiveColor,
                 }}
             />
             <Tab.Screen 
@@ -56,7 +56,7 @@ export default function BottomNavigator({ navigation }) {
                         height: bottomBarHeight,
                     },
                     tabBarActiveTintColor: primaryColor,
-                    tabBarActiveBackgroundColor: bottomTabBarActiveBgColor,
+                    tabBarActiveBackgroundColor: bottomTabBarActiveColor,
                 }} 
             />
             <Tab.Screen 
@@ -75,7 +75,7 @@ export default function BottomNavigator({ navigation }) {
                         height: bottomBarHeight,
                     },
                     tabBarActiveTintColor: primaryColor,
-                    tabBarActiveBackgroundColor: bottomTabBarActiveBgColor,
+                    tabBarActiveBackgroundColor: bottomTabBarActiveColor,
                 }}
             />
         </Tab.Navigator>
