@@ -1,4 +1,9 @@
 /**
+ * General functions that can be usefull everywhere in the app
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+/**
  * 
  * @param {number} value 
  * @returns 

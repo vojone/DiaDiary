@@ -1,3 +1,9 @@
+/**
+ * Food tab of the record add screen
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
 import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles, backgroundColor, backgroundColor2, activeColor, placeholderColor, primaryColor } from "../styles/common";
@@ -97,7 +103,7 @@ export default function FoodTab({ navigation, model, screenref }) {
     <View style={styles.maincontainer}>
         <View>
             <Text>Sacharidy</Text>
-            {global.user && global.user.inputType == null ?
+            {global.user && global.user.inputType == 0 ?
                 <NumericSpinner
                     placeholderColor={placeholderColor}
                     emptied={true}

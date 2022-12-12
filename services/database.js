@@ -1,3 +1,8 @@
+/**
+ * Implementation of backend based on Local MongoDB
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import Datastore from "react-native-local-mongodb";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -43,7 +48,7 @@ export async function update(type, query, update) {
     query._type = type;
 
     return new Promise((resolve, reject) => {
-        db.update(query, update, (err, num) => {
+        db.update(query, update, {}, (err, num) => {
             if(err) return reject(err);
             resolve(num);
         });

@@ -1,3 +1,8 @@
+/**
+ * Screen for adding record (consists from BloodSugarTab, FoodTab, OtherTab)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { StyleSheet, View, Vibration, Keyboard, Dimensions, Text} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Record } from '../models/record';
@@ -282,10 +287,12 @@ export default function RecordAddScreen({ navigation }) {
                 </ButtonPrimary>
             </View>
 
+            { debuggingMode &&
             <View style={styles.controlpanel}>
                 <ButtonSecondary title="Záznamy" onPress={onDump}></ButtonSecondary>
                 <ButtonSecondary title="Vyčistit" onPress={onClear}></ButtonSecondary>
             </View>
+            }
         </View>
         </KeyboardAwareScrollView>
     );

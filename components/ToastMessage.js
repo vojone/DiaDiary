@@ -1,3 +1,8 @@
+/**
+ * API for showing styled toast message
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import Toast from "react-native-root-toast";
 import { dangerColor, primaryColor, successColor, warningColor } from "../styles/common";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';

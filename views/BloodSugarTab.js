@@ -1,3 +1,9 @@
+/**
+ * Blood sugar tab of record add screen
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
 import { useState, useImperativeHandle, forwardRef, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { activeColor, addRecordStyles, backgroundColor, backgroundColor2, placeholderColor, primaryColor, primaryColor2 } from '../styles/common';

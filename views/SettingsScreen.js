@@ -1,3 +1,9 @@
+/**
+ * Settings screen including all settings slides 
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,6 +23,12 @@ import { Tag } from '../models/tag';
 import { Button, Dialog, Paragraph } from 'react-native-paper';
 import { Record } from '../models/record';
 
+
+/**
+ * Settings functional component
+ * @param {*} param0 
+ * @returns 
+ */
 export default function SettingsScreen({ navigation }) {
     const [user, setUser] = useState(global.user);
 
@@ -82,6 +94,10 @@ export default function SettingsScreen({ navigation }) {
         return unsubscribe;
     }, [navigation]);
 
+    /**
+     * Callback for add insuline type button
+     * @returns 
+     */
     const insulineTypeAdded = () => {
         if(newInsulineType.trim() == '') {
             return;
@@ -102,10 +118,18 @@ export default function SettingsScreen({ navigation }) {
         setNewInsulineType('');
     }
 
+    /**
+     * Callback for remove insuline type button
+     * @returns 
+     */
     const insulineRemoved = (key) => {
         setInsulineTypesEnum(arr => arr.filter(e => e.key !== key));
     }
 
+    /**
+     * @see insulineTypeAdded (works smilarly but for the tag)
+     * @returns 
+     */
     const tagAdded = () => {
         if(newTag.trim() == '') {
             return;
@@ -126,10 +150,18 @@ export default function SettingsScreen({ navigation }) {
         setNewTag('');
     }
 
-    const tagRemoved = () => {
+    /**
+     * @see insulineRemoved (works smilarly but for the tag)
+     * @returns 
+     */
+    const tagRemoved = (key) => {
         setTagsEnum(arr => arr.filter(e => e.key !== key));
     }
 
+    /**
+     * Navigates user to the record list page
+     * @returns 
+     */
     const goBack = () => {
         navigation.navigate('Records');
     }
@@ -150,11 +182,12 @@ export default function SettingsScreen({ navigation }) {
     
     const saveSettings = () => {
         setSaving(true);
+
         let insulineProm = Unit.remove({ unitType: 'insuline'}, true).then(
-            (removed) => { 
+            (removed) => {
                 let toBeInserted = insulineTypesEnum;
 
-                return Unit.addUnits(toBeInserted)
+                return Unit.addUnits(toBeInserted);
             },
             (error) => {
                 console.error(error);
@@ -183,15 +216,17 @@ export default function SettingsScreen({ navigation }) {
                     newUserSettings.newInsulineType;
                 }
 
-                User.update({_id: newUserSettings._id}, newUserSettings).then(
-                    (newUser) => {
-                        global.user = newUserSettings;
-
-                        savingDone();
-                },
-                error => {
-                    console.error(error);
-                    savingDone(false);
+                User.remove({}, true).then((numofDeleted) => {
+                    delete newUserSettings._id;
+                    newUserSettings.save().then(
+                        (newUser) => {
+                            global.user = newUser;
+                            savingDone();
+                    },
+                    error =>{
+                        console.error(error);
+                        savingDone(false);
+                    });
                 });
             },
             error => {
@@ -277,6 +312,11 @@ export default function SettingsScreen({ navigation }) {
         },
     });
 
+
+    /**
+     * Setting slides
+     */
+
     const unitForm = (item) => {
         return (
             <View  style={{ flex: 1 }}>
@@ -289,6 +329,7 @@ export default function SettingsScreen({ navigation }) {
                             data={glycUnitsEnum}
                             onValueChange={(gUnit) => { setUser(user => ({...user, glycemiaUnit: gUnit})) }}
                             value={user.glycemiaUnit}
+                            placeholderStyle={{color: 'white'}}
                         >
                         </InitSettingsDropdown>
                         </View>
@@ -300,6 +341,7 @@ export default function SettingsScreen({ navigation }) {
                             data={massUnitsEnum}
                             onValueChange={(mUnit) => { setUser(user => ({...user, massUnit: mUnit})) }}
                             value={user.massUnit}
+                            placeholderStyle={{color: 'white'}}
                         >
                         </InitSettingsDropdown>
                         </View>
@@ -341,6 +383,7 @@ export default function SettingsScreen({ navigation }) {
                             data={insulineTypesEnum}
                             onValueChange={(type) => { setUser(user => ({...user, insulineType: type})) }}
                             value={user.insulineType ? user.insulineType : insulineTypesEnum[0]}
+                            placeholderStyle={{color: 'white'}}
                         >
                         </InitSettingsDropdown>
                     </View>
@@ -593,9 +636,9 @@ export default function SettingsScreen({ navigation }) {
                     <Dialog.Content>
                     <Paragraph>Skutečně chceš vymazat všechny svoje záznamy? Tuto akci nelze vzít zpět!</Paragraph>
                     </Dialog.Content>
-                    <Dialog.Actions>
+                    <Dialog.Actions style={{justifyContent: 'space-between'}}>
                     <Button onPress={hideRemoveRecordsDia}>Ne</Button>
-                    <Button onPress={removeRecords}>Ano</Button>
+                    <Button onPress={removeRecords} labelStyle={{color: dangerColor}}>Ano</Button>
                     </Dialog.Actions>
                 </Dialog>
 
@@ -605,9 +648,9 @@ export default function SettingsScreen({ navigation }) {
                     <Dialog.Content>
                     <Paragraph>Skutečně chceš resetovat aplikaci? Tuto akci nelze vzít zpět!</Paragraph>
                     </Dialog.Content>
-                    <Dialog.Actions>
+                    <Dialog.Actions style={{justifyContent: 'space-between'}}>
                     <Button onPress={hideResetDia}>Ne</Button>
-                    <Button onPress={resetApp}>Ano</Button>
+                    <Button onPress={resetApp} labelStyle={{color: dangerColor}}>Ano</Button>
                     </Dialog.Actions>
                 </Dialog>
         </SafeAreaView>

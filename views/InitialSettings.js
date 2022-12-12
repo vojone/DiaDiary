@@ -1,3 +1,8 @@
+/**
+ * Contains initial settings of the app
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';

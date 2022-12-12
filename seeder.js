@@ -1,3 +1,8 @@
+/**
+ * Seeds the initial data to the storage (and/or demo data as well)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { Food } from "./models/food";
 import { Tag } from "./models/tag";
 import { Unit } from "./models/unit";

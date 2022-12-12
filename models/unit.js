@@ -1,3 +1,8 @@
+/**
+ * Model of unit settings (for insuline type, mass unit and glycemia unit)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { store } from "../services/database";
 import Model from "./model";
 

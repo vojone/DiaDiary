@@ -1,3 +1,7 @@
+/**
+ * Common variables and styles for our app
+ */
+
 import { StyleSheet } from "react-native";
 
 export const navTextSize = 16;

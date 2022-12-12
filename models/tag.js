@@ -1,3 +1,8 @@
+/**
+ * Model of tag
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { store } from "../services/database";
 import Model from "./model";
 

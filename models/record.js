@@ -1,3 +1,8 @@
+/**
+ * Model of record (probably the most important one)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { store, get, remove, removeAll } from "../services/database";
 import Model from "./model";
 

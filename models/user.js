@@ -1,3 +1,8 @@
+/**
+ * Model of user (settings)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import Model from "./model";
 
 export class User extends Model {

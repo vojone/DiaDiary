@@ -1,3 +1,8 @@
+/**
+ * Experimental numeric input
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { useState, useEffect, useRef } from "react";
 import { View, Text } from "react-native";
 import { activeColor, placeholderColor, primaryColor, primaryColor2 } from "../styles/common";

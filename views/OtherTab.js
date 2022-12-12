@@ -1,3 +1,8 @@
+/**
+ * Other tab of record adding screen (notes and tags)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles, backgroundColor, backgroundColor2, placeholderColor, primaryColor } from "../styles/common";

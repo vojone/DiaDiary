@@ -1,3 +1,7 @@
+/**
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { activeColor, primaryColor } from '../styles/common';

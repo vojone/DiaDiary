@@ -1,3 +1,7 @@
+/**
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { Button } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { primaryColor } from '../styles/common';
