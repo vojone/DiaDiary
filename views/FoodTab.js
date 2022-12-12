@@ -9,6 +9,7 @@ import { Unit } from "../models/unit";
 import { Food } from "../models/food";
 import { LinearGradient } from "expo-linear-gradient";
 import NumericSpinner from "../components/NumericSpinner";
+import NumericSlider from "../components/NumericSlider";
 
 
 export default function FoodTab({ navigation, model, screenref }) {
@@ -96,7 +97,8 @@ export default function FoodTab({ navigation, model, screenref }) {
     <View style={styles.maincontainer}>
         <View>
             <Text>Sacharidy</Text>
-            <NumericSpinner
+            {global.user && global.user.inputType == null ?
+                <NumericSpinner
                     placeholderColor={placeholderColor}
                     emptied={true}
                     min={0}
@@ -112,6 +114,21 @@ export default function FoodTab({ navigation, model, screenref }) {
                         ></AppendDropdown>
                     } // Appended element
                 ></NumericSpinner>
+                :
+                <NumericSlider
+                    value={carbo}
+                    onValueChange={setCarbo}
+                    min={0}
+                    step={carboU && carboU.step ? carboU.step : 1}
+                    max={1000}
+                    maximumSliderValue={10}
+                    resolution={0}
+                    minimumSliderValue={10}
+                    appendValueEnum={carboUEnum}
+                    appendValue={carboU}
+                    onValueChangeAppend={setCarboU}
+                >
+                </NumericSlider>}
             </View>
         <View style={styles.inputwithtopgap}>
             <Text>Jídlo</Text>

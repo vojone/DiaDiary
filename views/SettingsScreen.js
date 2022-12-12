@@ -12,6 +12,7 @@ import { User } from '../models/user';
 import { dangerColor, primaryColor, primaryColor2 } from '../styles/common';
 
 export default function SettingsScreen({ navigation }) {
+    const [origUser, setOrigUser] = useState(global.user);
     const [user, setUser] = useState(global.user);
 
     const [massUnitsEnum, setMassUnitsEnum] = useState([]);
