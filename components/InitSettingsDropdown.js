@@ -17,11 +17,13 @@ export default function InitSettingsDropdown(props) {
             paddingHorizontal: 15, 
             paddingVertical: 10
         }}
+        maxHeight={props.maxHeight}
         renderItem={(item, selected) => <DropdownItem labelField={props.labelField} item={item} selected={selected} padding={20}></DropdownItem>}
         placeholder={props.value ? props.value.label : '-'}
         selectedTextStyle={{ color: 'white', fontSize: 16,  }}
         value={props.value}
-        containerStyle={{top: -25}}
+        dropdownPosition="bottom"
+        containerStyle={{marginTop: -25}}
     >   
     </Dropdown>);
 }

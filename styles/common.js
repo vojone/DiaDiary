@@ -5,7 +5,10 @@ export const navTextSize = 16;
 export const sideNavTextSize = 20;
 
 export const primaryColor = '#674fa5';
-export const pressUnderlayColor = '#cdc4e3';
+export const primaryColor2 = '#a050a5';
+export const primaryColor2Pressed = '#713875';
+
+export const pressUnderlayColor = '#dbbade';
 export const bottomTabBarActiveBgColor = '#f2eef7';
 
 export const successColor = '#28a745';

@@ -1,9 +1,10 @@
 import { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from '../styles/common';
+import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor, primaryColor2, primaryColor2Pressed } from '../styles/common';
 import InputSpinner from 'react-native-input-spinner';
 import AppendDropdown from '../components/AppendDropdown';
 import { Unit } from '../models/unit';
+import NumericSpinner from '../components/NumericSpinner';
 
 
 export default function BloodSugarTab({ navigation, model, screenref }) {
@@ -105,23 +106,17 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
     const styles = addRecordStyles;
     return (
         <View style={styles.maincontainer}>
+
             <View>
                 <Text>Hladina cukru</Text>
-                <InputSpinner 
-                    rounded= {false}
-                    showBorder={true}
-                    precision={1}
-                    placeholderTextColor={placeholderColor}
-                    placeholder="N"
-                    type="real"
+                <NumericSpinner
+                    placeholderColor={placeholderColor}
                     emptied={true}
                     min={0}
                     step={glycemiaU && glycemiaU.step ? glycemiaU.step : 0.1}
-                    max={100}
-                    color={primaryColor}
+                    max={50}
                     value={glycemia}
-                    onChange={setGlycemia}
-                    fontSize={ 28 }
+                    onValueChange={setGlycemia}
                     append={
                         <AppendDropdown
                             data={glycemiaUEnum}
@@ -129,35 +124,26 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                             onChange={setGlycemiaU}
                         ></AppendDropdown>
                     } // Appended element
-                />
+                ></NumericSpinner>
             </View>
-            {/* <View>
-                <Text>5.5</Text>
-            </View> */}
             <View style={styles.inputwithtopgap}>
                 <Text>Inzulín (jednotky)</Text>
-                <InputSpinner 
-                    rounded= {false}
-                    showBorder={true}
-                    placeholder="N"
-                    placeholderTextColor={placeholderColor}
-                    precision={1}
-                    type="real"
+                <NumericSpinner
+                    placeholderColor={placeholderColor}
                     emptied={true}
                     min={0}
                     step={insulineT && insulineT.step ? insulineT.step : 1}
-                    color={primaryColor}
+                    max={50}
                     value={insuline}
-                    onChange={setInsuline}
-                    fontSize={ 28 }
+                    onValueChange={setInsuline}
                     append={
                         <AppendDropdown
                             data={insulineTEnum}
                             value={insulineT}
                             onChange={setInsulineT}
                         ></AppendDropdown>
-                    }
-                />
+                    } // Appended element
+                ></NumericSpinner>
             </View>
         </View>);
 }

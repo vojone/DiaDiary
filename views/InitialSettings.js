@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import ButtonPrimary from '../components/ButtonPrimary';
 import ButtonSecondary from '../components/ButtonSecondary';
 import EditableList from '../components/EditableList';
 import InitSettingsDropdown from '../components/InitSettingsDropdown';
-import { showToastMessage, ToastMessage } from '../components/ToastMessage';
+import { showToastMessage, showToastMessageDanger, showToastMessageSuccess, ToastMessage } from '../components/ToastMessage';
 import { Unit } from '../models/unit';
 import { User } from '../models/user';
-import { dangerColor, primaryColor, successColor } from '../styles/common';
+import { dangerColor, primaryColor, primaryColor2, successColor } from '../styles/common';
 
 export default function InitSettingsScreen({ navigation }) {
     const [user, setUser] = useState(new User());
@@ -127,10 +128,10 @@ export default function InitSettingsScreen({ navigation }) {
         global.settingsChanged = !global.settingsChanged;
 
         if(success) {
-            showToastMessage('Nastavení bylo úspěšně uloženo!', successColor, 'white');
+            showToastMessageSuccess('Nastavení bylo úspěšně uloženo');
         }
         else {
-            showToastMessage('Při ukládání došlo k chybě', dangerColor, 'white');
+            showToastMessageDanger('Při ukládání došlo k chybě');
         }
 
         navigation.navigate('Records');
@@ -168,7 +169,7 @@ export default function InitSettingsScreen({ navigation }) {
 
     const styles = StyleSheet.create({
         container: {
-            backgroundColor: primaryColor,
+            //backgroundColor: primaryColor,
             flex: 1,
             paddingTop: (Platform.OS == 'android' ? StatusBar.currentHeight : 0) + 20,
         },
@@ -285,7 +286,7 @@ export default function InitSettingsScreen({ navigation }) {
                             onAdd={insulineTypeAdded}
                             onRemove={insulineRemoved}
                             placeholderColor="rgba(255, 255, 255, 0.5)"
-                            height={Dimensions.get('window').height*0.35}
+                            height={Dimensions.get('window').height*0.32}
                             labelField="label"
                             textColor="white"
                             textListColor={primaryColor}
@@ -298,6 +299,7 @@ export default function InitSettingsScreen({ navigation }) {
                     <View style={styles.formitem}>
                         <Text style={styles.label}>Který druh nejčastěji?</Text>
                         <InitSettingsDropdown
+                            maxHeight={Dimensions.get('window').height*0.22}
                             data={insulineTypesEnum}
                             onValueChange={(type) => { setUser(user => ({...user, insulineType: type})) }}
                             value={user.insulineType ? user.insulineType : insulineTypesEnum[0]}
@@ -330,6 +332,7 @@ export default function InitSettingsScreen({ navigation }) {
     ]
 
     return (
+        <LinearGradient colors={[primaryColor2, primaryColor]} style={{ flex: 1}}>
         <SafeAreaView
             style={styles.container}
         >
@@ -382,6 +385,7 @@ export default function InitSettingsScreen({ navigation }) {
                 </ButtonPrimary>}
             </View>
         </SafeAreaView>
+        </LinearGradient>
     );
   }
   

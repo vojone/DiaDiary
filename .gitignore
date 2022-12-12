@@ -10,5 +10,9 @@ npm-debug.*
 *.orig.*
 web-build/
 
+android
+index.js
+metro.config.js
+
 # macOS
 .DS_Store

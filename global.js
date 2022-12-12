@@ -19,19 +19,22 @@ export default function seedData(navigationRef, clearData, seedDemoData = false)
             let foodProm = seedFood();
             let tagProm = seedTags();
 
-            if(seedDemoData) {
-                Promise.allSettled([unitsProm, foodProm, tagProm]).then(
-                    (units, food, tag) => {
+            Promise.allSettled([unitsProm, foodProm, tagProm]).then(
+                ([units, food, tag]) => {
+                    if(seedDemoData) {
                         seedDemoUser().then((user) => {
                             global.user = user;
                             global.settingsChanged = !global.settingsChanged;
 
                         });
-                });
-            }
-            else {
-                navigationRef.current?.navigate('Settings');
-            }
+                    }
+                    else {
+                        console.log(units);
+                        console.log(food);
+                        console.log(tag);
+                        navigationRef.current?.navigate('Settings');
+                    }
+            });
         }
         else {
             User.find({}).then((user) => {

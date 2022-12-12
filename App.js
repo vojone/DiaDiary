@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import MainDrawerNavigator from './components/MainNavigator';
 import seedData from './global';
 
-const clearData = false;
+const clearData = true;
 
 const navigationRef = createRef();
 

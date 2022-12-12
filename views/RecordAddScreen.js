@@ -1,4 +1,4 @@
-import { StyleSheet, View, Vibration, Keyboard, Dimensions} from 'react-native';
+import { StyleSheet, View, Vibration, Keyboard, Dimensions, Text} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Record } from '../models/record';
 import { useState, useRef, useEffect, useLayoutEffect, useReducer } from 'react';
@@ -10,7 +10,7 @@ import DateTimePickerWithText from '../components/DateTimePickerWithText';
 import ButtonSecondary from '../components/ButtonSecondary';
 import ButtonPrimary from '../components/ButtonPrimary';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { showToastMessage } from '../components/ToastMessage';
+import { showToastMessage, showToastMessageDanger, showToastMessageSuccess, showToastMessageWarning } from '../components/ToastMessage';
 
 
 export default function RecordAddScreen({ navigation }) {
@@ -75,12 +75,12 @@ export default function RecordAddScreen({ navigation }) {
 
                 setSaving(false);
 
-                showToastMessage('Záznam byl uložen!', successColor, 'black');
+                showToastMessageSuccess('Záznam byl uložen');
             },
             (error) => {
                 console.error(error);
-            }
-        );
+                showToastMessageDanger('Při ukládání záznamu došlo k chybě');
+            });
     }
 
     const onCancel = () => {
@@ -91,7 +91,7 @@ export default function RecordAddScreen({ navigation }) {
         setIsTimeModified(false);
         setIsDateModified(false);
 
-        showToastMessage('Záznam byl zahozen!', warningColor, 'black');
+        showToastMessageWarning('Záznam byl zahozen');
     }
 
 

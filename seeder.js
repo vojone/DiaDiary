@@ -4,8 +4,8 @@ import { Unit } from "./models/unit";
 import { User } from "./models/user";
 import { getAS, storeAS } from './services/store';
 
-export function seedUnits() {
-    Unit.remove({}, true).then((clearNum) => {
+export async function seedUnits() {
+    return Unit.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} units!`);
 
         return Unit.addUnits([
@@ -22,8 +22,8 @@ export function seedUnits() {
 }
 
 
-export function seedFood() {
-    Food.remove({}, true).then((clearNum) => {
+export async function seedFood() {
+    return Food.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} food!`);
 
         return Food.addFood([
@@ -37,11 +37,11 @@ export function seedFood() {
 }
 
 
-export function seedTags() {
-    Tag.remove({}, true).then((clearNum) => {
+export async function seedTags() {
+    return Tag.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} tags!`);
 
-        Tag.addTags([
+        return Tag.addTags([
             new Tag({label: 'Sport'}),
             new Tag({label: 'Stres'}),
             new Tag({label: 'Práce'}),
@@ -50,32 +50,32 @@ export function seedTags() {
 }
 
 
-export function seedDemoUser() {
-    User.remove({}, true).then((clearNum) => {
+export async function seedDemoUser() {
+    return User.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} user settings!`);
-    });
 
-    let massUnitProm = Unit.find('mass', {label: 'g'});
-    let glycUnitProm = Unit.find('glyc', {label: 'mmol/l'});
-    let insulineTProm = Unit.find('insuline', {label: 'Novorapid'});
+        let massUnitProm = Unit.find('mass', {label: 'g'});
+        let glycUnitProm = Unit.find('glyc', {label: 'mmol/l'});
+        let insulineTProm = Unit.find('insuline', {label: 'Novorapid'});
 
-    Promise.allSettled([massUnitProm, glycUnitProm, insulineTProm])
-        .then(([massU, glycU, insulineT]) => {
-            if(massU.value == undefined || 
-                glycU.value == undefined || 
-                insulineT.value == undefined) {
+        return Promise.allSettled([massUnitProm, glycUnitProm, insulineTProm])
+            .then(([massU, glycU, insulineT]) => {
+                if(massU.value == undefined || 
+                    glycU.value == undefined || 
+                    insulineT.value == undefined) {
 
-                console.error('Error while seeding user settings');
-                return;
-            }
+                    console.error('Error while seeding user settings');
+                    return;
+                }
 
-            let user = new User({
-                massUnit: massU.value, 
-                glycemiaUnit: glycU.value, 
-                insulineType: insulineT.value});
+                let user = new User({
+                    massUnit: massU.value, 
+                    glycemiaUnit: glycU.value, 
+                    insulineType: insulineT.value});
 
-            user.save().then((user) => {
-                global.user = user;
+                user.save().then((user) => {
+                    global.user = user;
+                });
             });
-        });
+    });
 }
