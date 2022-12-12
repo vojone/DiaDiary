@@ -117,7 +117,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         <View style={styles.maincontainer}>
             <View>
                 <Text>Hladina cukru</Text>
-                {global.user && global.user.inputType == null ?
+                {global.user && !global.user.inputType ?
                 <NumericSpinner
                     placeholderColor={placeholderColor}
                     emptied={true}
@@ -150,7 +150,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
             </View>
             <View style={styles.inputwithtopgap}>
                 <Text>Inzulín (jednotky)</Text>
-                {global.user && global.user.inputType == null ?
+                {global.user && !global.user.inputType ?
                 <NumericSpinner
                     placeholderColor={placeholderColor}
                     emptied={true}

@@ -21,10 +21,10 @@ export default function NumericSlider(props) {
     let resolution = props.resolution ? props.resolution : 1;
 
     useEffect(() => {
-        if(props.value <= props.min && Math.round(rate*(10**resolution))/(10**resolution) < 0) {
+        if(((props.value) <= props.min || isNaN(props.value)) && rate < 0) {
             return;
         }
-        else if(props.value >= props.max && Math.round(rate*(10**resolution))/(10**resolution) > 0) {
+        else if(props.value >= props.max && rate > 0) {
             return;
         }
 
@@ -37,7 +37,11 @@ export default function NumericSlider(props) {
             return;
         }
 
-        console.log(resolution);
+        if(isNaN(props.value)) {
+            props.onValueChange(props.min);
+            return;
+        }
+
         props.onValueChange(props.value + Math.round(rate*(10**resolution))/(10**resolution));
     }, 
     [rate]);

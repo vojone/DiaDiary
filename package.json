@@ -31,7 +31,6 @@
     "react-native": "0.70.5",
     "react-native-chart-kit": "^6.12.0",
     "react-native-collapsible": "^1.6.0",
-    "react-native-dialog": "^9.3.0",
     "react-native-directory-picker": "^0.0.2",
     "react-native-dropdown-select-list": "^2.0.4",
     "react-native-echarts-wrapper": "^2.0.0",

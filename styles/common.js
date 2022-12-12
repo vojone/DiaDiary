@@ -11,7 +11,7 @@ export const primaryColor2Pressed = '#713875';
 export const backgroundColor = '#fffafe';
 export const backgroundColor2 = '#fff';
 
-export const pressUnderlayColor = '#c28ac7';
+export const pressUnderlayColor = '#e4cbe6';
 export const modifiedColor = 'rgba(194, 138, 199, 0.5)';
 
 export const bottomTabBarActiveColor = '#f2eef7';

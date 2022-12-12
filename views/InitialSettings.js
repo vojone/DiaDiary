@@ -379,7 +379,7 @@ export default function InitSettingsScreen({ navigation }) {
                                 fillColor={primaryColor}
                                 textColor='white'
                                 title="Chci tento způsob"
-                                onPress={() => {setUser(u => ({...u, inputType: null })); }}
+                                onPress={() => {setUser(u => ({...u, inputType: 0 })); }}
                             >
                             </ButtonPrimary>}
                         </View>

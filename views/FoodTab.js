@@ -105,6 +105,7 @@ export default function FoodTab({ navigation, model, screenref }) {
                     step={carboU && carboU.step ? carboU.step : 0.1}
                     max={1000}
                     value={carbo}
+                    resolution={0}
                     onValueChange={setCarbo}
                     append={
                         <AppendDropdown
