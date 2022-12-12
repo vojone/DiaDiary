@@ -12,6 +12,7 @@ import DropdownItem from "../components/DropdownItem";
 
 import { Record } from '../models/record';
 import { Unit } from '../models/unit';
+import { Food } from "../models/food";
 import { Tag } from "../models/tag";
 
 export default function EntryDetail({ route, navigation}) {
@@ -24,8 +25,7 @@ export default function EntryDetail({ route, navigation}) {
     Record.findById(recordId).then((record) => {setRecordDetail(record);});
   }, []);
 
-
-
+  // Function to update the record
   function updatedBloodSugar(value) {
     setRecordDetail(recordDetail => ({
       ...recordDetail, bloodSugar: value
@@ -37,7 +37,7 @@ export default function EntryDetail({ route, navigation}) {
       ...recordDetail, bloodSugarU: value
     }))
   }
-
+  console.log(recordDetail);
   function updatedInsuline(value) {
     setRecordDetail(recordDetail => ({
       ...recordDetail, insuline: value
@@ -50,13 +50,45 @@ export default function EntryDetail({ route, navigation}) {
     }))
   }
 
+  function updatedCarbo(value) {
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, carbo: value
+    }))
+  }
+
+  function updatedCarboU(value) {
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, carboU: value
+    }))
+  }
+
+  function updatedFood(value) {
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, food: value
+    }))
+  }
+
+  function updatedTags(value) {
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, tags: value
+    }))
+  }
+
+  function updatedNote(value) {
+    setRecordDetail(recordDetail => ({
+      ...recordDetail, note: value
+    }))
+  }
+
   // Stuff for the blood sugar
   const [bloodSugarU, setBloodSugarU] = useState([]);
   const [insulineT, setInsulineT] = useState([]);
 
   const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
+  const [insulineTEnum, setInsulineTEnum] = useState([]);
   useEffect(() => {
     Unit.find('glyc', {}, true).then((glycemiaUnits) => {
+      
       if(glycemiaUnits == null) {
         setGlycemiaUEnum([]);
       }
@@ -66,11 +98,6 @@ export default function EntryDetail({ route, navigation}) {
             setBloodSugarU(glycemiaUnits.find((u) => (u.label == recordDetail.bloodSugarU.label)));
       }
     })
-  }, []);
-
-  const [insulineTEnum, setInsulineTEnum] = useState([]);
-
-  useEffect(() => {
     Unit.find('insuline', {}, true).then(insulineTypes => {
       if(insulineTypes == null) {
         setInsulineTEnum([]);
@@ -78,10 +105,14 @@ export default function EntryDetail({ route, navigation}) {
       else {
         setInsulineTEnum(insulineTypes);
         if(recordDetail.insulineT != null)
-            setInsulineT(insulineTypes.find((i) => (i.label == recordDetail.insulineT.label)));
+          setInsulineT(insulineTypes.find((i) => (i.label == recordDetail.insulineT.label)));
       }
     })
-  }, []);
+  }, [recordDetail]);
+
+
+  //if(recordDetail.bloodSugarU != null)
+    //console.log(recordDetail.bloodSugarU.label);
 
   // Stuff for the food section
   const [carbo, setCarbo] = useState(recordDetail.carbo);
@@ -91,7 +122,32 @@ export default function EntryDetail({ route, navigation}) {
   const [carboUEnum, setCarboUEnum] = useState([]);
   const [foodEnum, setFoodEnum] = useState([]);
 
-  
+  useEffect(() => {
+    // Get the carbo hydrates units
+    Unit.find('mass', {}, true).then((massUnits) => {
+        //console.log(massUnits);
+        if(massUnits == null) {
+            setCarboUEnum([]);
+        }
+        else {
+            setCarboUEnum(massUnits);
+            if(recordDetail.insulineT != null)
+              setCarboU(massUnits.find((u) => (u.label == recordDetail.carboU.label)));
+        }
+    })
+    // Get the food types
+    Food.find({}, true, {order: 1}).then((foodTypes) => {
+      if(foodTypes == null) {
+          setFoodEnum([]);
+      }
+      else {
+          setFoodEnum(foodTypes);
+          if(recordDetail.insulineT != null)
+            setFood(foodTypes.find((t) => (t.label == recordDetail.food.label)));
+      }
+  })
+}, [recordDetail]);
+
   // Stuff for the tags section
   const [tags, setTags] = useState(recordDetail.tags);
   const [note, setNote] = useState(recordDetail.note);
@@ -105,10 +161,15 @@ export default function EntryDetail({ route, navigation}) {
           }
           else {
               setTagsEnum(tags);
+              if(recordDetail.tags != null){
+                
+                setTags(recordDetail.tags)
+              }
           }
       })
-  }, []);
+  }, [recordDetail]);
 
+  //console.log(recordDetail);
 
   // Stuff for the date and time section
   const handlePress = () => setExpanded(!expanded);
@@ -198,6 +259,23 @@ const onDateTimeSelectionCancel = () => {
         },
       },
 
+      delete_button_flex: {
+        flexDirection: 'row',
+        
+        marginTop: 20,
+        justifyContent: 'flex-end',
+
+        delete_button: {
+          marginTop: 20,
+          maxWidth: 195,
+          borderColor: primaryColor,
+
+          text: {
+            fontSize: 20,
+          }
+        }
+      },
+
       textinput: {
         textAlign: 'left',
         textAlignVertical: 'top',
@@ -247,7 +325,7 @@ const onDateTimeSelectionCancel = () => {
               <AppendDropdown
                 data={glycemiaUEnum}
                 value={bloodSugarU}
-                onChange={setBloodSugarU}
+                onChange={updatedBloodSugarU}
               ></AppendDropdown>
             } // Appended element
           />
@@ -276,7 +354,7 @@ const onDateTimeSelectionCancel = () => {
             <AppendDropdown
               data={insulineTEnum}
               value={insulineT}
-              onChange={setInsulineT}
+              onChange={updatedInsulineT}
             ></AppendDropdown>
             }
           />
@@ -300,12 +378,12 @@ const onDateTimeSelectionCancel = () => {
                 value={recordDetail.carbo}
                 fontSize={ 28 }
                 placeholderTextColor={ placeholderColor }
-                onChange={setCarbo}
+                onChange={updatedCarbo}
                 append={
                     <AppendDropdown
                         data={carboUEnum}
                         value={carboU}
-                        onChange={setCarboU}
+                        onChange={updatedCarboU}
                     ></AppendDropdown>
                 } // Appended element
             />
@@ -316,7 +394,7 @@ const onDateTimeSelectionCancel = () => {
                 data={foodEnum}
                 labelField="label"
                 valueField="_id"
-                onChange={setFood}
+                onChange={updatedFood}
                 onChangeText={() => {}}
                 search={false}
                 style={{
@@ -344,7 +422,7 @@ const onDateTimeSelectionCancel = () => {
                 value={tags}
                 labelField="label"
                 valueField="_id"
-                onChange={setTags}
+                onChange={updatedTags}
                 onChangeText={() => {}}
                 search={false}
                 placeholder='Vybrat ze seznamu'
@@ -360,18 +438,26 @@ const onDateTimeSelectionCancel = () => {
 
         <View>
             <Text style={styles.text_style.normal}>Poznámky</Text>
+            {recordDetail.note &&
             <TextInput 
                 placeholder="Text..."
                 style={styles.textinput}
                 multiline={true}
                 numberOfLines={3}
-                value={note}
-                onChangeText={setNote}
+                value={recordDetail.note}
+                onChangeText={updatedNote}
             ></TextInput>
+            }
         </View>
-
-          {recordDetail.dateTime &&
-          <View style={styles.timeinputcontainer}>
+        
+        <View style={styles.delete_button_flex}>
+        <Button icon="alert" style={styles.delete_button_flex.delete_button} mode="outlined"  onPress={() => navigation.navigate('Home')}>
+          <Text style={styles.delete_button_flex.delete_button.text}>Smazat záznam</Text>
+        </Button>
+        </View>
+        
+        {recordDetail.dateTime &&
+        <View style={styles.timeinputcontainer}>   
           <DateTimePickerWithText
               value={recordDetail.dateTime}
               mode="date"
@@ -382,6 +468,7 @@ const onDateTimeSelectionCancel = () => {
               isModified={isDateModified}
           >
           </DateTimePickerWithText>
+          
           <DateTimePickerWithText
               value={recordDetail.dateTime}
               mode="time"
@@ -391,9 +478,10 @@ const onDateTimeSelectionCancel = () => {
               onCancel={onDateTimeSelectionCancel}
               isModified={isTimeModified}
           >
-          </DateTimePickerWithText>
-          </View>
+          </DateTimePickerWithText>  
+        </View>
         }
+        
 
         <View style={styles.confirm_buttons_flex}>
         <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" onPress={() => navigation.navigate('Home')}>
