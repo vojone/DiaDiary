@@ -9,17 +9,17 @@ export default class Model {
 
     static async find(targetCls, query, multiple = false, sort = null) {
         return get(targetCls.databaseType, query, sort).then(result => {
-            if(result === null || result.length == 0) {
+            if(result === null || result.length == 0) { //Nothing was found
                 return null;
             } 
             else {
                 if(multiple) {
-                    return result.map(record => {
-                        return new targetCls(record);
+                    return result.map(record => { //There are multiple results -> return array with them
+                        return new targetCls(record); 
                     });
                 }
                 else {
-                    return new targetCls(result[0]);
+                    return new targetCls(result[0]); //there is only one result
                 }
             }
         });
@@ -27,7 +27,7 @@ export default class Model {
 
     static async findById(targetCls, id) {
         return get(targetCls.databaseType, {_id: id}).then(result => {
-            if(result === null || result.length == 0) {
+            if(result === null || result.length == 0) { //Nothing was found
                 return null;
             } 
             else {
@@ -56,6 +56,10 @@ export default class Model {
         }
     }
 
+    /**
+     * Updates the properties of object
+     * @param {object} props 
+     */
     setProperties(props) {
         for(const key in props) {
             if(this[key] !== undefined) {

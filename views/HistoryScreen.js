@@ -1,12 +1,26 @@
-import { StyleSheet, Text, View, Button, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
-import React, { useState, useEffect, useReducer } from 'react'
+/**
+ * Screen for displaying history of records
+ * Author:  Juraj Dedič (xdedic07)
+ */
+
+import { StyleSheet, Text, View, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback, useMemo, useReducer } from 'react'
+
+import ChooseDateRange from '../components/ChooseDateRange';
 
 import { List } from 'react-native-paper';
 
 import { Record } from '../models/record';
 import HistoryItem from '../components/HistoryItem';
 
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import BottomSheet from '@gorhom/bottom-sheet';
+
+import { MultiSelect } from "react-native-element-dropdown";
+import { primaryColor } from "../styles/common";
+import { Tag } from "../models/tag";
+import DropdownItem from "../components/DropdownItem";
 
 import Accordion from 'react-native-collapsible/Accordion';
 import { getRelativeCoords } from 'react-native-reanimated';
@@ -20,18 +34,14 @@ function getDisplayDate(date) {
 }
 
 function getRecords(records, dateFrom, dateTo){
-    // return records;
+    if(records == null)
+        return [];
     let recordsFiltered = records.filter(i => (i["dateTime"] > dateFrom || dateFrom === null) && (i["dateTime"] < dateTo || dateTo === null))
     return recordsFiltered.sort((a,b) => b["dateTime"] - a["dateTime"]);
 }
 
 export default function HistoryScreen({ navigation }) {
-    // let records = [
-    //         {id: 0, carboHydrates: 100, insuline: 2, dateTime: new Date()},
-    //         {id: 1, carboHydrates: 200, insuline: 1, dateTime: new Date()},
-    //         {id: 2, carboHydrates: 120, insuline: 3, dateTime: new Date()},
-    //         {id: 3, carboHydrates: 50, insuline: 2, dateTime: new Date()},
-    // ];
+
     let [records, setRecords] = useState([]);
 
     //load records from storage
@@ -48,32 +58,6 @@ export default function HistoryScreen({ navigation }) {
     const [dateTo, setDateTo] = useState(null);
 
     const [isCollapsed, setIsCollapsed] = useState(true);
-
-    const [isFromDatePickerVisible, setFromDatePickerVisibility] = useState(false);
-    const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
-
-    const showFromDatePicker = () => {
-        setFromDatePickerVisibility(true);
-    };
-    const showToDatePicker = () => {
-        setToDatePickerVisibility(true);
-    };
-
-    const hideFromDatePicker = () => {
-        setFromDatePickerVisibility(false);
-    };
-    const hideToDatePicker = () => {
-        setToDatePickerVisibility(false);
-    };
-
-    const handleFromConfirm = (date) => {
-        setDateFrom(date);
-        hideFromDatePicker();
-    };
-    const handleToConfirm = (date) => {
-        setDateTo(date);
-        hideToDatePicker();
-    };
 
     const loadRecords = () => {
         
@@ -109,8 +93,41 @@ export default function HistoryScreen({ navigation }) {
         
     }, [navigation]);
 
+    // ref
+    const bottomSheetRef = useRef(null);
+
+    // variables
+    const snapPoints = useMemo(() => ['40%', '45%'], []);
+
+    // callbacks
+    const handleSheetChanges = useCallback((index) => {}, []);
+
+    function optionsClick(){
+        bottomSheetRef.current.expand();
+    }
+
+    useEffect(() => {
+        bottomSheetRef.current.close();
+    }, []);
+
+
+    const [tags, setTags] = useState(/*model.tags*/[]);
+    const [tagsEnum, setTagsEnum] = useState([]);
+
+    useEffect(() => {
+        Tag.find({}, true).then((tags) => {
+            if(tags == null) {
+                setTagsEnum([]);
+            }
+            else {
+                setTagsEnum(tags);
+            }
+        })
+    }, []);
+
     return (
-    <ScrollView style={{flex: 1}}
+    <View style={{flex: 1, height: "100%"}}>
+    <ScrollView style={{flex: 1, height: "100%"}}
     contentContainerStyle={styles.scrollView}
     refreshControl={
         <RefreshControl
@@ -119,38 +136,10 @@ export default function HistoryScreen({ navigation }) {
         />
     }
     >
-        <Text style={{textAlign: "left", width: "100%", padding: 20, fontSize: 30, fontWeight: "bold"}}>Historie záznamů</Text>
-
-        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
-            <Text>Datum od: {getDisplayDate(dateFrom)}</Text>
-            <View style={{flexDirection: "row"}}>
-                <Button title="Změnit" onPress={showFromDatePicker} />
-                <Button onPress={ () => {setDateFrom(null)}} title="zrušit"/>
-            </View>
+        <View style={{justifyContent: "space-between", flexDirection: "row", alignItems: "center", width: "100%", padding: 20}}>
+            <Text style={{textAlign: "left", fontSize: 30, fontWeight: "bold"}}>Historie záznamů</Text>
+            <MaterialCommunityIcons name="dots-vertical" size={24} color="black" onPress={() => {optionsClick()} } />
         </View>
-
-        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
-            <Text>Datum do: {getDisplayDate(dateTo)}</Text>
-            <View style={{flexDirection: "row"}}>
-                <Button title="Změnit" onPress={showToDatePicker} />
-                <Button onPress={ () => {setDateTo(null)}} title="zrušit"/>
-            </View>
-        </View>
-
-
-        <DateTimePickerModal
-            isVisible={isFromDatePickerVisible}
-            mode="date"
-            onConfirm={handleFromConfirm}
-            onCancel={hideFromDatePicker}
-        />
-
-        <DateTimePickerModal
-            isVisible={isToDatePickerVisible}
-            mode="date"
-            onConfirm={handleToConfirm}
-            onCancel={hideToDatePicker}
-        />
 
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 30, paddingRight: 30, paddingBottom: 10, paddingTop: 20}}>
             <Text style={{fontSize: 18, }}>Cukr</Text>
@@ -174,5 +163,40 @@ export default function HistoryScreen({ navigation }) {
             } />
         </View>
     </ScrollView>
+
+    <BottomSheet
+        ref={bottomSheetRef}
+        index={1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        enablePanDownToClose={true}
+        style={{
+            position: "absolute",
+        }}>
+        <View style={{paddingHorizontal: 24}}>
+            <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>Filtrování a řazení 🎉</Text>
+
+            <ChooseDateRange onChange={(val) => {setDateFrom(val.dateFrom); setDateTo(val.dateTo);}} />
+
+            <Text style={{marginBottom: 10}}>Tagy:</Text>
+            <MultiSelect
+                data={tagsEnum}
+                value={tags}
+                labelField="label"
+                valueField="_id"
+                onChange={setTags}
+                onChangeText={() => {}}
+                search={false}
+                placeholder='Vybrat ze seznamu'
+                style={{borderColor: primaryColor, borderWidth: 1, borderRadius: 4, paddingHorizontal: 15, paddingVertical: 10}}
+                selectedStyle={{backgroundColor: primaryColor, borderRadius: 100}}
+                renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20} withIcon={true}></DropdownItem>}
+                selectedTextStyle={{color: 'white'}}
+                containerStyle={{top: -25}}
+            >
+            </MultiSelect>
+        </View>
+        </BottomSheet>
+    </View>
     );
 }

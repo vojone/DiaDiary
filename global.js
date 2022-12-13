@@ -16,7 +16,7 @@ global.firstLaunch = false;
 global.settingsChanged = false;
 
 /**
- * Seeds the data to the app
+ * Seeds the data to the app (if it is necessary)
  * @param {*} navigationRef 
  * @param {*} clearData 
  * @param {*} seedDemoData 

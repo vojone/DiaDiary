@@ -14,6 +14,9 @@ const clearData = false;
 
 const navigationRef = createRef();
 
+/**
+ * The root component of the app
+ */
 export default function App() {
     useEffect(() => {
         seedData(navigationRef, clearData);

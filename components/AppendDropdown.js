@@ -1,4 +1,5 @@
 /**
+ * Append dropdown for numeric inputs
  * @author Vojtěch Dvořák (xdvora3o)
  */
 
@@ -14,8 +15,9 @@ export default function AppendDropdown(props) {
     const [width, setWidth] = useState(100);
 
     useEffect(() => {
+        //Set the width of the dropdown
         let maxlenitem = null;
-        props.data.forEach((item) => {
+        props.data.forEach((item) => { //Find the logest element
             if(maxlenitem == null || item.label.length > maxlenitem.length) {
                 maxlenitem = item.label;
             }
@@ -44,19 +46,8 @@ export default function AppendDropdown(props) {
             value={props.value}
             placeholder={props.label ? props.label : '-'}
             renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={10}></DropdownItem>}
-            containerStyle={{top: -25}}
+            //containerStyle={{top: -25}}
         >
         </Dropdown>
-        // <ModalDropdown
-        //     textStyle={{fontSize: 16}} 
-        //     dropdownTextStyle={{fontSize: 20, padding: 20, textAlign: 'center'}}
-        //     dropdownTextHighlightStyle={{backgroundColor: activeColor}}
-        //     dropdownStyle={{marginTop: -20, minWidth: 50}}
-        //     options={props.options} 
-        //     style={{padding: 10}}
-        //     defaultValue={props.defaultValue}
-        //     isFullWidth={true}
-        //     renderRightComponent={() => <MaterialCommunityIcons name="chevron-down" size={24} color="black"/>} 
-        // />
     );
 }

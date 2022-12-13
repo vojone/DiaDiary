@@ -1,3 +1,8 @@
+/**
+ * Dropdown component for settings
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { useEffect } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import DropdownItem from "./DropdownItem";
@@ -24,7 +29,7 @@ export default function InitSettingsDropdown(props) {
         placeholderStyle={props.placeholderStyle}
         value={props.value}
         dropdownPosition="bottom"
-        containerStyle={{marginTop: -25}}
+        // containerStyle={{marginTop: -25}}
     >   
     </Dropdown>);
 }

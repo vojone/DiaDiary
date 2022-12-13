@@ -9,9 +9,16 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Text } from "react-native";
 
 
-export function showToastMessage(message, bgColor = primaryColor, fontColor = 'white') {
+/**
+ * Shows the toast message that its style can be modified by arguments
+ * @param {*} message 
+ * @param {*} bgColor 
+ * @param {*} fontColor 
+ * @returns 
+ */
+export function showToastMessage(message, bgColor = primaryColor, fontColor = 'white', toastDuration = Toast.durations.SHORT) {
     return Toast.show( message, {
-        duration: Toast.durations.SHORT,
+        duration: toastDuration,
         position: 40,
         show: false,
         animation: true,
@@ -23,13 +30,14 @@ export function showToastMessage(message, bgColor = primaryColor, fontColor = 'w
 } 
 
 
-export function showToastMessageSuccess(message) {
+
+export function showToastMessageSuccess(message, toastDuration = Toast.durations.SHORT) {
     return Toast.show( 
         <>
         <MaterialCommunityIcons name="check" size={16}></MaterialCommunityIcons>
         <Text>{`  ${message}`}</Text>
         </>, {
-        duration: Toast.durations.SHORT,
+        duration: toastDuration,
         position: 40,
         show: false,
         animation: true,
@@ -42,13 +50,13 @@ export function showToastMessageSuccess(message) {
 } 
 
 
-export function showToastMessageWarning(message) {
+export function showToastMessageWarning(message, toastDuration = Toast.durations.SHORT) {
     return Toast.show( 
         <>
         <MaterialCommunityIcons name="exclamation" size={16} style={{marginRight: 10}}></MaterialCommunityIcons>
         <Text>{`  ${message}`}</Text>
         </>, {
-        duration: Toast.durations.SHORT,
+        duration: toastDuration,
         position: 40,
         show: false,
         animation: true,
@@ -62,13 +70,13 @@ export function showToastMessageWarning(message) {
 
 
 
-export function showToastMessageDanger(message) {
+export function showToastMessageDanger(message, toastDuration = Toast.durations.SHORT) {
     return Toast.show( 
         <>
         <MaterialCommunityIcons name="close" size={16} style={{marginRight: 10}}></MaterialCommunityIcons>
         <Text>{`  ${message}`}</Text>
         </>, {
-        duration: Toast.durations.SHORT,
+        duration: toastDuration,
         position: 40,
         show: false,
         animation: true,
