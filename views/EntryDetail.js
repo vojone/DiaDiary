@@ -98,7 +98,14 @@ export default function EntryDetail({route, navigation}) {
     delete recordDetail._id;
     Vibration.vibrate(200);
     showToastMessageSuccess('Záznam byl upraven');
-    Record.remove({_id: recordId}).then(() => {new Record(recordDetail).save().then(() => {navigation.goBack()})});
+    Record.remove({_id: recordId}).then(
+      () => {
+        new Record(recordDetail).save().then(
+        () => {
+          navigation.goBack(); setButtonDisable(false)
+        })
+      }
+    );
   };
 
   const deleteRecord = () => {
@@ -112,8 +119,7 @@ export default function EntryDetail({route, navigation}) {
           Vibration.vibrate(200);
           showToastMessageSuccess('Záznam byl smazán');
 
-          Record.remove({_id: recordId}).then(() => {navigation.goBack()});//navigation.navigate('Home')});
-          // Delete record
+          Record.remove({_id: recordId}).then(() => {navigation.goBack()});
       },
       },
 
