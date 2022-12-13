@@ -18,7 +18,7 @@ import AppendDropdown from '../components/AppendDropdown';
 import DropdownItem from "../components/DropdownItem";
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { primaryColor2Pressed, placeholderColor, primaryColor, primaryColor2, backgroundColor, backgroundColor2 } from '../styles/common';
+import { primaryColor2Pressed, placeholderColor, primaryColor, primaryColor2, backgroundColor, backgroundColor2, dangerColor } from '../styles/common';
 import { Record } from '../models/record';
 import { Unit } from '../models/unit';
 import { Food } from "../models/food";
@@ -172,7 +172,6 @@ export default function EntryDetail({route, navigation}) {
     })
      // Get the carbo hydrates units
      Unit.find('mass', {}, true).then((massUnits) => {
-      //console.log(massUnits);
       if(massUnits == null) {
           setCarboUEnum([]);
       }
@@ -304,14 +303,13 @@ const timeSelectionConfirm = (time) => {
 
       delete_button_flex: {
         flexDirection: 'row',
-        
         marginTop: 20,
         justifyContent: 'flex-end',
 
         delete_button: {
+          borderColor: dangerColor,
           marginTop: 20,
           maxWidth: 195,
-          borderColor: primaryColor,
 
           text: {
             fontSize: 20,
@@ -503,7 +501,7 @@ const timeSelectionConfirm = (time) => {
         </View>
         
         <View style={styles.delete_button_flex}>
-        <Button icon="alert" style={styles.delete_button_flex.delete_button} mode="outlined" disabled={buttonDisable} onPress={deleteRecord}>
+        <Button icon="alert" textColor={dangerColor} style={styles.delete_button_flex.delete_button} mode="outlined" disabled={buttonDisable} onPress={deleteRecord}>
           <Text style={styles.delete_button_flex.delete_button.text}>Smazat záznam</Text>
         </Button>
         </View>
@@ -536,14 +534,15 @@ const timeSelectionConfirm = (time) => {
         
 
         <View style={styles.confirm_buttons_flex}>
-        <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" disabled={buttonDisable} onPress={updateRecord}>
-          Uložit změny
-        </Button>
-
         <Button icon="close" mode="contained" disabled={buttonDisable} onPress={() => navigation.goBack()}>
           Zrušit
         </Button>
+
+        <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" disabled={buttonDisable} onPress={updateRecord}>
+          Uložit změny
+        </Button>
         </View>
+        
       </View>
       </ScrollView>
       </SafeAreaView>
