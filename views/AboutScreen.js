@@ -20,7 +20,7 @@ const localstyles = StyleSheet.create({
 const styles = settingStyles;
 export default function AboutScreen() {
     return (
-        <LinearGradient colors={[primaryColor, primaryColor2]} style={{ flex: 1 }}>
+        <LinearGradient colors={[primaryColor2, primaryColor]} style={{ flex: 1 }}>
             <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
                 <Text style={styles.mainheading}><MaterialCommunityIcons name="information" color="white" size={28}></MaterialCommunityIcons>  O aplikaci</Text>
                 <Text style={styles.regular}>

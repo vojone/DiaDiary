@@ -5,7 +5,7 @@
 
 
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions, DevSettings } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions, DevSettings, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ButtonPrimary from '../components/ButtonPrimary';
 import ButtonSecondary from '../components/ButtonSecondary';
@@ -34,6 +34,8 @@ import RNRestart from 'react-native-restart';
  */
 export default function SettingsScreen({ navigation }) {
     const [user, setUser] = useState(global.user);
+
+    const [isSwipeEnabled, setIsSwipeEnabled] = useState(true);
 
     //Enums for lists and dropdowns
     const [massUnitsEnum, setMassUnitsEnum] = useState([]);
@@ -433,18 +435,18 @@ export default function SettingsScreen({ navigation }) {
                     </View>
                     <View>
                         <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4 }}>
-                        <View style={{ marginBottom: 10 }}>
-                            <NumericSlider
-                                value={fakeVal2}
-                                onValueChange={setFakeVal2}
-                                min={0}
-                                step={0.1}
-                                max={50}
-                                append={false}
-                                textPadding={6}
-                            >
-                            </NumericSlider>
-                        </View>
+                            <View style={{ marginBottom: 10 }}>
+                                <NumericSlider
+                                    value={fakeVal2}
+                                    onValueChange={setFakeVal2}
+                                    min={0}
+                                    step={0.1}
+                                    max={50}
+                                    append={false}
+                                    textPadding={6}
+                                >
+                                </NumericSlider>
+                            </View>
                         {user.inputType == 1 ?
                             <ButtonSecondary
                                 mode="text"
@@ -567,7 +569,7 @@ export default function SettingsScreen({ navigation }) {
             <FlatList
                 ref={flatList}
                 horizontal={true}
-                scrollEnabled={true}
+                scrollEnabled={isSwipeEnabled}
                 persistentScrollbar={true}
                 disableIntervalMomentum={true}
                 snapToAlignment="start"
