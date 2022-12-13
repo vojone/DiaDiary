@@ -1,3 +1,8 @@
+/**
+ * Component for displaying one record in history
+ * Author:  Juraj Dedič (xdedic07)
+ */
+
 import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
 import { color } from "react-native-reanimated";
 
