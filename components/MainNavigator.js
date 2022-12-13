@@ -1,3 +1,8 @@
+/**
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, View } from 'react-native';

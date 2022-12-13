@@ -1,3 +1,9 @@
+/**
+ * Declaration of global variables
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
 import { Food } from "./models/food";
 import { Tag } from "./models/tag";
 import { Unit } from "./models/unit";
@@ -9,6 +15,12 @@ global.user = {};
 global.firstLaunch = false;
 global.settingsChanged = false;
 
+/**
+ * Seeds the data to the app
+ * @param {*} navigationRef 
+ * @param {*} clearData 
+ * @param {*} seedDemoData 
+ */
 export default function seedData(navigationRef, clearData, seedDemoData = false) {
     console.log('Intialization');
     getAS('initialized').then((result) => {

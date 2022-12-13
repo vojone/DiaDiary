@@ -1,3 +1,9 @@
+/**
+ * Settings screen including all settings slides 
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,17 +15,40 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { showToastMessageDanger, showToastMessageSuccess, ToastMessage } from '../components/ToastMessage';
 import { Unit } from '../models/unit';
 import { User } from '../models/user';
-import { dangerColor, primaryColor, primaryColor2 } from '../styles/common';
+import { dangerColor, placeholderColor, primaryColor, primaryColor2 } from '../styles/common';
+import NumericSlider from '../components/NumericSlider';
+import NumericSpinner from '../components/NumericSpinner';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Tag } from '../models/tag';
+import { Button, Dialog, Paragraph } from 'react-native-paper';
+import { Record } from '../models/record';
 
+
+/**
+ * Settings functional component
+ * @param {*} param0 
+ * @returns 
+ */
 export default function SettingsScreen({ navigation }) {
     const [user, setUser] = useState(global.user);
 
     const [massUnitsEnum, setMassUnitsEnum] = useState([]);
     const [glycUnitsEnum, setGlycUnitsEnum] = useState([]);
+
     const [insulineTypesEnum, setInsulineTypesEnum] = useState([]);
     const [newInsulineType, setNewInsulineType] = useState('');
 
+    const [tagsEnum, setTagsEnum] = useState([]);
+    const [newTag, setNewTag] = useState('');
+
+    const [fakeVal1, setFakeVal1] = useState(5.5);
+    const [fakeVal2, setFakeVal2] = useState(5.5);
+
     const [saving, setSaving] = useState(false);
+
+    const [visibleRemoveRecordsDia, setVisibleRemoveRecordsDia] = useState(false);
+
+    const [visibleResetDia, setVisibleResetDia] = useState(false);
 
     const flatList = useRef();
 
@@ -48,6 +77,16 @@ export default function SettingsScreen({ navigation }) {
                     setInsulineTypesEnum(result);
                 }
             });
+
+            Tag.find({}, true).then((result) => {
+                if(result !== null) {
+                    result.forEach((ins, i) => {
+                        ins.key = i;
+                    });
+    
+                    setTagsEnum(result);
+                }
+            }); 
     
             flatList.current.scrollToIndex({animated: false, index: 0});
         });
@@ -55,6 +94,10 @@ export default function SettingsScreen({ navigation }) {
         return unsubscribe;
     }, [navigation]);
 
+    /**
+     * Callback for add insuline type button
+     * @returns 
+     */
     const insulineTypeAdded = () => {
         if(newInsulineType.trim() == '') {
             return;
@@ -75,10 +118,50 @@ export default function SettingsScreen({ navigation }) {
         setNewInsulineType('');
     }
 
+    /**
+     * Callback for remove insuline type button
+     * @returns 
+     */
     const insulineRemoved = (key) => {
         setInsulineTypesEnum(arr => arr.filter(e => e.key !== key));
     }
 
+    /**
+     * @see insulineTypeAdded (works smilarly but for the tag)
+     * @returns 
+     */
+    const tagAdded = () => {
+        if(newTag.trim() == '') {
+            return;
+        }
+
+        let newTagObj = new Tag({label: newTag});
+        
+        let maxVal = 0;
+        tagsEnum.forEach(element => {
+            if(element.key && element.key > maxVal)
+                maxVal = element.key;
+        });
+
+        newTagObj.key = maxVal + 1;
+
+        setTagsEnum(tag => ([...tag, newTagObj]));
+
+        setNewTag('');
+    }
+
+    /**
+     * @see insulineRemoved (works smilarly but for the tag)
+     * @returns 
+     */
+    const tagRemoved = (key) => {
+        setTagsEnum(arr => arr.filter(e => e.key !== key));
+    }
+
+    /**
+     * Navigates user to the record list page
+     * @returns 
+     */
     const goBack = () => {
         navigation.navigate('Records');
     }
@@ -99,11 +182,12 @@ export default function SettingsScreen({ navigation }) {
     
     const saveSettings = () => {
         setSaving(true);
-        let insulineProm = Unit.remove({ unitType: 'insuline'}, true).then(
-            (removed) => { 
-                let toBeInserted = insulineTypesEnum.map(e => {return e; });
 
-                return Unit.addUnits(toBeInserted)
+        let insulineProm = Unit.remove({ unitType: 'insuline'}, true).then(
+            (removed) => {
+                let toBeInserted = insulineTypesEnum;
+
+                return Unit.addUnits(toBeInserted);
             },
             (error) => {
                 console.error(error);
@@ -111,7 +195,19 @@ export default function SettingsScreen({ navigation }) {
             }
         );
 
-        insulineProm.then(
+        let tagsProm = Tag.remove({}, true).then(
+            (removed) => { 
+                let toBeInserted = tagsEnum;
+
+                return Tag.addTags(toBeInserted);
+            },
+            (error) => {
+                console.error(error);
+                savingDone(false);
+            }
+        );
+
+        Promise.allSettled([tagsProm, insulineProm]).then(
             insuline => {
                 let newUserSettings = new User(user);
 
@@ -120,15 +216,17 @@ export default function SettingsScreen({ navigation }) {
                     newUserSettings.newInsulineType;
                 }
 
-                User.update({_id: newUserSettings._id}, newUserSettings).then(
-                    (newUser) => {
-                        global.user = newUserSettings;
-
-                        savingDone();
-                },
-                error => {
-                    console.error(error);
-                    savingDone(false);
+                User.remove({}, true).then((numofDeleted) => {
+                    delete newUserSettings._id;
+                    newUserSettings.save().then(
+                        (newUser) => {
+                            global.user = newUser;
+                            savingDone();
+                    },
+                    error =>{
+                        console.error(error);
+                        savingDone(false);
+                    });
                 });
             },
             error => {
@@ -176,6 +274,7 @@ export default function SettingsScreen({ navigation }) {
             fontSize: 16,
             color: 'white',
             fontWeight: 'bold',
+            marginBottom: 5,
         },
 
         section: {
@@ -213,6 +312,11 @@ export default function SettingsScreen({ navigation }) {
         },
     });
 
+
+    /**
+     * Setting slides
+     */
+
     const unitForm = (item) => {
         return (
             <View  style={{ flex: 1 }}>
@@ -225,6 +329,7 @@ export default function SettingsScreen({ navigation }) {
                             data={glycUnitsEnum}
                             onValueChange={(gUnit) => { setUser(user => ({...user, glycemiaUnit: gUnit})) }}
                             value={user.glycemiaUnit}
+                            placeholderStyle={{color: 'white'}}
                         >
                         </InitSettingsDropdown>
                         </View>
@@ -236,6 +341,7 @@ export default function SettingsScreen({ navigation }) {
                             data={massUnitsEnum}
                             onValueChange={(mUnit) => { setUser(user => ({...user, massUnit: mUnit})) }}
                             value={user.massUnit}
+                            placeholderStyle={{color: 'white'}}
                         >
                         </InitSettingsDropdown>
                         </View>
@@ -273,17 +379,17 @@ export default function SettingsScreen({ navigation }) {
                     <View style={styles.formitem}>
                         <Text style={styles.label}>Který druh nejčastěji?</Text>
                         <InitSettingsDropdown
-                            maxHeight={Dimensions.get('window').height*0.22}
+                            maxHeight={Dimensions.get('window').height*0.18}
                             data={insulineTypesEnum}
                             onValueChange={(type) => { setUser(user => ({...user, insulineType: type})) }}
                             value={user.insulineType ? user.insulineType : insulineTypesEnum[0]}
+                            placeholderStyle={{color: 'white'}}
                         >
                         </InitSettingsDropdown>
                     </View>
                 </View>
             </View>);
     }
-
 
     const inputForm = (item) => {
         return (
@@ -292,8 +398,65 @@ export default function SettingsScreen({ navigation }) {
                     <Text style={styles.heading}>Zadávání hodnot</Text>
                 </View>
                 <View style={styles.form}>
+                    <Text style={styles.label}>Jaké zadávání hodnot ti vyhovuje více?</Text>
+                    <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4, marginBottom: 30 }}>
+                            <View style={{ marginBottom: 10 }}>
+                            <NumericSpinner
+                                placeholderColor={placeholderColor}
+                                emptied={true}
+                                min={0}
+                                step={0.1}
+                                max={50}
+                                value={fakeVal1}
+                                onValueChange={setFakeVal1}
+                            ></NumericSpinner>
+                            </View>
+                            {user.inputType != 1 ?
+                            <ButtonSecondary
+                                mode="text"
+                                icon="check"
+                                title="Tento způsob zadávání mi vyhovuje"
+                            >
+                            </ButtonSecondary>
+                            :
+                            <ButtonPrimary 
+                                fillColor={primaryColor}
+                                textColor='white'
+                                title="Chci tento způsob"
+                                onPress={() => {setUser(u => ({...u, inputType: null })); }}
+                            >
+                            </ButtonPrimary>}
+                    </View>
                     <View>
-                        
+                        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4 }}>
+                        <View style={{ marginBottom: 10 }}>
+                            <NumericSlider
+                                value={fakeVal2}
+                                onValueChange={setFakeVal2}
+                                min={0}
+                                step={0.1}
+                                max={50}
+                                append={false}
+                                textPadding={6}
+                            >
+                            </NumericSlider>
+                        </View>
+                        {user.inputType == 1 ?
+                            <ButtonSecondary
+                                mode="text"
+                                icon="check"
+                                title="Tento způsob zadávání mi vyhovuje"
+                            >
+                            </ButtonSecondary>
+                            :
+                            <ButtonPrimary 
+                                fillColor={primaryColor}
+                                textColor='white'
+                                title="Chci tento způsob"
+                                onPress={() => {setUser(u => ({...u, inputType: 1 })); }}    
+                            >
+                            </ButtonPrimary>}
+                        </View>
                     </View>
                 </View>
             </View>);
@@ -307,12 +470,57 @@ export default function SettingsScreen({ navigation }) {
                 </View>
                 <View style={styles.form}>
                     <View>
-                        
+                        <Text style={styles.label}>Které značky chceš používat pro záznamy?</Text>
+                        <EditableList
+                            newItemValue={newTag}
+                            onChangeNewItemValue={setNewTag}
+                            data={tagsEnum}
+                            onAdd={tagAdded}
+                            onRemove={tagRemoved}
+                            placeholderColor="rgba(255, 255, 255, 0.5)"
+                            height={Dimensions.get('window').height*0.4}
+                            labelField="label"
+                            textColor="white"
+                            textListColor={primaryColor}
+                            backgroundColor="white"
+                            idField="key"
+                        >
+                        </EditableList>
                     </View>
                 </View>
             </View>);
     }
 
+
+    const hideRemoveRecordsDia = () => {
+        setVisibleRemoveRecordsDia(false);
+    }
+
+    const removeRecords = () => {
+        setVisibleRemoveRecordsDia(false);
+
+        Record.remove({}, true).then(
+            (result) => {
+                console.log(result);
+                showToastMessageSuccess('Záznamy byly úspěšně vymazány');
+
+                navigation.navigate('Records');
+            },
+            (error) => {
+                console.log(error);
+                showToastMessageDanger('Nepodařilo se smazat záznamy');
+
+                navigation.navigate('Records');
+        });
+    }
+
+    const hideResetDia = () => {
+        setVisibleResetDia(false);
+    }
+
+    const resetApp = () => {
+
+    }
 
     const dangerForm = (item) => {
         return (
@@ -327,7 +535,7 @@ export default function SettingsScreen({ navigation }) {
                             fillColor={dangerColor}
                             textColor='white'
                             title='Vymazat záznamy'
-                            onPress={() => {}}
+                            onPress={() => { setVisibleRemoveRecordsDia(true); }}
                         >
                         </ButtonPrimary>
                         </View>
@@ -336,7 +544,7 @@ export default function SettingsScreen({ navigation }) {
                             fillColor={dangerColor}
                             textColor='white'
                             title='Resetovat aplikaci'
-                            onPress={() => {}}
+                            onPress={() => { setVisibleResetDia(true); }}
                         >
                         </ButtonPrimary>
                         </View>
@@ -354,10 +562,14 @@ export default function SettingsScreen({ navigation }) {
     ]
 
     return (
+        <KeyboardAwareScrollView>
+        <View style={{ flex: 1, height: Dimensions.get('window').height + StatusBar.currentHeight }}>
+
         <LinearGradient colors={[primaryColor2, primaryColor]} style={{ flex: 1}}>
         <SafeAreaView
             style={styles.container}
         >
+
             <View style={styles.topcontrolpanel}>
                 <ButtonSecondary 
                     fontSize={12}
@@ -417,8 +629,33 @@ export default function SettingsScreen({ navigation }) {
                 >
                 </ButtonPrimary>
             </View>
+
+            <Dialog visible={visibleRemoveRecordsDia} onDismiss={hideRemoveRecordsDia}>
+                    <Dialog.Title>Vymazat záznamy</Dialog.Title>
+                    <Dialog.Content>
+                    <Paragraph>Skutečně chceš vymazat všechny svoje záznamy? Tuto akci nelze vzít zpět!</Paragraph>
+                    </Dialog.Content>
+                    <Dialog.Actions style={{justifyContent: 'space-between'}}>
+                    <Button onPress={hideRemoveRecordsDia}>Ne</Button>
+                    <Button onPress={removeRecords} labelStyle={{color: dangerColor}}>Ano</Button>
+                    </Dialog.Actions>
+                </Dialog>
+
+
+                <Dialog visible={visibleResetDia} onDismiss={hideResetDia}>
+                    <Dialog.Title>Resetovat aplikaci</Dialog.Title>
+                    <Dialog.Content>
+                    <Paragraph>Skutečně chceš resetovat aplikaci? Tuto akci nelze vzít zpět!</Paragraph>
+                    </Dialog.Content>
+                    <Dialog.Actions style={{justifyContent: 'space-between'}}>
+                    <Button onPress={hideResetDia}>Ne</Button>
+                    <Button onPress={resetApp} labelStyle={{color: dangerColor}}>Ano</Button>
+                    </Dialog.Actions>
+                </Dialog>
         </SafeAreaView>
         </LinearGradient>
+        </View>
+        </KeyboardAwareScrollView>
     );
   }
   

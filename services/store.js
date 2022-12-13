@@ -1,3 +1,8 @@
+/**
+ * Implementation of backend based on AsyncStorage
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 

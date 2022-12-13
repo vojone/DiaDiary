@@ -1,3 +1,9 @@
+/**
+ * Food tab of the record add screen
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
 import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles, backgroundColor, backgroundColor2, activeColor, placeholderColor, primaryColor } from "../styles/common";
@@ -9,6 +15,7 @@ import { Unit } from "../models/unit";
 import { Food } from "../models/food";
 import { LinearGradient } from "expo-linear-gradient";
 import NumericSpinner from "../components/NumericSpinner";
+import NumericSlider from "../components/NumericSlider";
 
 
 export default function FoodTab({ navigation, model, screenref }) {
@@ -96,13 +103,15 @@ export default function FoodTab({ navigation, model, screenref }) {
     <View style={styles.maincontainer}>
         <View>
             <Text>Sacharidy</Text>
-            <NumericSpinner
+            {global.user && !global.user.inputType ?
+                <NumericSpinner
                     placeholderColor={placeholderColor}
                     emptied={true}
                     min={0}
                     step={carboU && carboU.step ? carboU.step : 0.1}
                     max={1000}
                     value={carbo}
+                    resolution={0}
                     onValueChange={setCarbo}
                     append={
                         <AppendDropdown
@@ -112,6 +121,21 @@ export default function FoodTab({ navigation, model, screenref }) {
                         ></AppendDropdown>
                     } // Appended element
                 ></NumericSpinner>
+                :
+                <NumericSlider
+                    value={carbo}
+                    onValueChange={setCarbo}
+                    min={0}
+                    step={carboU && carboU.step ? carboU.step : 1}
+                    max={1000}
+                    rangeMin={-10}
+                    resolution={carboU && carboU.resultion ? carboU.resolution : 0}
+                    rangeMax={10}
+                    appendValueEnum={carboUEnum}
+                    appendValue={carboU}
+                    onValueChangeAppend={setCarboU}
+                >
+                </NumericSlider>}
             </View>
         <View style={styles.inputwithtopgap}>
             <Text>Jídlo</Text>

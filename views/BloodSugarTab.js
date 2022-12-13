@@ -1,11 +1,18 @@
-import { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
+/**
+ * Blood sugar tab of record add screen
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
+import { useState, useImperativeHandle, forwardRef, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { addRecordStyles, backgroundColor, backgroundColor2, placeholderColor } from '../styles/common';
+import { activeColor, addRecordStyles, backgroundColor, backgroundColor2, placeholderColor, primaryColor, primaryColor2 } from '../styles/common';
 import InputSpinner from 'react-native-input-spinner';
 import AppendDropdown from '../components/AppendDropdown';
 import { Unit } from '../models/unit';
 import NumericSpinner from '../components/NumericSpinner';
 import { LinearGradient } from 'expo-linear-gradient';
+import NumericSlider from '../components/NumericSlider';
 
 
 export default function BloodSugarTab({ navigation, model, screenref }) {
@@ -29,11 +36,13 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
 
     const [glycemia, setGlycemia] = useState(model.bloodSugar);
     const [glycemiaU, setGlycemiaU] = useState([]);
+
     const [insuline, setInsuline] = useState(model.insuline);
     const [insulineT, setInsulineT] = useState([]);
 
     const [glycemiaUEnum, setGlycemiaUEnum] = useState([]);
     const [insulineTEnum, setInsulineTEnum] = useState([]);
+
 
     useEffect(() => {
         Unit.find('glyc', {}, true).then((glycemiaUnits) => {
@@ -114,6 +123,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         <View style={styles.maincontainer}>
             <View>
                 <Text>Hladina cukru</Text>
+                {global.user && !global.user.inputType ?
                 <NumericSpinner
                     placeholderColor={placeholderColor}
                     emptied={true}
@@ -130,15 +140,32 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                         ></AppendDropdown>
                     } // Appended element
                 ></NumericSpinner>
+                :
+                <NumericSlider
+                    value={glycemia}
+                    onValueChange={setGlycemia}
+                    min={0}
+                    step={glycemiaU && glycemiaU.step ? glycemiaU.step : 0.1}
+                    max={50}
+                    rangeMax={2}
+                    rangeMin={-2}
+                    resolution={glycemiaU && glycemiaU.resultion ? glycemiaU.resultion : 1}
+                    appendValueEnum={glycemiaUEnum}
+                    appendValue={glycemiaU}
+                    onValueChangeAppend={setGlycemiaU}
+                >
+                </NumericSlider>}
+                
             </View>
             <View style={styles.inputwithtopgap}>
                 <Text>Inzulín (jednotky)</Text>
+                {global.user && !global.user.inputType ?
                 <NumericSpinner
                     placeholderColor={placeholderColor}
                     emptied={true}
                     min={0}
                     step={insulineT && insulineT.step ? insulineT.step : 1}
-                    max={50}
+                    max={100}
                     value={insuline}
                     onValueChange={setInsuline}
                     append={
@@ -149,6 +176,21 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                         ></AppendDropdown>
                     } // Appended element
                 ></NumericSpinner>
+                :
+                <NumericSlider
+                    value={insuline}
+                    onValueChange={setInsuline}
+                    min={0}
+                    step={insulineT && insulineT.step ? insulineT.step : 1}
+                    max={100}
+                    rangeMin={-10}
+                    rangeMax={10}
+                    resolution={0}
+                    appendValueEnum={insulineTEnum}
+                    appendValue={insulineT}
+                    onValueChangeAppend={setInsulineT}
+                >
+                </NumericSlider>}
             </View>
         </View>
         </LinearGradient>);

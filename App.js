@@ -1,3 +1,8 @@
+/**
+ * The main body of DiaDiary app
+ */
+
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createRef, useEffect } from 'react';
 

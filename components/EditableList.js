@@ -1,3 +1,7 @@
+/**
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { FlatList, View, Text, Button, TextInput } from "react-native";
 import { dangerColor, primaryColor } from "../styles/common";
 import ButtonPrimary from "./ButtonPrimary";

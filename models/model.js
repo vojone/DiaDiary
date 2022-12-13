@@ -1,3 +1,8 @@
+/**
+ * General model implementation (base for the other models)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { store, get, remove, update, removeAll } from "../services/database";
 
 export default class Model {
@@ -40,8 +45,8 @@ export default class Model {
     }
 
     static async updateModel(targetCls, query, upd) {
-        return update(targetCls.databaseType, query, upd).then(result => {
-            return result;
+        return update(targetCls.databaseType, query, upd).then((num) => {
+            return num;
         });
     }
 

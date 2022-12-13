@@ -1,3 +1,7 @@
+/**
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { useState } from "react";
 import { View, Text, Button, TextInput, StyleSheet } from "react-native";
 
