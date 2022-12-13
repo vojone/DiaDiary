@@ -1,3 +1,8 @@
+/**
+ * Dropdown component for settings
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { useEffect } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import DropdownItem from "./DropdownItem";
@@ -21,6 +26,7 @@ export default function InitSettingsDropdown(props) {
         renderItem={(item, selected) => <DropdownItem labelField={props.labelField} item={item} selected={selected} padding={20}></DropdownItem>}
         placeholder={props.value ? props.value.label : '-'}
         selectedTextStyle={{ color: 'white', fontSize: 16,  }}
+        placeholderStyle={props.placeholderStyle}
         value={props.value}
         dropdownPosition="bottom"
         containerStyle={{marginTop: -25}}

@@ -1,27 +1,41 @@
+/**
+ * Seeds the initial data to the storage (and/or demo data as well)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { Food } from "./models/food";
 import { Tag } from "./models/tag";
 import { Unit } from "./models/unit";
 import { User } from "./models/user";
-import { getAS, storeAS } from './services/store';
 
+
+/**
+ * Seeds the units and (intial) insuline types 
+ * @returns 
+ */
 export async function seedUnits() {
     return Unit.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} units!`);
 
         return Unit.addUnits([
-            new Unit({unitType: 'mass', label: 'g', isReference: true, title: 'g (gram)'}),
-            new Unit({unitType: 'mass', label: 'oz', toReferenceCoef: 28.35, step: 0.1, title: 'oz (unce)'}),
+            new Unit({unitType: 'mass', label: 'g', isReference: true, title: 'g (gram)', resolution: 0}),
+            new Unit({unitType: 'mass', label: 'oz', toReferenceCoef: 28.35, step: 0.1, title: 'oz (unce)', resolution: 1}),
 
-            new Unit({unitType: 'glyc', label: 'mmol/l', isReference: true, step: 0.1}),
-            new Unit({unitType: 'glyc', label: 'mg/dL', toReferenceCoef: 0.055}),
+            new Unit({unitType: 'glyc', label: 'mmol/l', isReference: true, step: 0.1, resolution: 1}),
+            new Unit({unitType: 'glyc', label: 'mg/dL', toReferenceCoef: 0.055, resolution: 0}),
             
-            new Unit({unitType: 'insuline', label: 'Fiasp', isReference: true}),
-            new Unit({unitType: 'insuline', label: 'Novorapid'}),
+            new Unit({unitType: 'insuline', label: 'Fiasp', isReference: true, resolution: 0}),
+            new Unit({unitType: 'insuline', label: 'Novolog', resolution: 0}),
+            new Unit({unitType: 'insuline', label: 'Novorapid', resolution: 0}),
         ]);
     });
 }
 
 
+/**
+ * Seeds the initial food types
+ * @returns Promise
+ */
 export async function seedFood() {
     return Food.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} food!`);
@@ -37,6 +51,10 @@ export async function seedFood() {
 }
 
 
+/**
+ * Seeds the initial tags
+ * @returns Promise
+ */
 export async function seedTags() {
     return Tag.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} tags!`);
@@ -50,6 +68,10 @@ export async function seedTags() {
 }
 
 
+/**
+ * Seeds the demo user settings
+ * @returns Promise
+ */
 export async function seedDemoUser() {
     return User.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} user settings!`);

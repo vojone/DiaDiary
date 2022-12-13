@@ -1,9 +1,21 @@
+/**
+ * API for showing styled toast message
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import Toast from "react-native-root-toast";
 import { dangerColor, primaryColor, successColor, warningColor } from "../styles/common";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Text } from "react-native";
 
 
+/**
+ * Shows the toast message that its style can be modified by arguments
+ * @param {*} message 
+ * @param {*} bgColor 
+ * @param {*} fontColor 
+ * @returns 
+ */
 export function showToastMessage(message, bgColor = primaryColor, fontColor = 'white') {
     return Toast.show( message, {
         duration: Toast.durations.SHORT,
@@ -16,6 +28,7 @@ export function showToastMessage(message, bgColor = primaryColor, fontColor = 'w
         delay: 0,
     });
 } 
+
 
 
 export function showToastMessageSuccess(message) {

@@ -1,3 +1,11 @@
+// Numeric spinner component
+// Autor Tomáš Dvořák (xdvora3r)
+
+/**
+ * Numeric spinner component
+ * @author Tomáš Dvořák (xdvora3r)
+ */
+
 import InputSpinner from "react-native-input-spinner";
 import { primaryColor2, primaryColor2Pressed } from "../styles/common";
 import AppendDropdown from "./AppendDropdown";

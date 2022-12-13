@@ -1,3 +1,8 @@
+/**
+ * Datetime picker with data visualisation (base on react-native-modal-datetime-picker)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import DateTimePicker from 'react-native-modal-datetime-picker';

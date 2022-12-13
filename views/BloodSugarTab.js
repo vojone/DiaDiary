@@ -1,3 +1,9 @@
+/**
+ * Blood sugar tab of record add screen
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
 import { useState, useImperativeHandle, forwardRef, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { activeColor, addRecordStyles, backgroundColor, backgroundColor2, placeholderColor, primaryColor, primaryColor2 } from '../styles/common';
@@ -10,6 +16,7 @@ import NumericSlider from '../components/NumericSlider';
 
 
 export default function BloodSugarTab({ navigation, model, screenref }) {
+    //Imperative handle for parent screen (RecordAddScreen)
     useImperativeHandle(screenref, () => ({
         refresh: (model) => { 
             setGlycemia(model.bloodSugar);
@@ -39,6 +46,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
 
 
     useEffect(() => {
+        //Retireiving glycemia units for dropdown
         Unit.find('glyc', {}, true).then((glycemiaUnits) => {
             if(glycemiaUnits == null) {
                 setGlycemiaUEnum([]);
@@ -52,6 +60,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         })
     }, [global.user, global.settingsChanged]);
 
+    //Settings default (initial glycemia units)
     const setDefaultGlycUnit = (unitArr) => {
         if(!unitArr) {
             return;
@@ -75,6 +84,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
 
 
     useEffect(() => {
+        //Retrieving intial (default) insuline types for dropdown
         Unit.find('insuline', {}, true).then((insulineTypes) => {
             if(insulineTypes == null) {
                 setInsulineT([]);
@@ -141,6 +151,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     min={0}
                     step={glycemiaU && glycemiaU.step ? glycemiaU.step : 0.1}
                     max={50}
+                    rangeMax={2}
+                    rangeMin={-2}
+                    resolution={glycemiaU && glycemiaU.resultion ? glycemiaU.resultion : 1}
                     appendValueEnum={glycemiaUEnum}
                     appendValue={glycemiaU}
                     onValueChangeAppend={setGlycemiaU}
@@ -174,9 +187,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     min={0}
                     step={insulineT && insulineT.step ? insulineT.step : 1}
                     max={100}
-                    maximumSliderValue={10}
+                    rangeMin={-10}
+                    rangeMax={10}
                     resolution={0}
-                    minimumSliderValue={10}
                     appendValueEnum={insulineTEnum}
                     appendValue={insulineT}
                     onValueChangeAppend={setInsulineT}

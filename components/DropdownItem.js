@@ -1,3 +1,8 @@
+/**
+ * Item for dropdown (with check icon if item is selected)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { View, Text } from "react-native";
 import { activeColor } from "../styles/common";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';

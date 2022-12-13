@@ -1,3 +1,9 @@
+/**
+ * Food tab of the record add screen
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
+
 import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles, backgroundColor, backgroundColor2, activeColor, placeholderColor, primaryColor } from "../styles/common";
@@ -13,6 +19,7 @@ import NumericSlider from "../components/NumericSlider";
 
 
 export default function FoodTab({ navigation, model, screenref }) {
+    //Imperative handles for parent screen (RecordAddScreen)
     useImperativeHandle(screenref, () => ({
         refresh: (model) => { 
             setCarbo(model.carboHydrates);
@@ -37,6 +44,7 @@ export default function FoodTab({ navigation, model, screenref }) {
     const [foodEnum, setFoodEnum] = useState([]);
 
     useEffect(() => {
+        //Retrieving mass units for dropdown
         Unit.find('mass', {}, true).then((massUnits) => {
             if(massUnits == null) {
                 setCarboUEnum([]);
@@ -48,7 +56,8 @@ export default function FoodTab({ navigation, model, screenref }) {
         })
     }, [global.user, global.settingsChanged]);
 
-
+    
+    //Sets the default (initial) of the record
     const setDefaultMassUnit = (unitArr) => {
         if(!unitArr) {
             return;
@@ -72,6 +81,7 @@ export default function FoodTab({ navigation, model, screenref }) {
 
 
     useEffect(() => {
+        //Retrieving food types for dropdown
         Food.find({}, true, {order: 1}).then((foodTypes) => {
             if(foodTypes == null) {
                 setFoodEnum([]);
@@ -83,6 +93,8 @@ export default function FoodTab({ navigation, model, screenref }) {
         })
     }, [global.settingsChanged]);
 
+
+    //Sets the initial (default) food type of record
     const setDefaultFoodType = (foodTypes) => {
         if(!foodTypes) {
             return;
@@ -97,7 +109,7 @@ export default function FoodTab({ navigation, model, screenref }) {
     <View style={styles.maincontainer}>
         <View>
             <Text>Sacharidy</Text>
-            {global.user && global.user.inputType == null ?
+            {global.user && !global.user.inputType ?
                 <NumericSpinner
                     placeholderColor={placeholderColor}
                     emptied={true}
@@ -122,9 +134,9 @@ export default function FoodTab({ navigation, model, screenref }) {
                     min={0}
                     step={carboU && carboU.step ? carboU.step : 1}
                     max={1000}
-                    maximumSliderValue={10}
-                    resolution={0}
-                    minimumSliderValue={10}
+                    rangeMin={-10}
+                    resolution={carboU && carboU.resultion ? carboU.resolution : 0}
+                    rangeMax={10}
                     appendValueEnum={carboUEnum}
                     appendValue={carboU}
                     onValueChangeAppend={setCarboU}

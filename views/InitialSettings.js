@@ -1,3 +1,8 @@
+/**
+ * Contains initial settings of the app
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,7 +13,7 @@ import InitSettingsDropdown from '../components/InitSettingsDropdown';
 import { showToastMessage, showToastMessageDanger, showToastMessageSuccess, ToastMessage } from '../components/ToastMessage';
 import { Unit } from '../models/unit';
 import { User } from '../models/user';
-import { dangerColor, placeholderColor, primaryColor, primaryColor2, successColor } from '../styles/common';
+import { dangerColor, placeholderColor, primaryColor, primaryColor2, settingStyles, successColor } from '../styles/common';
 import NumericSlider from '../components/NumericSlider';
 import NumericSpinner from '../components/NumericSpinner';
 
@@ -33,6 +38,7 @@ export default function InitSettingsScreen({ navigation }) {
         const unsubscribe = navigation.addListener('focus', () => {
             setSaving(false);
 
+            //Retrieving mass units for dropdown
             Unit.find('mass', {}, true).then((result) => {
                 if(result !== null) {
                     setMassUnitsEnum(result);
@@ -49,6 +55,7 @@ export default function InitSettingsScreen({ navigation }) {
                 }
             });
     
+            //Retrieving glycemia units for dropdown
             Unit.find('glyc', {}, true).then((result) => {
                 if(result !== null) {
                     setGlycUnitsEnum(result);
@@ -65,6 +72,7 @@ export default function InitSettingsScreen({ navigation }) {
                 }
             });
     
+            //REtrieving insuline types for dropdown (they can be edited by user later)
             Unit.find('insuline', {}, true).then((result) => {
                 if(result !== null) {
                     result.forEach((ins, i) => {
@@ -85,6 +93,7 @@ export default function InitSettingsScreen({ navigation }) {
         return unsubscribe;
     }, [navigation]);
 
+    //Insuline was added to list
     const insulineTypeAdded = () => {
         if(newInsulineType.trim() == '') {
             return;
@@ -105,10 +114,13 @@ export default function InitSettingsScreen({ navigation }) {
         setNewInsulineType('');
     }
 
+    //inslune was removed from list
     const insulineRemoved = (key) => {
         setInsulineTypesEnum(arr => arr.filter(e => e.key !== key));
     }
 
+
+    //Next button callback
     const nextSlide = () => {
         if(currentTabIndex >= tabs.length - 1) {
             return;
@@ -119,6 +131,7 @@ export default function InitSettingsScreen({ navigation }) {
         setCurrentTabIndex(currentTabIndex + 1);
     }
 
+    //Prev button callback
     const prevSlide = () => {
         if(currentTabIndex <= 0) {
             return;
@@ -129,6 +142,8 @@ export default function InitSettingsScreen({ navigation }) {
         setCurrentTabIndex(currentTabIndex - 1);
     }
 
+
+    //Saving was finished
     const savingDone = (success = true) => {
         global.settingsChanged = !global.settingsChanged;
 
@@ -143,6 +158,7 @@ export default function InitSettingsScreen({ navigation }) {
         setSaving(false);
     }
     
+    //Save button callback
     const saveSettings = () => {
         setSaving(true);
         let insulineProm = Unit.remove({ unitType: 'insuline'}, true).then(() => { return Unit.addUnits(insulineTypesEnum)});
@@ -172,86 +188,25 @@ export default function InitSettingsScreen({ navigation }) {
         });
     }
 
-    const styles = StyleSheet.create({
-        container: {
-            //backgroundColor: primaryColor,
-            flex: 1,
-            paddingTop: (Platform.OS == 'android' ? StatusBar.currentHeight : 0) + 20,
-        },
 
-        heading: {
-            fontSize: 36,
-            color: 'white',
-            fontFamily: 'sans-serif-light',
-        },
 
-        form: {
-            marginTop: 30,
-            flex: 1,
-            justifyContent: 'flex-start',
-        },
+    const styles = settingStyles; //Stylesheet
 
-        formitem: {
-            marginBottom: 50,
-        },
 
-        regular: {
-            marginTop: 10,
-            fontSize: 16,
-            color: 'white',
-        },
-
-        label: {
-            fontSize: 16,
-            color: 'white',
-            fontWeight: 'bold',
-        },
-
-        section: {
-            paddingHorizontal: 20,
-            width: Dimensions.get('window').width,
-        },
-
-        lastsection: {
-            paddingRight: 0,
-            width: Dimensions.get('window').width,
-        },
-
-        intro: {
-            borderBottomColor: 'white',
-            paddingBottom: 20,
-            marginBottom: 20,
-            borderBottomWidth: 1,
-        },
-
-        controlpanel : {
-            flexDirection: 'row',
-            padding: 20,
-
-            justifyContent: 'space-between',
-        },
-
-        controlpanelleftmost: {
-            flexDirection: 'row',
-            padding: 20,
-
-            justifyContent: 'flex-end',
-        }
-    });
-
+    //Form with unit settings
     const unitForm = (item) => {
         return (
             <View  style={{ flex: 1 }}>
-                <View style={styles.intro}>
-                    <Text style={styles.heading}>Ahoj!</Text>
+                <View style={styles.initintro}>
+                    <Text style={styles.initheading}>Ahoj!</Text>
                     <Text style={styles.regular}>Jsem tvůj diabetický deník DiaDiary a budu ti pomáhat s monitorováním tvého zdravotního stavu.</Text>
                     <Text style={styles.regular}>Abych ti práci se mnou maximálně zpříjemnil, nastav si, prosím, některé údaje...</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                    <Text style={styles.heading}>Jednotky</Text>
-                    <View style={styles.form}>
-                        <View style={styles.formitem}>
-                        <Text style={styles.label}>V jakých jednotkách měříš svou glykémii?</Text>
+                    <Text style={styles.initheading}>Jednotky</Text>
+                    <View style={styles.initform}>
+                        <View style={styles.initformitem}>
+                        <Text style={styles.initlabel}>V jakých jednotkách měříš svou glykémii?</Text>
                         <InitSettingsDropdown
                             data={glycUnitsEnum}
                             onValueChange={(gUnit) => { setUser(user => ({...user, glycemiaUnit: gUnit})) }}
@@ -260,8 +215,8 @@ export default function InitSettingsScreen({ navigation }) {
                         </InitSettingsDropdown>
                         </View>
 
-                        <View style={styles.formitem}>
-                        <Text style={styles.label}>Jaké jednotky hmotnosti preferuješ?</Text>
+                        <View style={styles.initformitem}>
+                        <Text style={styles.initlabel}>Jaké jednotky hmotnosti preferuješ?</Text>
                         <InitSettingsDropdown
                             labelField="title"
                             data={massUnitsEnum}
@@ -275,15 +230,16 @@ export default function InitSettingsScreen({ navigation }) {
             </View>);
     }
 
+    //Form with insuline type settings
     const insulineForm = (item) => {
         return (
             <View style={{flex: 1}}>
                 <View>
-                    <Text style={styles.heading}>Inzulín</Text>
+                    <Text style={styles.initheading}>Inzulín</Text>
                 </View>
-                <View style={styles.form}>
-                    <View style={styles.formitem}>
-                        <Text style={styles.label}>Které druhy inzulínu používáš?</Text>
+                <View style={styles.initform}>
+                    <View style={styles.initformitem}>
+                        <Text style={styles.initlabel}>Které druhy inzulínu používáš?</Text>
                         <EditableList
                             newItemValue={newInsulineType}
                             onChangeNewItemValue={setNewInsulineType}
@@ -301,8 +257,8 @@ export default function InitSettingsScreen({ navigation }) {
                         </EditableList>
                     </View>
 
-                    <View style={styles.formitem}>
-                        <Text style={styles.label}>Který druh nejčastěji?</Text>
+                    <View style={styles.initformitem}>
+                        <Text style={styles.initlabel}>Který druh nejčastěji?</Text>
                         <InitSettingsDropdown
                             maxHeight={Dimensions.get('window').height*0.22}
                             data={insulineTypesEnum}
@@ -315,17 +271,45 @@ export default function InitSettingsScreen({ navigation }) {
             </View>);
     }
 
-
+    //Form with input settings
     const inputForm = (item) => {
         return (
             <View style={{flex: 1}}>
                 <View>
-                    <Text style={styles.heading}>Zadávání hodnot</Text>
+                    <Text style={styles.initheading}>Zadávání hodnot</Text>
                 </View>
-                <View style={styles.form}>
+                <View style={styles.initform}>
+                    <Text style={styles.initlabel}>Jaké zadávání hodnot ti vyhovuje více?</Text>
+                    <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4, marginBottom: 30 }}>
+                            <View style={{ marginBottom: 10 }}>
+                            <NumericSpinner
+                                placeholderColor={placeholderColor}
+                                emptied={true}
+                                min={0}
+                                step={0.1}
+                                max={50}
+                                value={fakeVal1}
+                                onValueChange={setFakeVal1}
+                            ></NumericSpinner>
+                            </View>
+                            {user.inputType != 1 ?
+                            <ButtonSecondary
+                                mode="text"
+                                icon="check"
+                                title="Tento způsob zadávání mi vyhovuje"
+                            >
+                            </ButtonSecondary>
+                            :
+                            <ButtonPrimary 
+                                fillColor={primaryColor}
+                                textColor='white'
+                                title="Chci tento způsob"
+                                onPress={() => {setUser(u => ({...u, inputType: 0 })); }}
+                            >
+                            </ButtonPrimary>}
+                    </View>
                     <View>
-                        <Text style={styles.label}>Jaké zadávání hodnot ti vyhovuje více?</Text>
-                        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4, marginBottom: 40 }}>
+                    <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4 }}>
                         <View style={{ marginBottom: 10 }}>
                             <NumericSlider
                                 value={fakeVal2}
@@ -354,40 +338,13 @@ export default function InitSettingsScreen({ navigation }) {
                             >
                             </ButtonPrimary>}
                         </View>
-
-                        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4 }}>
-                            <View style={{ marginBottom: 10 }}>
-                            <NumericSpinner
-                                placeholderColor={placeholderColor}
-                                emptied={true}
-                                min={0}
-                                step={0.1}
-                                max={50}
-                                value={fakeVal1}
-                                onValueChange={setFakeVal1}
-                            ></NumericSpinner>
-                            </View>
-                            {user.inputType != 1 ?
-                            <ButtonSecondary
-                                mode="text"
-                                icon="check"
-                                title="Tento způsob zadávání mi vyhovuje"
-                            >
-                            </ButtonSecondary>
-                            :
-                            <ButtonPrimary 
-                                fillColor={primaryColor}
-                                textColor='white'
-                                title="Chci tento způsob"
-                                onPress={() => {setUser(u => ({...u, inputType: 0 })); }}
-                            >
-                            </ButtonPrimary>}
-                        </View>
                     </View>
                 </View>
             </View>);
     }
 
+
+    //Screen is actualy flatlist 
     const tabs = [
         {num: 0, component: unitForm},
         {num: 1, component: insulineForm},
@@ -397,7 +354,7 @@ export default function InitSettingsScreen({ navigation }) {
     return (
         <LinearGradient colors={[primaryColor2, primaryColor]} style={{ flex: 1}}>
         <SafeAreaView
-            style={styles.container}
+            style={styles.initcontainer}
         >
             <FlatList
                 ref={flatList}

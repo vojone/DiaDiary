@@ -1,3 +1,8 @@
+/**
+ * Stack navigator for navigates between entry detail and the rest of app
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomNavigator from './BottomNavigator';
 import EntryDetail from '../views/EntryDetail';

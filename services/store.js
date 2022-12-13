@@ -1,3 +1,8 @@
+/**
+ * Implementation of backend based on AsyncStorage
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
@@ -31,7 +36,7 @@ export async function getAS(key) {
 
 export async function removeAS(key) {
     try {
-        await AsyncStorage.removeItem(`@${key}`);
+        return await AsyncStorage.removeItem(`@${key}`);
     }
     catch (e) {
         console.error(e);
@@ -41,7 +46,7 @@ export async function removeAS(key) {
 
 export async function clearAS() {
     try {
-        await AsyncStorage.clear();
+        return await AsyncStorage.clear();
     }
     catch (e) {
         console.error(e);

@@ -1,3 +1,8 @@
+/**
+ * Model of unit settings (for insuline type, mass unit and glycemia unit)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { store } from "../services/database";
 import Model from "./model";
 
@@ -46,6 +51,7 @@ export class Unit extends Model {
         isReference = null, 
         toReferenceCoef = null,
         step = 1,
+        resolution = 1,
         title = null} = {}) {
 
         super();   
@@ -57,6 +63,7 @@ export class Unit extends Model {
         this.toReferenceCoef = toReferenceCoef;
         this.step = step;
         this.title = title;
+        this.resolution = resolution;
     }
 
     obj() {
@@ -68,6 +75,7 @@ export class Unit extends Model {
             'toReferenceCoef' : this.toReferenceCoef,
             'step' : this.step,
             'title' : this.title,
+            'resolution' : this.resolution,
         };
     }
 }

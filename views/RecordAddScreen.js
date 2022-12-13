@@ -1,3 +1,8 @@
+/**
+ * Screen for adding record (consists from BloodSugarTab, FoodTab, OtherTab)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { StyleSheet, View, Vibration, Keyboard, Dimensions, Text} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Record } from '../models/record';
@@ -11,6 +16,7 @@ import ButtonSecondary from '../components/ButtonSecondary';
 import ButtonPrimary from '../components/ButtonPrimary';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { showToastMessage, showToastMessageDanger, showToastMessageSuccess, showToastMessageWarning } from '../components/ToastMessage';
+import { User } from '../models/user';
 
 
 const debuggingMode = false;
@@ -88,6 +94,8 @@ export default function RecordAddScreen({ navigation }) {
     const onCancel = () => {
         record = Record.default(); 
         bloodSugarTab.current.refresh(record);
+        foodTab.current.refresh(record);
+        otherTab.current.refresh(record);
         syncDateTime(true);
 
         setIsTimeModified(false);
@@ -203,7 +211,8 @@ export default function RecordAddScreen({ navigation }) {
                             }),
                             tabBarStyle: {
                                 height: topBarHeight,
-                            }
+                            },
+                            swipeEnabled: global.user ? (global.user.inputType != 1) : true,
                         }}
                     >
                         {props => <BloodSugarTab {...props} model={record} screenref={bloodSugarTab}></BloodSugarTab>}
@@ -221,7 +230,8 @@ export default function RecordAddScreen({ navigation }) {
                             }),
                             tabBarStyle: {
                                 height: topBarHeight,
-                            }
+                            },
+                            swipeEnabled: global.user ? (global.user.inputType != 1) : true,
                         }}
                     >
                         {props => <FoodTab {...props} model={record} screenref={foodTab}></FoodTab>}
@@ -239,7 +249,8 @@ export default function RecordAddScreen({ navigation }) {
                             }),
                             tabBarStyle: {
                                 height: topBarHeight,
-                            }
+                            },
+                            swipeEnabled: global.user ? (global.user.inputType != 1) : true,
                         }}
                     >
                         {props => <OtherTab {...props} model={record} screenref={otherTab}></OtherTab>}
@@ -282,10 +293,12 @@ export default function RecordAddScreen({ navigation }) {
                 </ButtonPrimary>
             </View>
 
+            { debuggingMode &&
             <View style={styles.controlpanel}>
                 <ButtonSecondary title="Záznamy" onPress={onDump}></ButtonSecondary>
                 <ButtonSecondary title="Vyčistit" onPress={onClear}></ButtonSecondary>
             </View>
+            }
         </View>
         </KeyboardAwareScrollView>
     );

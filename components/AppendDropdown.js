@@ -1,6 +1,11 @@
+/**
+ * Append dropdown for numerric inputs
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
-import { activeColor, primaryColor } from '../styles/common';
+import { activeColor, primaryColor, primaryColor2 } from '../styles/common';
 import { View, Text } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useEffect, useState } from 'react';
@@ -10,6 +15,7 @@ export default function AppendDropdown(props) {
     const [width, setWidth] = useState(100);
 
     useEffect(() => {
+        //Set the width of the dropdown
         let maxlenitem = null;
         props.data.forEach((item) => {
             if(maxlenitem == null || item.label.length > maxlenitem.length) {
@@ -29,7 +35,7 @@ export default function AppendDropdown(props) {
             onChangeText={() => {}}
             search={false}
             style={{
-                borderColor: primaryColor, 
+                borderColor: primaryColor2, 
                 width: width, 
                 borderLeftWidth: 1, 
                 borderRightWidth: 1, 
@@ -43,16 +49,5 @@ export default function AppendDropdown(props) {
             containerStyle={{top: -25}}
         >
         </Dropdown>
-        // <ModalDropdown
-        //     textStyle={{fontSize: 16}} 
-        //     dropdownTextStyle={{fontSize: 20, padding: 20, textAlign: 'center'}}
-        //     dropdownTextHighlightStyle={{backgroundColor: activeColor}}
-        //     dropdownStyle={{marginTop: -20, minWidth: 50}}
-        //     options={props.options} 
-        //     style={{padding: 10}}
-        //     defaultValue={props.defaultValue}
-        //     isFullWidth={true}
-        //     renderRightComponent={() => <MaterialCommunityIcons name="chevron-down" size={24} color="black"/>} 
-        // />
     );
 }

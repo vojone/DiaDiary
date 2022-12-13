@@ -1,3 +1,8 @@
+/**
+ * Other tab of record adding screen (notes and tags)
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { useEffect, useImperativeHandle, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { addRecordStyles, backgroundColor, backgroundColor2, placeholderColor, primaryColor } from "../styles/common";
@@ -8,7 +13,9 @@ import DropdownItem from "../components/DropdownItem";
 import { Tag } from "../models/tag";
 import { LinearGradient } from "expo-linear-gradient";
 
+
 export default function OtherTab({ navigation, model, screenref }) {
+    //Imperative handle for parent screen RecordAddScreen
     useImperativeHandle(screenref, () => ({
         refresh: (model) => { 
             setTags(model.tags);
@@ -29,6 +36,7 @@ export default function OtherTab({ navigation, model, screenref }) {
     const [tagsEnum, setTagsEnum] = useState([]);
 
     useEffect(() => {
+        //Retrieving tags for dropdown
         Tag.find({}, true).then((tags) => {
             if(tags == null) {
                 setTagsEnum([]);
