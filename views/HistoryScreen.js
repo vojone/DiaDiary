@@ -4,7 +4,7 @@
  */
 
 import { StyleSheet, Text, View, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo, useReducer } from 'react'
 
 import ChooseDateRange from '../components/ChooseDateRange';
 
@@ -81,6 +81,17 @@ export default function HistoryScreen({ navigation }) {
         loadRecords();
         console.log("useEffect");
     }, []);
+
+    //Force update due to official FAQ: https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
+    const [_, forceRefresh] = useReducer(x => ++x, 0);
+
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            doRefresh();
+            forceRefresh();
+        });
+        
+    }, [navigation]);
 
     // ref
     const bottomSheetRef = useRef(null);
