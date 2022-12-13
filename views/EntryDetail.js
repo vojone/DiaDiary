@@ -1,5 +1,4 @@
-// ITU projekt DiaDiary 2022
-// EntryDetail.js
+// Entry detail screen
 // Autor: Tomáš Dvořák (xdvora3r)
 
 /**
@@ -19,7 +18,7 @@ import AppendDropdown from '../components/AppendDropdown';
 import DropdownItem from "../components/DropdownItem";
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { placeholderColor, primaryColor, backgroundColor, backgroundColor2 } from '../styles/common';
+import { primaryColor2Pressed, placeholderColor, primaryColor, primaryColor2, backgroundColor, backgroundColor2 } from '../styles/common';
 import { Record } from '../models/record';
 import { Unit } from '../models/unit';
 import { Food } from "../models/food";
@@ -362,8 +361,10 @@ const timeSelectionConfirm = (time) => {
             emptied={true}
             min={0}
             step={recordDetail.bloodSugarU ? recordDetail.bloodSugarU.step : 0.1}
+            color={primaryColor2Pressed}
+            colorLeft={primaryColor2}
+            colorRight={primaryColor2}
             max={50}
-            color={primaryColor}
             value={recordDetail.bloodSugar}
             onChange={updatedBloodSugar}
             fontSize={ 28 }
@@ -393,7 +394,9 @@ const timeSelectionConfirm = (time) => {
             min={0}
             max={50}
             step={recordDetail.insulineT ? recordDetail.insulineT.step : 0.1}
-            color={primaryColor}
+            color={primaryColor2Pressed}
+            colorLeft={primaryColor2}
+            colorRight={primaryColor2}
             value={recordDetail.insuline}
             onChange={updatedInsuline}
             fontSize={ 28 }
@@ -423,7 +426,9 @@ const timeSelectionConfirm = (time) => {
                 min={0}
                 max={1000}
                 step={recordDetail.carboU ? recordDetail.carboU.step : 0.1}
-                color= "#674fa5"
+                color={primaryColor2Pressed}
+                colorLeft={primaryColor2}
+                colorRight={primaryColor2}
                 value={recordDetail.carbo}
                 fontSize={ 28 }
                 placeholderColor={ placeholderColor }
