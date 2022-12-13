@@ -98,8 +98,7 @@ export default function EntryDetail({route, navigation}) {
     delete recordDetail._id;
     Vibration.vibrate(200);
     showToastMessageSuccess('Záznam byl upraven');
-    Record.remove({_id: recordId}).then(() => {new Record(recordDetail).save()});
-    navigation.goBack();
+    Record.remove({_id: recordId}).then(() => {new Record(recordDetail).save().then(() => {navigation.goBack()})});
   };
 
   const deleteRecord = () => {
