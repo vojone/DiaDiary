@@ -75,7 +75,6 @@ export default function NumericSlider(props) {
         }
 
         setMiddle(value); 
-        console.log(value);
     }
 
     return (

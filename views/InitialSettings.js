@@ -189,14 +189,6 @@ export default function InitSettingsScreen({ navigation }) {
     }
 
 
-    //Screen is actualy flatlist 
-    const tabs = [
-        {num: 0, component: unitForm},
-        {num: 1, component: insulineForm},
-        {num: 2, component: inputForm}
-    ]
-
-
 
     const styles = settingStyles; //Stylesheet
 
@@ -351,10 +343,18 @@ export default function InitSettingsScreen({ navigation }) {
             </View>);
     }
 
+
+    //Screen is actualy flatlist 
+    const tabs = [
+        {num: 0, component: unitForm},
+        {num: 1, component: insulineForm},
+        {num: 2, component: inputForm}
+    ]
+
     return (
         <LinearGradient colors={[primaryColor2, primaryColor]} style={{ flex: 1}}>
         <SafeAreaView
-            style={styles.container}
+            style={styles.initcontainer}
         >
             <FlatList
                 ref={flatList}

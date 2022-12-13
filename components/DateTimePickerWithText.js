@@ -1,4 +1,5 @@
 /**
+ * Datetime picker with data visualisation (base on react-native-modal-datetime-picker)
  * @author Vojtěch Dvořák (xdvora3o)
  */
 

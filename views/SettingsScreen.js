@@ -15,7 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { showToastMessageDanger, showToastMessageSuccess, ToastMessage } from '../components/ToastMessage';
 import { Unit } from '../models/unit';
 import { User } from '../models/user';
-import { dangerColor, placeholderColor, primaryColor, primaryColor2, settingStyles } from '../styles/common';
+import { dangerColor, drawerHeaderHeight, placeholderColor, primaryColor, primaryColor2, pureDrawerHeaderHeight, settingStyles } from '../styles/common';
 import NumericSlider from '../components/NumericSlider';
 import NumericSpinner from '../components/NumericSpinner';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -35,16 +35,18 @@ import RNRestart from 'react-native-restart';
 export default function SettingsScreen({ navigation }) {
     const [user, setUser] = useState(global.user);
 
+    //Enums for lists and dropdowns
     const [massUnitsEnum, setMassUnitsEnum] = useState([]);
     const [glycUnitsEnum, setGlycUnitsEnum] = useState([]);
 
     const [insulineTypesEnum, setInsulineTypesEnum] = useState([]);
-    const [newInsulineType, setNewInsulineType] = useState('');
+    const [newInsulineType, setNewInsulineType] = useState(''); //< State of new field 
 
     const [tagsEnum, setTagsEnum] = useState([]);
-    const [newTag, setNewTag] = useState('');
+    const [newTag, setNewTag] = useState(''); //< STate of new field
 
-    const [fakeVal1, setFakeVal1] = useState(5.5);
+    //Just for input preview
+    const [fakeVal1, setFakeVal1] = useState(5.5); 
     const [fakeVal2, setFakeVal2] = useState(5.5);
 
     const [saving, setSaving] = useState(false);
@@ -261,11 +263,11 @@ export default function SettingsScreen({ navigation }) {
 
     //Remove all saved records!
     const removeRecords = () => {
+        setRemoving(true);
         setVisibleRemoveRecordsDia(false);
 
         Record.remove({}, true).then(
             (result) => {
-                console.log(result);
                 showToastMessageSuccess('Záznamy byly úspěšně vymazány');
 
                 navigation.navigate('Records');
@@ -276,6 +278,8 @@ export default function SettingsScreen({ navigation }) {
 
                 navigation.navigate('Records');
         });
+
+        setRemoving(false);
     }
 
     //Hides dialog window for app reset
@@ -285,27 +289,22 @@ export default function SettingsScreen({ navigation }) {
 
     //Resets the entire app
     const resetApp = () => {
+        setReseting(true);
+
         let unitProm = Unit.remove({}, true);
         let foodProm = Food.remove({}, true);
         let tagProm = Tag.remove({}, true);
         let userProm = User.remove({}, true);
 
         Promise.allSettled([unitProm, foodProm, tagProm, userProm]).then(() => {
-            removeAS('initialized').then(() => {
+            setReseting(false);
+            removeAS('initialized').then((result) => {
                 RNRestart.Restart();
             });
         });
+
+        setReseting(false);
     }
-
-
-    //Screen is basically horizontal flatlist (this is data array for it)
-    const tabs = [
-        {num: 0, component: unitForm},
-        {num: 1, component: insulineForm},
-        {num: 2, component: inputForm},
-        {num: 3, component: tagsForm},
-        {num: 4, component: dangerForm}
-    ]
 
 
     /**
@@ -470,7 +469,7 @@ export default function SettingsScreen({ navigation }) {
                 </View>
                 <View style={styles.form}>
                     <View>
-                        <Text style={styles.label}>Které značky chceš používat pro záznamy?</Text>
+                        <Text style={styles.label}>Které značky (tagy) chceš používat pro záznamy?</Text>
                         <EditableList
                             newItemValue={newTag}
                             onChangeNewItemValue={setNewTag}
@@ -527,17 +526,27 @@ export default function SettingsScreen({ navigation }) {
             </View>);
     }
 
+    //Screen is basically horizontal flatlist (this is data array for it)
+    const tabs = [
+        {num: 0, component: unitForm},
+        {num: 1, component: insulineForm},
+        {num: 2, component: inputForm},
+        {num: 3, component: tagsForm},
+        {num: 4, component: dangerForm}
+    ]
+
+
     //They main layout of settings screen
     return (
         <KeyboardAwareScrollView>
-        <View style={{ flex: 1, height: Dimensions.get('window').height }}>
+        <View style={{ flex: 1, height: Dimensions.get('window').height - pureDrawerHeaderHeight }}>
 
         <LinearGradient colors={[primaryColor2, primaryColor]} style={{ flex: 1}}>
         <SafeAreaView
             style={styles.container}
         >
 
-            <View style={styles.topcontrolpanel}>
+            {/* <View style={styles.topcontrolpanel}>
                 <ButtonSecondary 
                     fontSize={12}
                     borderColor="white"
@@ -545,9 +554,9 @@ export default function SettingsScreen({ navigation }) {
                     onPress={goBack} title="Zpět"
                 >
                 </ButtonSecondary>
-            </View>
+            </View> */}
             <View style={styles.intro}>
-                <Text style={styles.mainheading}><FontAwesome name="gear" size={24}></FontAwesome>  Nastavení</Text>
+                <Text style={styles.mainheading}><FontAwesome name="gear" size={28}></FontAwesome>  Nastavení</Text>
             </View>
             <FlatList
                 ref={flatList}
@@ -603,8 +612,8 @@ export default function SettingsScreen({ navigation }) {
                     <Paragraph>Skutečně chceš vymazat všechny svoje záznamy? Tuto akci nelze vzít zpět!</Paragraph>
                     </Dialog.Content>
                     <Dialog.Actions style={{justifyContent: 'space-between'}}>
-                    <Button onPress={hideRemoveRecordsDia}>Ne</Button>
-                    <Button onPress={removeRecords} labelStyle={{color: dangerColor}}>Ano</Button>
+                    <Button onPress={hideRemoveRecordsDia}>NE</Button>
+                    <Button onPress={removeRecords} labelStyle={{color: dangerColor}}>ANO</Button>
                     </Dialog.Actions>
                 </Dialog>
 
@@ -615,8 +624,8 @@ export default function SettingsScreen({ navigation }) {
                     <Paragraph>Skutečně chceš resetovat aplikaci? Tuto akci nelze vzít zpět!</Paragraph>
                     </Dialog.Content>
                     <Dialog.Actions style={{justifyContent: 'space-between'}}>
-                    <Button onPress={hideResetDia}>Ne</Button>
-                    <Button onPress={resetApp} labelStyle={{color: dangerColor}}>Ano</Button>
+                    <Button onPress={hideResetDia}>NE</Button>
+                    <Button onPress={resetApp} labelStyle={{color: dangerColor}}>ANO</Button>
                     </Dialog.Actions>
                 </Dialog>
         </SafeAreaView>

@@ -2,7 +2,7 @@
  * Common variables and styles for our app
  */
 
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions, StatusBar } from "react-native";
 
 //Font sizes
 export const navTextSize = 16;
@@ -39,6 +39,9 @@ export const topBarHeight = 50;
 export const headerHeight = 100;
 
 export const bottomBarHeight = 60;
+
+export const pureDrawerHeaderHeight = 50;
+export const drawerHeaderHeight = StatusBar.currentHeight + pureDrawerHeaderHeight;
 
 //Shared styles for addRecord tabs
 export const addRecordStyles = StyleSheet.create({
@@ -98,10 +101,14 @@ export const addRecordStyles = StyleSheet.create({
 
 //Styles for settings
 export const settingStyles = StyleSheet.create({
-    container: {
+    initcontainer: {
         //backgroundColor: primaryColor,
         flex: 1,
         paddingTop: (Platform.OS == 'android' ? StatusBar.currentHeight : 0) + 20,
+    },
+
+    container: {
+        flex: 1
     },
 
     heading: {
@@ -180,7 +187,7 @@ export const settingStyles = StyleSheet.create({
         flexDirection: 'row',
     },
 
-    intro: {
+    initintro: {
         borderBottomColor: 'white',
         paddingBottom: 20,
         marginBottom: 20,

@@ -6,14 +6,15 @@
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StyleSheet, View } from 'react-native';
-import { activeColor, headerHeight, navTextSize, primaryColor, sideNavTextSize } from '../styles/common';
+import { StatusBar, StyleSheet, View } from 'react-native';
+import { activeColor, drawerHeaderHeight, headerHeight, navTextSize, primaryColor, sideNavTextSize } from '../styles/common';
 import InitSettingsScreen from '../views/InitialSettings';
 import StackNavigator from './StackNavigator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ExportScreen from '../views/ExportScreen';
 import SettingsScreen from '../views/SettingsScreen';
+import AboutScreen from '../views/AboutScreen';
 
 const SideMenu = createDrawerNavigator();
 
@@ -37,6 +38,9 @@ export default function MainDrawerNavigator({ navigation }) {
                     drawerLabel: 'Záznamy',
                     drawerActiveBackgroundColor: activeColor,
                     drawerActiveTintColor: primaryColor,
+                    headerStyle: {
+                        height: drawerHeaderHeight,
+                    }
                 }}
             />
             <SideMenu.Screen 
@@ -50,13 +54,16 @@ export default function MainDrawerNavigator({ navigation }) {
                     drawerIcon: () => { return(<MaterialCommunityIcons name="export" size={sideNavTextSize}></MaterialCommunityIcons>); },
                     drawerActiveBackgroundColor: activeColor,
                     drawerActiveTintColor: primaryColor,
+                    headerStyle: {
+                        height: drawerHeaderHeight,
+                    }
                 }}
             />
             <SideMenu.Screen 
                 name='Settings' 
                 component={SettingsScreen}
                 options={{
-                    headerShown: false,
+                    headerShown: true,
                     headerTitle: '',
                     drawerLabelStyle: styles.navitemlabel,
                     drawerLabel: 'Nastavení',
@@ -64,6 +71,26 @@ export default function MainDrawerNavigator({ navigation }) {
                     swipeEnabled: false,
                     drawerActiveBackgroundColor: activeColor,
                     drawerActiveTintColor: primaryColor,
+                    headerStyle: {
+                        height: drawerHeaderHeight,
+                    }
+                }}
+            />
+            <SideMenu.Screen 
+                name='About' 
+                component={AboutScreen}
+                options={{
+                    headerShown: true,
+                    headerTitle: '',
+                    drawerLabelStyle: styles.navitemlabel,
+                    drawerLabel: 'O Aplikaci',
+                    drawerIcon: () => { return(<MaterialCommunityIcons name="information" size={sideNavTextSize}></MaterialCommunityIcons>); },
+                    swipeEnabled: true,
+                    drawerActiveBackgroundColor: activeColor,
+                    drawerActiveTintColor: primaryColor,
+                    headerStyle: {
+                        height: drawerHeaderHeight,
+                    }
                 }}
             />
             <SideMenu.Screen 
