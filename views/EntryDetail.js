@@ -459,7 +459,7 @@ const timeSelectionConfirm = (time) => {
                 renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20}></DropdownItem>}
                 placeholder={food ? food.label : '-'}
                 value={food}
-                //containerStyle={{top: -25}}
+                
             >
             </Dropdown>
         </View>
@@ -482,7 +482,7 @@ const timeSelectionConfirm = (time) => {
                 selectedStyle={{backgroundColor: primaryColor, borderRadius: 100}}
                 renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20} withIcon={true}></DropdownItem>}
                 selectedTextStyle={{color: 'white'}}
-                //containerStyle={{top: -25}}
+                
             >
             </MultiSelect>
         </View>
@@ -542,7 +542,7 @@ const timeSelectionConfirm = (time) => {
           Uložit změny
         </Button>
         </View>
-        
+
       </View>
       </ScrollView>
       </SafeAreaView>
