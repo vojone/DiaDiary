@@ -93,6 +93,8 @@ export default function RecordAddScreen({ navigation }) {
     const onCancel = () => {
         record = Record.default(); 
         bloodSugarTab.current.refresh(record);
+        foodTab.current.refresh(record);
+        otherTab.current.refresh(record);
         syncDateTime(true);
 
         setIsTimeModified(false);

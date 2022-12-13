@@ -398,9 +398,37 @@ export default function SettingsScreen({ navigation }) {
                     <Text style={styles.heading}>Zadávání hodnot</Text>
                 </View>
                 <View style={styles.form}>
+                    <Text style={styles.label}>Jaké zadávání hodnot ti vyhovuje více?</Text>
+                    <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4, marginBottom: 30 }}>
+                            <View style={{ marginBottom: 10 }}>
+                            <NumericSpinner
+                                placeholderColor={placeholderColor}
+                                emptied={true}
+                                min={0}
+                                step={0.1}
+                                max={50}
+                                value={fakeVal1}
+                                onValueChange={setFakeVal1}
+                            ></NumericSpinner>
+                            </View>
+                            {user.inputType != 1 ?
+                            <ButtonSecondary
+                                mode="text"
+                                icon="check"
+                                title="Tento způsob zadávání mi vyhovuje"
+                            >
+                            </ButtonSecondary>
+                            :
+                            <ButtonPrimary 
+                                fillColor={primaryColor}
+                                textColor='white'
+                                title="Chci tento způsob"
+                                onPress={() => {setUser(u => ({...u, inputType: null })); }}
+                            >
+                            </ButtonPrimary>}
+                    </View>
                     <View>
-                        <Text style={styles.label}>Jaké zadávání hodnot ti vyhovuje více?</Text>
-                        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4, marginBottom: 40 }}>
+                        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4 }}>
                         <View style={{ marginBottom: 10 }}>
                             <NumericSlider
                                 value={fakeVal2}
@@ -426,35 +454,6 @@ export default function SettingsScreen({ navigation }) {
                                 textColor='white'
                                 title="Chci tento způsob"
                                 onPress={() => {setUser(u => ({...u, inputType: 1 })); }}    
-                            >
-                            </ButtonPrimary>}
-                        </View>
-
-                        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 4 }}>
-                            <View style={{ marginBottom: 10 }}>
-                            <NumericSpinner
-                                placeholderColor={placeholderColor}
-                                emptied={true}
-                                min={0}
-                                step={0.1}
-                                max={50}
-                                value={fakeVal1}
-                                onValueChange={setFakeVal1}
-                            ></NumericSpinner>
-                            </View>
-                            {user.inputType != 1 ?
-                            <ButtonSecondary
-                                mode="text"
-                                icon="check"
-                                title="Tento způsob zadávání mi vyhovuje"
-                            >
-                            </ButtonSecondary>
-                            :
-                            <ButtonPrimary 
-                                fillColor={primaryColor}
-                                textColor='white'
-                                title="Chci tento způsob"
-                                onPress={() => {setUser(u => ({...u, inputType: null })); }}
                             >
                             </ButtonPrimary>}
                         </View>
