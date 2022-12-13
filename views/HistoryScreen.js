@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Button, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 
 import { List } from 'react-native-paper';
 
@@ -97,6 +97,17 @@ export default function HistoryScreen({ navigation }) {
         loadRecords();
         console.log("useEffect");
     }, []);
+
+    //Force update due to official FAQ: https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
+    const [_, forceRefresh] = useReducer(x => ++x, 0);
+
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            doRefresh();
+            forceRefresh();
+        });
+        
+    }, [navigation]);
 
     return (
     <ScrollView style={{flex: 1}}
