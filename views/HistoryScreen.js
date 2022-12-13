@@ -1,3 +1,8 @@
+/**
+ * Screen for displaying history of records
+ * Author:  Juraj Dedič (xdedic07)
+ */
+
 import { StyleSheet, Text, View, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 
@@ -11,6 +16,11 @@ import HistoryItem from '../components/HistoryItem';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import BottomSheet from '@gorhom/bottom-sheet';
+
+import { MultiSelect } from "react-native-element-dropdown";
+import { primaryColor } from "../styles/common";
+import { Tag } from "../models/tag";
+import DropdownItem from "../components/DropdownItem";
 
 import Accordion from 'react-native-collapsible/Accordion';
 import { getRelativeCoords } from 'react-native-reanimated';
@@ -76,7 +86,7 @@ export default function HistoryScreen({ navigation }) {
     const bottomSheetRef = useRef(null);
 
     // variables
-    const snapPoints = useMemo(() => ['30%', '35%'], []);
+    const snapPoints = useMemo(() => ['40%', '45%'], []);
 
     // callbacks
     const handleSheetChanges = useCallback((index) => {}, []);
@@ -87,6 +97,21 @@ export default function HistoryScreen({ navigation }) {
 
     useEffect(() => {
         bottomSheetRef.current.close();
+    }, []);
+
+
+    const [tags, setTags] = useState(/*model.tags*/[]);
+    const [tagsEnum, setTagsEnum] = useState([]);
+
+    useEffect(() => {
+        Tag.find({}, true).then((tags) => {
+            if(tags == null) {
+                setTagsEnum([]);
+            }
+            else {
+                setTagsEnum(tags);
+            }
+        })
     }, []);
 
     return (
@@ -141,6 +166,24 @@ export default function HistoryScreen({ navigation }) {
             <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>Filtrování a řazení 🎉</Text>
 
             <ChooseDateRange onChange={(val) => {setDateFrom(val.dateFrom); setDateTo(val.dateTo);}} />
+
+            <Text style={{marginBottom: 10}}>Tagy:</Text>
+            <MultiSelect
+                data={tagsEnum}
+                value={tags}
+                labelField="label"
+                valueField="_id"
+                onChange={setTags}
+                onChangeText={() => {}}
+                search={false}
+                placeholder='Vybrat ze seznamu'
+                style={{borderColor: primaryColor, borderWidth: 1, borderRadius: 4, paddingHorizontal: 15, paddingVertical: 10}}
+                selectedStyle={{backgroundColor: primaryColor, borderRadius: 100}}
+                renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20} withIcon={true}></DropdownItem>}
+                selectedTextStyle={{color: 'white'}}
+                containerStyle={{top: -25}}
+            >
+            </MultiSelect>
         </View>
         </BottomSheet>
     </View>

@@ -1,3 +1,8 @@
+/**
+ * Component for choosing date range
+ * Author:  Juraj Dedič (xdedic07)
+ */
+
 import { View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useState } from "react";
