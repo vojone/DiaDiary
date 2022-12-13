@@ -32,9 +32,19 @@ export default function EntryDetail({route, navigation}) {
   const [recordDetail, setRecordDetail] = useState({});
   const [recordDetailOld, setRecordDetailOld] = useState({});
   
+
   useEffect(() => {
-    Record.findById(recordId).then((record) => {setRecordDetail(record); setRecordDetailOld(record); setDateTime(record.dateTime)});
+    Record.findById(recordId).then((record) => {
+      setRecordDetail(record); setRecordDetailOld(record); setDateTime(record.dateTime)
+    });
   }, []);
+
+  function headerTime() {
+    let headerTime = new Date(recordDetail.dateTime);
+    headerTime = headerTime.getDate() + ". " + (headerTime.getMonth() + 1) + ". " + headerTime.getFullYear() + " " + String(headerTime.getHours()).padStart(2,'0') + ":" + String(headerTime.getMinutes()).padStart(2,'0');
+
+    navigation.setOptions({title: "Záznam z " + headerTime})
+  }
 
   // Function to update the record
   function updatedBloodSugar(value) {
@@ -209,6 +219,8 @@ export default function EntryDetail({route, navigation}) {
           }
       }
   })
+
+  headerTime();
   
   }, [recordDetailOld]);
 
