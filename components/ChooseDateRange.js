@@ -1,6 +1,6 @@
 /**
  * Component for choosing date range
- * Author:  Juraj Dedič (xdedic07)
+ * @author Juraj Dedič (xdedic07)
  */
 
 import { View } from "react-native";

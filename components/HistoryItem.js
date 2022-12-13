@@ -1,6 +1,6 @@
 /**
  * Component for displaying one record in history
- * Author:  Juraj Dedič (xdedic07)
+ * @author Juraj Dedič (xdedic07)
  */
 
 import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
@@ -10,9 +10,6 @@ function isToday(date) {
     if(!date) return false;
 
     const today = new Date();
-  
-    // 👇️ Today's date
-    console.log(today);
   
     if (today.toDateString() === date.toDateString()) {
       return true;
@@ -45,10 +42,20 @@ export default function HistoryItem(props) {
             flexDirection: 'row',
             borderRadius: 10,
             padding: 10,
+            paddingVertical: 25,
             marginTop: 4,
             marginBottom: 4,
             width: "100%",
-        },
+            shadowColor: "#888",
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.4,
+            shadowRadius: 3.84,
+
+            elevation: 5,
+            },
         sugar:{
             flex: 1,
             fontSize: 16

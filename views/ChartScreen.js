@@ -1,27 +1,24 @@
 /**
  * Screen for displaying chart of blood sugar values
- * Author:  Juraj Dedič (xdedic07)
+ * @author Juraj Dedič (xdedic07)
  */
 
 import { Record } from "../models/record";
 
 
-import { Dimensions, StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
-
-import { DefaultTheme } from "react-native-paper";
+import React, { useState, useEffect, useRef, useReducer, useMemo, useCallback } from "react";
 
 import { LineChart, AreaChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
 import { Path, Circle, Defs, LinearGradient, Stop } from 'react-native-svg'
 import * as shape from 'd3-shape'
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { func } from "prop-types";
-// import { Dots, Line } from '@/screens/AreaChartScreen/chartAdds'
 
 import BottomSheet from '@gorhom/bottom-sheet';
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import ChooseDateRange from "../components/ChooseDateRange";
+
+import { User } from "../models/user";
 
 function getDaysBack(date,n = 1){
     let d = new Date(date)
@@ -35,7 +32,7 @@ function getDisplayDate(date) {
   //check if date is today and if so return time
   let today = new Date();
   if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()){
-    return date.getHours() + ":" + date.getMinutes();
+    return String(date.getHours()).padStart(2,'0') + ":" + String(date.getMinutes()).padStart(2,'0');
   }
   return date.getDate() + "." + (date.getMonth() + 1 + ".");
 }
@@ -60,16 +57,16 @@ function Line ({ line }) {
 function Dots ({ x, y, data }) {
   return (
       <>
-          {data?.map((value, index) => (
-              <Circle
-                  key={index}
-                  cx={x(index)}
-                  cy={y(value)}
-                  r={4}
-                  stroke={'rgb(0, 0, 0)'}
-                  fill={'white'}
-              />
-          ))}
+      {data?.map((value, index) => (
+          <Circle
+              key={index}
+              cx={x(index)}
+              cy={y(value)}
+              r={4}
+              stroke={'rgb(0, 0, 0)'}
+              fill={'white'}
+          />
+      ))}
       </>
   )
 }
@@ -92,7 +89,7 @@ function Shadow (props) {
 function Gradient() {
   return (<Defs>
       <LinearGradient id={'gradient'} x1={'0%'} y1={'0%'} x2={'0%'} y2={'100%'}>
-          <Stop offset={'0%'} stopColor={'rgb(103, 23, 145)'} stopOpacity={0.8} />
+          <Stop offset={'0%'} stopColor={'rgb(89, 36, 235)'} stopOpacity={0.8} />
           <Stop offset={'100%'} stopColor={'rgb(171, 44, 44)'} stopOpacity={0.3} />
       </LinearGradient>
   </Defs>)
@@ -123,7 +120,30 @@ function getQuery(dateFrom, dateTo){
   return query;
 }
 
-function composeData (valuesArray) {
+function convertToUnit(data, unitObject){
+  let convertedData = data.map((item) => {
+    if(item["bloodSugarU"]["label"] != unitObject["label"]){
+      let coefficient = item["bloodSugarU"]["toReferenceCoef"];
+      return {
+        ...item,
+        "bloodSugar": item["bloodSugar"] * coefficient,
+        "bloodSugarU": unitObject
+      }
+    }
+    return item;
+  });
+  return convertedData;
+}
+
+function composeData (data, unitLabel) {
+  // let valuesArray = data.map((item) => {
+  //   if(item["bloodSugarU"]["label"] != unitLabel){
+  //     let coefficient = item["bloodSugarU"]["toReferenceCoef"];
+  //     return item["bloodSugar"] * coefficient;
+  //   }
+  //   return item["bloodSugar"]
+  // });
+  let valuesArray = data.map((item) => item["bloodSugar"]);
   return [
       {
           data: valuesArray,
@@ -131,11 +151,11 @@ function composeData (valuesArray) {
       },
       {
           data: valuesArray.map(() => 3.9),
-          svg: { strokeWidth: 2, strokeDasharray: [8, 16], stroke: 'red' },
+          svg: { strokeWidth: 2, strokeDasharray: [12, 16], stroke: '#C80000' },
       },
       {
           data: valuesArray.map(() => 5.5),
-          svg: { strokeWidth: 2, strokeDasharray: [8, 16], stroke: 'red' },
+          svg: { strokeWidth: 2, strokeDasharray: [12, 16], stroke: '#C80000' },
       },
   ]
 }
@@ -170,6 +190,8 @@ function getMax(data){
 
 export default function ChartScreen({ navigation }) {
 
+  const [user, setUser] = useState(null);
+
   const [dateFrom, setDateFrom] = useState(null);
   const [dateTo, setDateTo] = useState(null);
 
@@ -197,9 +219,9 @@ export default function ChartScreen({ navigation }) {
 
   let [lastUpdate, setLastUpdate] = useState(new Date());
 
-  useEffect(() => {
+  function doRefresh(){
     Record.find(getQuery(dateFrom, dateTo), true).then(result => {
-      console.log("query", getQuery(dateFrom, dateTo));
+      // console.log("query", getQuery(dateFrom, dateTo));
       if(result == null){
         setData([]);
         return;
@@ -211,16 +233,35 @@ export default function ChartScreen({ navigation }) {
         setLastUpdate(lastData);
       }
     });
+
+    User.find({}).then((user) => {
+      console.log("user",user);
+      setUser(user);
+    });
+  }
+
+  useEffect(() => {
+    doRefresh();
   },[dateFrom, dateTo]);
+
+  //Force update due to official FAQ: https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
+  const [_, forceRefresh] = useReducer(x => ++x, 0);
+
+  useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+          doRefresh();
+          forceRefresh();
+      });
+      return unsubscribe;
+  }, [navigation]);
   
   function getDisplayData(data){
-    const dataComposed = composeData(data.map(i => i["bloodSugar"]))
+    const dataComposed = composeData(data, getDefaultUnit())
     return dataComposed;
   }
 
   function getXLabels(data){
     let labels = data.map(i => getDisplayDate(i["dateTime"]));
-    console.log("labels", labels);
     return labels;
   }
 
@@ -237,7 +278,14 @@ export default function ChartScreen({ navigation }) {
     return emoji;
   }
 
-  console.log("data", data[0]);
+  function getDefaultUnit(){
+    if(user == null){
+      return "mmol/L";
+    }
+    return user["glycemiaUnit"]["label"] || "mmol/L";
+  }
+
+  // console.log("data", data[0]);
 
   //open the bottom sheet
   const openSheet = () => {
@@ -353,7 +401,7 @@ export default function ChartScreen({ navigation }) {
               fontSize: 11,
             }}
             style={{ marginRight: 0 }}
-            formatLabel={(value) => `${value} mmol/L`}
+            formatLabel={(value) => `${value} ${getDefaultUnit()}`}
             numberOfTicks={6}
           />
           <View style={{ flex: 1, marginLeft: 10 }}>
@@ -378,7 +426,6 @@ export default function ChartScreen({ navigation }) {
               data={data}
               formatLabel={(value, index) => {
                 if (index % 4 === 0) {
-                  console.log("value", value, "index", index);
                   let date = new Date(data[index]["dateTime"]);
                   return getDisplayDate(date)
                 }

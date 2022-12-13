@@ -1,9 +1,9 @@
 /**
  * Screen for displaying history of records
- * Author:  Juraj Dedič (xdedic07)
+ * @author Juraj Dedič (xdedic07)
  */
 
-import { StyleSheet, Text, View, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList, Dimensions } from 'react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo, useReducer } from 'react'
 
 import ChooseDateRange from '../components/ChooseDateRange';
@@ -79,18 +79,17 @@ export default function HistoryScreen({ navigation }) {
     useEffect(() => {
         //causes infinite loop
         loadRecords();
-        console.log("useEffect");
     }, []);
 
     //Force update due to official FAQ: https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
     const [_, forceRefresh] = useReducer(x => ++x, 0);
 
     useEffect(() => {
-        navigation.addListener('focus', () => {
+        const unsubscribe = navigation.addListener('focus', () => {
             doRefresh();
             forceRefresh();
         });
-        
+        return unsubscribe;
     }, [navigation]);
 
     // ref
@@ -127,7 +126,7 @@ export default function HistoryScreen({ navigation }) {
 
     return (
     <View style={{flex: 1, height: "100%"}}>
-    <ScrollView style={{flex: 1, height: "100%"}}
+    <View style={{flex: 1, height: "100%"}}
     contentContainerStyle={styles.scrollView}
     refreshControl={
         <RefreshControl
@@ -150,19 +149,22 @@ export default function HistoryScreen({ navigation }) {
 
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
             <FlatList
-            style={{width: "100%"}}
+            style={{width: "100%", height: Dimensions.get('window').height - 250}}
+            scrollEnabled={true}
             data={getRecords(records, dateFrom, dateTo)}
             renderItem={({item}) => 
                 <HistoryItem 
                 key={item["_id"]} record={item} 
-                onPress={() => {navigation.navigate('EntryDetail', {
-                    recordId: item["_id"],
-                })}}>
+                onPress={() => {
+                    navigation.navigate('EntryDetail', {
+                        recordId: item["_id"],
+                    })
+                }}>
 
                 </HistoryItem>
             } />
         </View>
-    </ScrollView>
+    </View>
 
     <BottomSheet
         ref={bottomSheetRef}
