@@ -98,8 +98,14 @@ export default function EntryDetail({route, navigation}) {
     delete recordDetail._id;
     Vibration.vibrate(200);
     showToastMessageSuccess('Záznam byl upraven');
-    Record.remove({_id: recordId}).then(() => {new Record(recordDetail).save()});
-    navigation.goBack();
+    Record.remove({_id: recordId}).then(
+      () => {
+        new Record(recordDetail).save().then(
+        () => {
+          navigation.goBack(); setButtonDisable(false)
+        })
+      }
+    );
   };
 
   const deleteRecord = () => {
@@ -113,8 +119,7 @@ export default function EntryDetail({route, navigation}) {
           Vibration.vibrate(200);
           showToastMessageSuccess('Záznam byl smazán');
 
-          Record.remove({_id: recordId}).then(() => {navigation.goBack()});//navigation.navigate('Home')});
-          // Delete record
+          Record.remove({_id: recordId}).then(() => {navigation.goBack()});
       },
       },
 
@@ -459,7 +464,7 @@ const timeSelectionConfirm = (time) => {
                 renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20}></DropdownItem>}
                 placeholder={food ? food.label : '-'}
                 value={food}
-                containerStyle={{top: -25}}
+                
             >
             </Dropdown>
         </View>
@@ -482,7 +487,7 @@ const timeSelectionConfirm = (time) => {
                 selectedStyle={{backgroundColor: primaryColor, borderRadius: 100}}
                 renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20} withIcon={true}></DropdownItem>}
                 selectedTextStyle={{color: 'white'}}
-                containerStyle={{top: -25}}
+                
             >
             </MultiSelect>
         </View>
@@ -542,7 +547,7 @@ const timeSelectionConfirm = (time) => {
           Uložit změny
         </Button>
         </View>
-        
+
       </View>
       </ScrollView>
       </SafeAreaView>
