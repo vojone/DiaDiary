@@ -1,17 +1,24 @@
+// ITU projekt DiaDiary 2022
 // EntryDetail.js
-// Autor: Tomáš Dvořák
+// Autor: Tomáš Dvořák (xdvora3r)
 
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Dimensions, StatusBar, TextInput} from 'react-native';
-import React, { useState, useImperativeHandle, useRef, useEffect } from 'react';
+/**
+ * Blood sugar tab of record add screen
+ * @author Tomáš Dvořák (xdvora3r)
+ */
+
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Alert, TextInput} from 'react-native';
+import React, { useState, useEffect } from 'react';
 import InputSpinner from "react-native-input-spinner";
 
 import { Button } from 'react-native-paper';
-import { addRecordStyles, bottomTabBarActiveBgColor, placeholderColor, primaryColor } from '../styles/common';
+import { placeholderColor, primaryColor, backgroundColor, backgroundColor2 } from '../styles/common';
 
 import DateTimePickerWithText from '../components/DateTimePickerWithText';
 import AppendDropdown from '../components/AppendDropdown';
 import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 import DropdownItem from "../components/DropdownItem";
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { Record } from '../models/record';
 import { Unit } from '../models/unit';
@@ -25,7 +32,7 @@ export default function EntryDetail({route, navigation}) {
 
   const [recordDetail, setRecordDetail] = useState({});
   const [recordDetailOld, setRecordDetailOld] = useState({});
-
+  
   useEffect(() => {
     Record.findById(recordId).then((record) => {setRecordDetail(record); setRecordDetailOld(record); setDateTime(record.dateTime)});
   }, []);
@@ -85,18 +92,33 @@ export default function EntryDetail({route, navigation}) {
     }))
   }
 
+  const [buttonDisable, setButtonDisable] = useState(false);
+
   const updateRecord = () => {
     delete recordDetail._id;
-    console.log("Record Detail", recordDetail);
-    console.log("\n Record detail old", recordDetailOld, "\n");
-    Record.update({_id:recordId}, recordDetail).then((change) => { 
+    Record.remove({_id: recordId}).then(() => {new Record(recordDetail).save()});
+    setButtonDisable(true);
+    
+  };
 
-      console.log(change);
-      // code for toast can be applied here
-      if(change == 0)
-        console.log("Record not updated");
-      else
-      console.log("Record updated");});
+  const deleteRecord = () => {
+    return Alert.alert(
+      "Smazat záznam",
+      "Opravdu chcete smazat tento záznam?",
+      [{
+        text: "Ano",
+        onPress: () => {
+          setButtonDisable(true);
+          Record.remove({_id: recordId}).then(() => {});//navigation.navigate('Home')});
+          // Delete record
+      },
+      },
+
+      {
+        text: "Ne",
+      },
+      ]
+    );
   };
 
   // Stuff for the blood sugar
@@ -178,12 +200,6 @@ export default function EntryDetail({route, navigation}) {
   })
   
   }, [recordDetailOld]);
-
-  console.log(recordDetail);
-  //if(recordDetail.bloodSugarU != null)
-    //console.log(recordDetail.bloodSugarU.label);
-
-  //console.log(recordDetail);
 
   // Stuff for the date and time section
   const handlePress = () => setExpanded(!expanded);
@@ -318,6 +334,7 @@ const timeSelectionConfirm = (time) => {
 
     
     return (
+      <LinearGradient colors={[backgroundColor, backgroundColor2]} style={{ flex: 1}}>
       <SafeAreaView style={{margin: 5}}>
         <ScrollView>
           <View style={styles.maincontainer}>
@@ -336,8 +353,8 @@ const timeSelectionConfirm = (time) => {
             type="real"
             emptied={true}
             min={0}
-            step={0.1}
-            max={100}
+            step={recordDetail.bloodSugarU ? recordDetail.bloodSugarU.step : 0.1}
+            max={50}
             color={primaryColor}
             value={recordDetail.bloodSugar}
             onChange={updatedBloodSugar}
@@ -366,7 +383,8 @@ const timeSelectionConfirm = (time) => {
             type="real"
             emptied={true}
             min={0}
-            step={1}
+            max={50}
+            step={recordDetail.insulineT ? recordDetail.insulineT.step : 0.1}
             color={primaryColor}
             value={recordDetail.insuline}
             onChange={updatedInsuline}
@@ -395,11 +413,12 @@ const timeSelectionConfirm = (time) => {
                 type="real"
                 emptied={true}
                 min={0}
-                step={1}
+                max={1000}
+                step={recordDetail.carboU ? recordDetail.carboU.step : 0.1}
                 color= "#674fa5"
                 value={recordDetail.carbo}
                 fontSize={ 28 }
-                placeholderTextColor={ placeholderColor }
+                placeholderColor={ placeholderColor }
                 onChange={updatedCarbo}
                 append={
                     <AppendDropdown
@@ -460,7 +479,6 @@ const timeSelectionConfirm = (time) => {
 
         <View>
             <Text style={styles.text_style.normal}>Poznámky</Text>
-            {recordDetail.note &&
             <TextInput 
                 placeholder="Text..."
                 style={styles.textinput}
@@ -469,11 +487,10 @@ const timeSelectionConfirm = (time) => {
                 value={recordDetail.note}
                 onChangeText={updatedNote}
             ></TextInput>
-            }
         </View>
         
         <View style={styles.delete_button_flex}>
-        <Button icon="alert" style={styles.delete_button_flex.delete_button} mode="outlined"  onPress={() => navigation.navigate('Home')}>
+        <Button icon="alert" style={styles.delete_button_flex.delete_button} mode="outlined" disabled={buttonDisable} onPress={deleteRecord}>
           <Text style={styles.delete_button_flex.delete_button.text}>Smazat záznam</Text>
         </Button>
         </View>
@@ -506,17 +523,18 @@ const timeSelectionConfirm = (time) => {
         
 
         <View style={styles.confirm_buttons_flex}>
-        <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" onPress={updateRecord}>
+        <Button icon="check" style={styles.confirm_buttons_flex.save_button} mode="contained" disabled={buttonDisable} onPress={updateRecord}>
           Uložit změny
         </Button>
 
-        <Button icon="close" mode="contained" onPress={() => navigation.navigate('Home')}>
+        <Button icon="close" mode="contained" disabled={buttonDisable} onPress={() => navigation.navigate('History')}>
           Zrušit
         </Button>
         </View>
       </View>
       </ScrollView>
       </SafeAreaView>
+      </LinearGradient>
     );
 }
     
