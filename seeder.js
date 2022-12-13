@@ -14,14 +14,14 @@ export async function seedUnits() {
         console.log(`Cleared ${clearNum} units!`);
 
         return Unit.addUnits([
-            new Unit({unitType: 'mass', label: 'g', isReference: true, title: 'g (gram)'}),
-            new Unit({unitType: 'mass', label: 'oz', toReferenceCoef: 28.35, step: 0.1, title: 'oz (unce)'}),
+            new Unit({unitType: 'mass', label: 'g', isReference: true, title: 'g (gram)', resolution: 0}),
+            new Unit({unitType: 'mass', label: 'oz', toReferenceCoef: 28.35, step: 0.1, title: 'oz (unce)', resolution: 1}),
 
-            new Unit({unitType: 'glyc', label: 'mmol/l', isReference: true, step: 0.1}),
-            new Unit({unitType: 'glyc', label: 'mg/dL', toReferenceCoef: 0.055}),
+            new Unit({unitType: 'glyc', label: 'mmol/l', isReference: true, step: 0.1, resolution: 1}),
+            new Unit({unitType: 'glyc', label: 'mg/dL', toReferenceCoef: 0.055, resolution: 0}),
             
-            new Unit({unitType: 'insuline', label: 'Fiasp', isReference: true}),
-            new Unit({unitType: 'insuline', label: 'Novorapid'}),
+            new Unit({unitType: 'insuline', label: 'Fiasp', isReference: true, resolution: 0}),
+            new Unit({unitType: 'insuline', label: 'Novorapid', resolution: 0}),
         ]);
     });
 }

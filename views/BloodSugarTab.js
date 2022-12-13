@@ -147,6 +147,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     min={0}
                     step={glycemiaU && glycemiaU.step ? glycemiaU.step : 0.1}
                     max={50}
+                    rangeMax={2}
+                    rangeMin={-2}
+                    resolution={glycemiaU && glycemiaU.resultion ? glycemiaU.resultion : 1}
                     appendValueEnum={glycemiaUEnum}
                     appendValue={glycemiaU}
                     onValueChangeAppend={setGlycemiaU}
@@ -180,9 +183,9 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     min={0}
                     step={insulineT && insulineT.step ? insulineT.step : 1}
                     max={100}
-                    maximumSliderValue={10}
+                    rangeMin={-10}
+                    rangeMax={10}
                     resolution={0}
-                    minimumSliderValue={10}
                     appendValueEnum={insulineTEnum}
                     appendValue={insulineT}
                     onValueChangeAppend={setInsulineT}

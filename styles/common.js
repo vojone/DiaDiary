@@ -12,7 +12,7 @@ export const primaryColor = '#674fa5';
 export const primaryColor2 = '#a050a5';
 export const primaryColor2Pressed = '#713875';
 
-export const backgroundColor = '#fffafe';
+export const backgroundColor = '#fff0fc';
 export const backgroundColor2 = '#fff';
 
 export const pressUnderlayColor = '#e4cbe6';

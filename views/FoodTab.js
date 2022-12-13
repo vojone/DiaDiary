@@ -103,7 +103,7 @@ export default function FoodTab({ navigation, model, screenref }) {
     <View style={styles.maincontainer}>
         <View>
             <Text>Sacharidy</Text>
-            {global.user && global.user.inputType == 0 ?
+            {global.user && !global.user.inputType ?
                 <NumericSpinner
                     placeholderColor={placeholderColor}
                     emptied={true}
@@ -128,9 +128,9 @@ export default function FoodTab({ navigation, model, screenref }) {
                     min={0}
                     step={carboU && carboU.step ? carboU.step : 1}
                     max={1000}
-                    maximumSliderValue={10}
-                    resolution={0}
-                    minimumSliderValue={10}
+                    rangeMin={-10}
+                    resolution={carboU && carboU.resultion ? carboU.resolution : 0}
+                    rangeMax={10}
                     appendValueEnum={carboUEnum}
                     appendValue={carboU}
                     onValueChangeAppend={setCarboU}

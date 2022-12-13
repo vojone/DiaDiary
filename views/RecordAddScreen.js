@@ -16,6 +16,7 @@ import ButtonSecondary from '../components/ButtonSecondary';
 import ButtonPrimary from '../components/ButtonPrimary';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { showToastMessage, showToastMessageDanger, showToastMessageSuccess, showToastMessageWarning } from '../components/ToastMessage';
+import { User } from '../models/user';
 
 
 const debuggingMode = false;
@@ -210,7 +211,8 @@ export default function RecordAddScreen({ navigation }) {
                             }),
                             tabBarStyle: {
                                 height: topBarHeight,
-                            }
+                            },
+                            swipeEnabled: global.user ? (global.user.inputType != 1) : true,
                         }}
                     >
                         {props => <BloodSugarTab {...props} model={record} screenref={bloodSugarTab}></BloodSugarTab>}
@@ -228,7 +230,8 @@ export default function RecordAddScreen({ navigation }) {
                             }),
                             tabBarStyle: {
                                 height: topBarHeight,
-                            }
+                            },
+                            swipeEnabled: global.user ? (global.user.inputType != 1) : true,
                         }}
                     >
                         {props => <FoodTab {...props} model={record} screenref={foodTab}></FoodTab>}
@@ -246,7 +249,8 @@ export default function RecordAddScreen({ navigation }) {
                             }),
                             tabBarStyle: {
                                 height: topBarHeight,
-                            }
+                            },
+                            swipeEnabled: global.user ? (global.user.inputType != 1) : true,
                         }}
                     >
                         {props => <OtherTab {...props} model={record} screenref={otherTab}></OtherTab>}
