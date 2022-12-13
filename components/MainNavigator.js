@@ -1,4 +1,5 @@
 /**
+ * Main navigator component (drawer navigator)
  * @author Vojtěch Dvořák (xdvora3o)
  */
 

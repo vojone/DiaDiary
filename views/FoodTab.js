@@ -19,6 +19,7 @@ import NumericSlider from "../components/NumericSlider";
 
 
 export default function FoodTab({ navigation, model, screenref }) {
+    //Imperative handles for parent screen (RecordAddScreen)
     useImperativeHandle(screenref, () => ({
         refresh: (model) => { 
             setCarbo(model.carboHydrates);
@@ -43,6 +44,7 @@ export default function FoodTab({ navigation, model, screenref }) {
     const [foodEnum, setFoodEnum] = useState([]);
 
     useEffect(() => {
+        //Retrieving mass units for dropdown
         Unit.find('mass', {}, true).then((massUnits) => {
             if(massUnits == null) {
                 setCarboUEnum([]);
@@ -54,7 +56,8 @@ export default function FoodTab({ navigation, model, screenref }) {
         })
     }, [global.user, global.settingsChanged]);
 
-
+    
+    //Sets the default (initial) of the record
     const setDefaultMassUnit = (unitArr) => {
         if(!unitArr) {
             return;
@@ -78,6 +81,7 @@ export default function FoodTab({ navigation, model, screenref }) {
 
 
     useEffect(() => {
+        //Retrieving food types for dropdown
         Food.find({}, true, {order: 1}).then((foodTypes) => {
             if(foodTypes == null) {
                 setFoodEnum([]);
@@ -89,6 +93,8 @@ export default function FoodTab({ navigation, model, screenref }) {
         })
     }, [global.settingsChanged]);
 
+
+    //Sets the initial (default) food type of record
     const setDefaultFoodType = (foodTypes) => {
         if(!foodTypes) {
             return;

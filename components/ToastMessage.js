@@ -9,6 +9,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Text } from "react-native";
 
 
+/**
+ * Shows the toast message that its style can be modified by arguments
+ * @param {*} message 
+ * @param {*} bgColor 
+ * @param {*} fontColor 
+ * @returns 
+ */
 export function showToastMessage(message, bgColor = primaryColor, fontColor = 'white') {
     return Toast.show( message, {
         duration: Toast.durations.SHORT,
@@ -21,6 +28,7 @@ export function showToastMessage(message, bgColor = primaryColor, fontColor = 'w
         delay: 0,
     });
 } 
+
 
 
 export function showToastMessageSuccess(message) {

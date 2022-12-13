@@ -1,4 +1,5 @@
 /**
+ * Editable list (can be used for tags insuline types etc.)
  * @author Vojtěch Dvořák (xdvora3o)
  */
 

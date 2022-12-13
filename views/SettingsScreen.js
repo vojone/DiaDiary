@@ -15,13 +15,16 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { showToastMessageDanger, showToastMessageSuccess, ToastMessage } from '../components/ToastMessage';
 import { Unit } from '../models/unit';
 import { User } from '../models/user';
-import { dangerColor, placeholderColor, primaryColor, primaryColor2 } from '../styles/common';
+import { dangerColor, placeholderColor, primaryColor, primaryColor2, settingStyles } from '../styles/common';
 import NumericSlider from '../components/NumericSlider';
 import NumericSpinner from '../components/NumericSpinner';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Tag } from '../models/tag';
 import { Button, Dialog, Paragraph } from 'react-native-paper';
 import { Record } from '../models/record';
+import { removeAS } from '../services/store';
+import { Food } from '../models/food';
+import RNRestart from 'react-native-restart';
 
 
 /**
@@ -45,6 +48,8 @@ export default function SettingsScreen({ navigation }) {
     const [fakeVal2, setFakeVal2] = useState(5.5);
 
     const [saving, setSaving] = useState(false);
+    const [removing, setRemoving] = useState(false);
+    const [reseting, setReseting] = useState(false);
 
     const [visibleRemoveRecordsDia, setVisibleRemoveRecordsDia] = useState(false);
 
@@ -56,18 +61,21 @@ export default function SettingsScreen({ navigation }) {
         const unsubscribe = navigation.addListener('focus', () => {
             setSaving(false);
 
+            //REtrieving mass units for dropdown
             Unit.find('mass', {}, true).then((result) => {
                 if(result !== null) {
                     setMassUnitsEnum(result);
                 }
             });
     
+            //Retrieving glycemia units for dropdown
             Unit.find('glyc', {}, true).then((result) => {
                 if(result !== null) {
                     setGlycUnitsEnum(result);
                 }
             });
     
+            //Retrieving insuline types for dropdown (and editable list)
             Unit.find('insuline', {}, true).then((result) => {
                 if(result !== null) {
                     result.forEach((ins, i) => {
@@ -78,6 +86,7 @@ export default function SettingsScreen({ navigation }) {
                 }
             });
 
+            //Retrieving tags for editable list
             Tag.find({}, true).then((result) => {
                 if(result !== null) {
                     result.forEach((ins, i) => {
@@ -88,6 +97,7 @@ export default function SettingsScreen({ navigation }) {
                 }
             }); 
     
+            //Initial page of settings
             flatList.current.scrollToIndex({animated: false, index: 0});
         });
 
@@ -166,6 +176,7 @@ export default function SettingsScreen({ navigation }) {
         navigation.navigate('Records');
     }
 
+    //Provides user feedback after saving is done
     const savingDone = (success = true) => {
         global.settingsChanged = !global.settingsChanged;
 
@@ -180,9 +191,11 @@ export default function SettingsScreen({ navigation }) {
         setSaving(false);
     }
     
+    //Save button callback
     const saveSettings = () => {
         setSaving(true);
 
+        //Updating units
         let insulineProm = Unit.remove({ unitType: 'insuline'}, true).then(
             (removed) => {
                 let toBeInserted = insulineTypesEnum;
@@ -195,6 +208,7 @@ export default function SettingsScreen({ navigation }) {
             }
         );
 
+        //Updating tags
         let tagsProm = Tag.remove({}, true).then(
             (removed) => { 
                 let toBeInserted = tagsEnum;
@@ -207,6 +221,7 @@ export default function SettingsScreen({ navigation }) {
             }
         );
 
+        //Updating user settings
         Promise.allSettled([tagsProm, insulineProm]).then(
             insuline => {
                 let newUserSettings = new User(user);
@@ -235,88 +250,69 @@ export default function SettingsScreen({ navigation }) {
         });
     }
 
-    const styles = StyleSheet.create({
-        container: {
-            //backgroundColor: primaryColor,
-            flex: 1,
-            paddingTop: (Platform.OS == 'android' ? StatusBar.currentHeight : 0) + 20,
-        },
+    //Stylesheet for this screen
+    const styles = settingStyles;
 
-        heading: {
-            fontSize: 24,
-            color: 'white',
-            fontFamily: 'sans-serif-light',
-        },
 
-        mainheading: {
-            fontSize: 28,
-            color: 'white',
-            fontFamily: 'sans-serif-light',
-        },
+    //Hides the remove records dialog
+    const hideRemoveRecordsDia = () => {
+        setVisibleRemoveRecordsDia(false);
+    }
 
-        form: {
-            marginTop: 20,
-            flex: 1,
-            justifyContent: 'flex-start',
-        },
+    //Remove all saved records!
+    const removeRecords = () => {
+        setVisibleRemoveRecordsDia(false);
 
-        formitem: {
-            marginBottom: 30,
-        },
+        Record.remove({}, true).then(
+            (result) => {
+                console.log(result);
+                showToastMessageSuccess('Záznamy byly úspěšně vymazány');
 
-        regular: {
-            marginTop: 10,
-            fontSize: 16,
-            color: 'white',
-        },
+                navigation.navigate('Records');
+            },
+            (error) => {
+                console.log(error);
+                showToastMessageDanger('Nepodařilo se smazat záznamy');
 
-        label: {
-            fontSize: 16,
-            color: 'white',
-            fontWeight: 'bold',
-            marginBottom: 5,
-        },
+                navigation.navigate('Records');
+        });
+    }
 
-        section: {
-            paddingHorizontal: 20,
-            width: Dimensions.get('window').width,
-        },
+    //Hides dialog window for app reset
+    const hideResetDia = () => {
+        setVisibleResetDia(false);
+    }
 
-        lastsection: {
-            paddingRight: 0,
-            width: Dimensions.get('window').width,
-        },
+    //Resets the entire app
+    const resetApp = () => {
+        let unitProm = Unit.remove({}, true);
+        let foodProm = Food.remove({}, true);
+        let tagProm = Tag.remove({}, true);
+        let userProm = User.remove({}, true);
 
-        intro: {
-            borderBottomColor: 'white',
-            padding: 20,
-            marginBottom: 20,
-            borderBottomWidth: 1,
-            display: 'flex',
-            flexDirection: 'row',
-        },
+        Promise.allSettled([unitProm, foodProm, tagProm, userProm]).then(() => {
+            removeAS('initialized').then(() => {
+                RNRestart.Restart();
+            });
+        });
+    }
 
-        controlpanel : {
-            flexDirection: 'row',
-            padding: 20,
 
-            justifyContent: 'space-between',
-        },
-
-        topcontrolpanel : {
-            paddingHorizontal: 20,
-
-            flexDirection: 'row',
-
-            justifyContent: 'space-between',
-        },
-    });
+    //Screen is basically horizontal flatlist (this is data array for it)
+    const tabs = [
+        {num: 0, component: unitForm},
+        {num: 1, component: insulineForm},
+        {num: 2, component: inputForm},
+        {num: 3, component: tagsForm},
+        {num: 4, component: dangerForm}
+    ]
 
 
     /**
      * Setting slides
      */
 
+    //Unit settings slide
     const unitForm = (item) => {
         return (
             <View  style={{ flex: 1 }}>
@@ -350,6 +346,7 @@ export default function SettingsScreen({ navigation }) {
             </View>);
     }
 
+    //SEttings of insuline types
     const insulineForm = (item) => {
         return (
             <View style={{flex: 1}}>
@@ -391,6 +388,8 @@ export default function SettingsScreen({ navigation }) {
             </View>);
     }
 
+
+    //Input settings slide
     const inputForm = (item) => {
         return (
             <View style={{flex: 1}}>
@@ -462,6 +461,7 @@ export default function SettingsScreen({ navigation }) {
             </View>);
     }
 
+    //Tags settings slide
     const tagsForm = (item) => {
         return (
             <View style={{flex: 1}}>
@@ -491,37 +491,7 @@ export default function SettingsScreen({ navigation }) {
             </View>);
     }
 
-
-    const hideRemoveRecordsDia = () => {
-        setVisibleRemoveRecordsDia(false);
-    }
-
-    const removeRecords = () => {
-        setVisibleRemoveRecordsDia(false);
-
-        Record.remove({}, true).then(
-            (result) => {
-                console.log(result);
-                showToastMessageSuccess('Záznamy byly úspěšně vymazány');
-
-                navigation.navigate('Records');
-            },
-            (error) => {
-                console.log(error);
-                showToastMessageDanger('Nepodařilo se smazat záznamy');
-
-                navigation.navigate('Records');
-        });
-    }
-
-    const hideResetDia = () => {
-        setVisibleResetDia(false);
-    }
-
-    const resetApp = () => {
-
-    }
-
+    //Danger zone form (with app reset button and record removal)
     const dangerForm = (item) => {
         return (
             <View style={{flex: 1}}>
@@ -535,6 +505,8 @@ export default function SettingsScreen({ navigation }) {
                             fillColor={dangerColor}
                             textColor='white'
                             title='Vymazat záznamy'
+                            loading={removing}
+                            disabled={removing}
                             onPress={() => { setVisibleRemoveRecordsDia(true); }}
                         >
                         </ButtonPrimary>
@@ -544,6 +516,8 @@ export default function SettingsScreen({ navigation }) {
                             fillColor={dangerColor}
                             textColor='white'
                             title='Resetovat aplikaci'
+                            loading={reseting}
+                            disabled={reseting}
                             onPress={() => { setVisibleResetDia(true); }}
                         >
                         </ButtonPrimary>
@@ -553,17 +527,10 @@ export default function SettingsScreen({ navigation }) {
             </View>);
     }
 
-    const tabs = [
-        {num: 0, component: unitForm},
-        {num: 1, component: insulineForm},
-        {num: 2, component: inputForm},
-        {num: 3, component: tagsForm},
-        {num: 4, component: dangerForm}
-    ]
-
+    //They main layout of settings screen
     return (
         <KeyboardAwareScrollView>
-        <View style={{ flex: 1, height: Dimensions.get('window').height + StatusBar.currentHeight }}>
+        <View style={{ flex: 1, height: Dimensions.get('window').height }}>
 
         <LinearGradient colors={[primaryColor2, primaryColor]} style={{ flex: 1}}>
         <SafeAreaView

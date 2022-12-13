@@ -4,8 +4,8 @@
  */
 
 /**
- * 
- * @param {number} value 
+ * Converts numeric value to string with one decimal (where decimal point is signed by ,)
+ * @param {number} value to be converted
  * @returns 
  */
 export function formatOneDecimal(value) {

@@ -13,7 +13,9 @@ import DropdownItem from "../components/DropdownItem";
 import { Tag } from "../models/tag";
 import { LinearGradient } from "expo-linear-gradient";
 
+
 export default function OtherTab({ navigation, model, screenref }) {
+    //Imperative handle for parent screen RecordAddScreen
     useImperativeHandle(screenref, () => ({
         refresh: (model) => { 
             setTags(model.tags);
@@ -34,6 +36,7 @@ export default function OtherTab({ navigation, model, screenref }) {
     const [tagsEnum, setTagsEnum] = useState([]);
 
     useEffect(() => {
+        //Retrieving tags for dropdown
         Tag.find({}, true).then((tags) => {
             if(tags == null) {
                 setTagsEnum([]);

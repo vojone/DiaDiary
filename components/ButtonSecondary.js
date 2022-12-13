@@ -1,4 +1,5 @@
 /**
+ * ButtonSecondary
  * @author Vojtěch Dvořák (xdvora3o)
  */
 

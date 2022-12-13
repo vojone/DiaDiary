@@ -96,3 +96,117 @@ export const addRecordStyles = StyleSheet.create({
     }
 });
 
+//Styles for settings
+export const settingStyles = StyleSheet.create({
+    container: {
+        //backgroundColor: primaryColor,
+        flex: 1,
+        paddingTop: (Platform.OS == 'android' ? StatusBar.currentHeight : 0) + 20,
+    },
+
+    heading: {
+        fontSize: 24,
+        color: 'white',
+        fontFamily: 'sans-serif-light',
+    },
+
+    initheading: {
+        fontSize: 36,
+        color: 'white',
+        fontFamily: 'sans-serif-light',
+    },
+
+    mainheading: {
+        fontSize: 28,
+        color: 'white',
+        fontFamily: 'sans-serif-light',
+    },
+
+    form: {
+        marginTop: 20,
+        flex: 1,
+        justifyContent: 'flex-start',
+    },
+
+    initform: {
+        marginTop: 30,
+        flex: 1,
+        justifyContent: 'flex-start',
+    },
+
+    formitem: {
+        marginBottom: 30,
+    },
+
+    initformitem: {
+        marginBottom: 50,
+    },
+
+    regular: {
+        marginTop: 10,
+        fontSize: 16,
+        color: 'white',
+    },
+
+    label: {
+        fontSize: 16,
+        color: 'white',
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+
+    initlabel: {
+        fontSize: 16,
+        color: 'white',
+        fontWeight: 'bold',
+    },
+
+    section: {
+        paddingHorizontal: 20,
+        width: Dimensions.get('window').width,
+    },
+
+    lastsection: {
+        paddingRight: 0,
+        width: Dimensions.get('window').width,
+    },
+
+    intro: {
+        borderBottomColor: 'white',
+        padding: 20,
+        marginBottom: 20,
+        borderBottomWidth: 1,
+        display: 'flex',
+        flexDirection: 'row',
+    },
+
+    intro: {
+        borderBottomColor: 'white',
+        paddingBottom: 20,
+        marginBottom: 20,
+        borderBottomWidth: 1,
+    },
+
+    controlpanel : {
+        flexDirection: 'row',
+        padding: 20,
+
+        justifyContent: 'space-between',
+    },
+
+    topcontrolpanel : {
+        paddingHorizontal: 20,
+
+        flexDirection: 'row',
+
+        justifyContent: 'space-between',
+    },
+
+    controlpanelleftmost: {
+        flexDirection: 'row',
+        padding: 20,
+
+        justifyContent: 'flex-end',
+    }
+});
+

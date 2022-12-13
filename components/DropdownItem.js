@@ -1,4 +1,5 @@
 /**
+ * Item for dropdown (with check icon if item is selected)
  * @author Vojtěch Dvořák (xdvora3o)
  */
 

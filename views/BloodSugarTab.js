@@ -16,6 +16,7 @@ import NumericSlider from '../components/NumericSlider';
 
 
 export default function BloodSugarTab({ navigation, model, screenref }) {
+    //Imperative handle for parent screen (RecordAddScreen)
     useImperativeHandle(screenref, () => ({
         refresh: (model) => { 
             setGlycemia(model.bloodSugar);
@@ -45,6 +46,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
 
 
     useEffect(() => {
+        //Retireiving glycemia units for dropdown
         Unit.find('glyc', {}, true).then((glycemiaUnits) => {
             if(glycemiaUnits == null) {
                 setGlycemiaUEnum([]);
@@ -58,6 +60,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         })
     }, [global.user, global.settingsChanged]);
 
+    //Settings default (initial glycemia units)
     const setDefaultGlycUnit = (unitArr) => {
         if(!unitArr) {
             return;
@@ -81,6 +84,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
 
 
     useEffect(() => {
+        //Retrieving intial (default) insuline types for dropdown
         Unit.find('insuline', {}, true).then((insulineTypes) => {
             if(insulineTypes == null) {
                 setInsulineT([]);

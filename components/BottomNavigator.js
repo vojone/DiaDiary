@@ -1,4 +1,5 @@
 /**
+ * Bottom navigator for record page
  * @author Vojtěch Dvořák (xdvora3o)
  */
 

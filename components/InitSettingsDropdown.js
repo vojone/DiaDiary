@@ -1,3 +1,8 @@
+/**
+ * Dropdown component for settings
+ * @author Vojtěch Dvořák (xdvora3o)
+ */
+
 import { useEffect } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import DropdownItem from "./DropdownItem";

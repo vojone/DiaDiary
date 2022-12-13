@@ -7,8 +7,12 @@ import { Food } from "./models/food";
 import { Tag } from "./models/tag";
 import { Unit } from "./models/unit";
 import { User } from "./models/user";
-import { getAS, storeAS } from './services/store';
 
+
+/**
+ * Seeds the units and (intial) insuline types 
+ * @returns 
+ */
 export async function seedUnits() {
     return Unit.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} units!`);
@@ -21,12 +25,17 @@ export async function seedUnits() {
             new Unit({unitType: 'glyc', label: 'mg/dL', toReferenceCoef: 0.055, resolution: 0}),
             
             new Unit({unitType: 'insuline', label: 'Fiasp', isReference: true, resolution: 0}),
+            new Unit({unitType: 'insuline', label: 'Novolog', resolution: 0}),
             new Unit({unitType: 'insuline', label: 'Novorapid', resolution: 0}),
         ]);
     });
 }
 
 
+/**
+ * Seeds the initial food types
+ * @returns Promise
+ */
 export async function seedFood() {
     return Food.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} food!`);
@@ -42,6 +51,10 @@ export async function seedFood() {
 }
 
 
+/**
+ * Seeds the initial tags
+ * @returns Promise
+ */
 export async function seedTags() {
     return Tag.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} tags!`);
@@ -55,6 +68,10 @@ export async function seedTags() {
 }
 
 
+/**
+ * Seeds the demo user settings
+ * @returns Promise
+ */
 export async function seedDemoUser() {
     return User.remove({}, true).then((clearNum) => {
         console.log(`Cleared ${clearNum} user settings!`);
