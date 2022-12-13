@@ -5,7 +5,7 @@
 
 
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Platform, FlatList, Dimensions, DevSettings } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ButtonPrimary from '../components/ButtonPrimary';
 import ButtonSecondary from '../components/ButtonSecondary';
@@ -299,7 +299,13 @@ export default function SettingsScreen({ navigation }) {
         Promise.allSettled([unitProm, foodProm, tagProm, userProm]).then(() => {
             setReseting(false);
             removeAS('initialized').then((result) => {
-                RNRestart.Restart();
+                try {
+                    RNRestart.Restart();
+                }
+                catch(e) {
+                    console.log(e);
+                    DevSettings.reload();
+                }
             });
         });
 

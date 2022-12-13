@@ -10,7 +10,7 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import MainDrawerNavigator from './components/MainNavigator';
 import seedData from './global';
 
-const clearData = true; //If it set true, init settings are showed after every execution of the app
+const clearData = false;
 
 const navigationRef = createRef();
 
