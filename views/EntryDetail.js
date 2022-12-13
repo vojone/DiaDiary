@@ -3,7 +3,7 @@
 // Autor: Tomáš Dvořák (xdvora3r)
 
 /**
- * Blood sugar tab of record add screen
+ * Entry detail screen
  * @author Tomáš Dvořák (xdvora3r)
  */
 
@@ -95,12 +95,12 @@ export default function EntryDetail({route, navigation}) {
   const [buttonDisable, setButtonDisable] = useState(false);
 
   const updateRecord = () => {
+    setButtonDisable(true);
     delete recordDetail._id;
     Vibration.vibrate(200);
     showToastMessageSuccess('Záznam byl upraven');
     Record.remove({_id: recordId}).then(() => {new Record(recordDetail).save()});
-    setButtonDisable(true);
-    
+    navigation.goBack();
   };
 
   const deleteRecord = () => {
@@ -114,7 +114,7 @@ export default function EntryDetail({route, navigation}) {
           Vibration.vibrate(200);
           showToastMessageSuccess('Záznam byl smazán');
 
-          Record.remove({_id: recordId}).then(() => {});//navigation.navigate('Home')});
+          Record.remove({_id: recordId}).then(() => {navigation.goBack()});//navigation.navigate('Home')});
           // Delete record
       },
       },
@@ -535,7 +535,7 @@ const timeSelectionConfirm = (time) => {
           Uložit změny
         </Button>
 
-        <Button icon="close" mode="contained" disabled={buttonDisable} onPress={() => navigation.navigate('HistoryScreen')}>
+        <Button icon="close" mode="contained" disabled={buttonDisable} onPress={() => navigation.goBack()}>
           Zrušit
         </Button>
         </View>
