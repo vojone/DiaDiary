@@ -6,7 +6,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createRef, useEffect } from 'react';
 
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, StatusBar } from 'react-native';
 import MainDrawerNavigator from './components/MainNavigator';
 import seedData from './global';
 
@@ -18,6 +18,8 @@ const navigationRef = createRef();
  * The root component of the app
  */
 export default function App() {
+    StatusBar.setBarStyle('dark-content', true);
+
     useEffect(() => {
         seedData(navigationRef, clearData);
     }, [clearData]);

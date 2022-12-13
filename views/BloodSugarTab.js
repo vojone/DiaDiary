@@ -120,6 +120,8 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         }
     }
 
+    console.log(glycemiaU.resolution);
+
 
     const styles = addRecordStyles;
     return (
@@ -133,7 +135,7 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     emptied={true}
                     min={0}
                     step={glycemiaU && glycemiaU.step ? glycemiaU.step : 0.1}
-                    max={50}
+                    max={200}
                     value={glycemia}
                     onValueChange={setGlycemia}
                     append={
@@ -150,10 +152,10 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
                     onValueChange={setGlycemia}
                     min={0}
                     step={glycemiaU && glycemiaU.step ? glycemiaU.step : 0.1}
-                    max={50}
+                    max={200}
                     rangeMax={2}
                     rangeMin={-2}
-                    resolution={glycemiaU && glycemiaU.resultion ? glycemiaU.resultion : 1}
+                    resolution={glycemiaU && (glycemiaU.resolution !== undefined && glycemiaU.resolution !== null) ? glycemiaU.resolution : 1} 
                     appendValueEnum={glycemiaUEnum}
                     appendValue={glycemiaU}
                     onValueChangeAppend={setGlycemiaU}

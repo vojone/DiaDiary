@@ -55,6 +55,8 @@ export default function NumericSlider(props) {
             }
         }
 
+        console.log(resolution);
+
         setFakeValue(newVal);
     }
 

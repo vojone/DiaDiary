@@ -135,7 +135,7 @@ export default function FoodTab({ navigation, model, screenref }) {
                     step={carboU && carboU.step ? carboU.step : 1}
                     max={1000}
                     rangeMin={-10}
-                    resolution={carboU && carboU.resultion ? carboU.resolution : 0}
+                    resolution={carboU && (carboU.resolution !== undefined && carboU.resolution !== null) ? carboU.resolution : 0}
                     rangeMax={10}
                     appendValueEnum={carboUEnum}
                     appendValue={carboU}

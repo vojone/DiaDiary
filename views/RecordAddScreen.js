@@ -58,7 +58,7 @@ export default function RecordAddScreen({ navigation }) {
         };
     }, [isDateTimeSync]);
 
-
+    //Callback for saving button
     const onSave = () => {
         setSaving(true);
 
@@ -91,6 +91,7 @@ export default function RecordAddScreen({ navigation }) {
             });
     }
 
+    //Cancel button click
     const onCancel = () => {
         record = Record.default(); 
         bloodSugarTab.current.refresh(record);
@@ -104,7 +105,7 @@ export default function RecordAddScreen({ navigation }) {
         showToastMessageWarning('Záznam byl zahozen');
     }
 
-
+    //Syncing the date time
     const syncDateTime = (setSync = false) => {
         if(setSync) {
             setDateTimeSync(true);
@@ -113,6 +114,7 @@ export default function RecordAddScreen({ navigation }) {
         setDateTime(new Date());
     }
 
+    //Unsync date time when is date time selection opened
     const onDateTimeSelectionOpen = () => {
         setDateTimeSync(false);
     }
@@ -135,12 +137,14 @@ export default function RecordAddScreen({ navigation }) {
         setDateTimeSync(false);
     };
 
+    //Debugging function for printing all records to log
     const onDump = () => {
         Record.find({}, true).then((result) => { 
             console.log(result);
         });
     }
 
+    //Debugging function for clearing records
     const onClear = () => {
         Record.remove({}, true).then((removedNum) => {
             console.log(`Removed ${removedNum} records!`);
