@@ -162,7 +162,7 @@ export default function FoodTab({ navigation, model, screenref }) {
                 renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20}></DropdownItem>}
                 placeholder={food ? food.label : '-'}
                 value={food}
-                containerStyle={{top: -25}}
+                // containerStyle={{top: -25}}
             >
             </Dropdown>
         </View>

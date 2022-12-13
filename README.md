@@ -10,7 +10,7 @@ Juraj Dedič (xdedic07)
 
 Vojtěch Dvořák (xdvora3o)
 
-## Usage
+## Testing and debugging
 For testing and debugging (`expo` and `npm` are needed, we also recommend to use Expo Go mobile app for this):
 
 ```

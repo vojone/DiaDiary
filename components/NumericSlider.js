@@ -3,13 +3,14 @@
  * @author Vojtěch Dvořák (xdvora3o)
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import { activeColor, placeholderColor, primaryColor, primaryColor2, primaryColor2Pressed } from "../styles/common";
 import { Slider } from "@miblanchard/react-native-slider";
 import InputSpinner from "react-native-input-spinner";
 import AppendDropdown from "./AppendDropdown";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 export default function NumericSlider(props) {
     const [fakeValue, setFakeValue] = useState(props.value); //< FakeValue for better performace (real value is updated after press out)
@@ -77,6 +78,8 @@ export default function NumericSlider(props) {
         setMiddle(value); 
     }
 
+    const bottomMargin = 30;
+
     return (
         <View>
         {fakeValue == props.value ? 
@@ -128,7 +131,9 @@ export default function NumericSlider(props) {
         }
 
         {/* Slider itself */}
-        <View style={{flex: 1, padding: 10, marginBottom: 30}}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <MaterialCommunityIcons name="minus" color={primaryColor} size={16} style={{marginBottom: bottomMargin}}></MaterialCommunityIcons>
+        <View style={{flex: 1, padding: 10, marginBottom: bottomMargin}}>
             <Slider
                 value={fakeValue}
                 onValueChange={(values) => { valueChanged(values[0]); }}
@@ -146,9 +151,11 @@ export default function NumericSlider(props) {
                 minimumTrackTintColor={activeColor}
                 maximumTrackTintColor={activeColor}
                 thumbTintColor={primaryColor2}
-                onSlidingStart={() => { setIsActive(true); } }
-                onSlidingComplete={() => { setIsActive(false); updateRealValue(fakeValue); }}
+                onSlidingStart={() => { setIsActive(true); if(props.onSlidingStartCb) props.onSlidingStartCb(); } }
+                onSlidingComplete={() => { setIsActive(false); updateRealValue(fakeValue); if(props.onSlidingCompleteCb) props.onSlidingCompleteCb(); }}
             />
+        </View>
+        <MaterialCommunityIcons name="plus" size={16} color={primaryColor} style={{marginBottom: bottomMargin}}></MaterialCommunityIcons>
         </View>
     </View>);
 }

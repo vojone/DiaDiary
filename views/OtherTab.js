@@ -66,7 +66,7 @@ export default function OtherTab({ navigation, model, screenref }) {
                 selectedStyle={{backgroundColor: primaryColor, borderRadius: 100}}
                 renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20} withIcon={true}></DropdownItem>}
                 selectedTextStyle={{color: 'white'}}
-                containerStyle={{top: -25}}
+                // containerStyle={{top: -25}}
             >
             </MultiSelect>
         </View>

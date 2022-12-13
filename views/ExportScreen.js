@@ -11,10 +11,12 @@ import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 import ButtonPrimary from '../components/ButtonPrimary';
-import { primaryColor, primaryColor2 } from '../styles/common';
+import { backgroundColor, backgroundColor2, primaryColor, primaryColor2 } from '../styles/common';
 import { Record } from '../models/record';
 import { showToastMessageDanger, showToastMessageSuccess } from '../components/ToastMessage';
 import { StorageAccessFramework } from 'expo-file-system';
+import Toast from 'react-native-root-toast';
+import { LinearGradient } from 'expo-linear-gradient';
 
 /**
  * Converts array of records to CSV string
@@ -88,7 +90,7 @@ export default function ExportScreen(directoryUri) {
                 await StorageAccessFramework.createFileAsync(directoryPermission.directoryUri, fileName, 'text/csv')
                     .then(async(uri) => {
                         await FileSystem.writeAsStringAsync(uri, CSV, { encoding: FileSystem.EncodingType.UTF8 });
-                        showToastMessageSuccess(`Záznamy byly úspěšně exportovány jako ${fileName}.csv`);
+                        showToastMessageSuccess(`Záznamy byly úspěšně exportovány jako ${fileName}.csv`, Toast.durations.LONG);
                     })
                     .catch((e) => {
                         console.error(e);
@@ -156,31 +158,33 @@ export default function ExportScreen(directoryUri) {
     };
 
     return (
-        <View
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flex: 1,
-            }}>
-            <ButtonPrimary
-                textColor="white"
-                icon="export"
-                fillColor={primaryColor}
-                title="Exportovat záznamy"
-                onPress={onExport}
-                loading={isExporting}
-                disabled={isExporting}
-            >
-            </ButtonPrimary>
+        <LinearGradient colors={[backgroundColor, backgroundColor2]} style={{ flex: 1}}>
+            <View
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flex: 1,
+                }}>
+                <ButtonPrimary
+                    textColor="white"
+                    icon="export"
+                    fillColor={primaryColor}
+                    title="Exportovat záznamy"
+                    onPress={onExport}
+                    loading={isExporting}
+                    disabled={isExporting}
+                >
+                </ButtonPrimary>
 
-            <View style={{ marginTop: 20, padding: 20 }}>
-                <Text style={{ color: primaryColor2 }}>
-                    Pozn.: Tato verze aplikace podporuje pouze export záznamů pouze ve formátu CSV.
-                </Text>
+                <View style={{ marginTop: 20, padding: 20 }}>
+                    <Text style={{ color: primaryColor2 }}>
+                        Pozn.: Tato verze aplikace podporuje pouze export záznamů ve formátu CSV.
+                    </Text>
 
+                </View>
             </View>
-        </View>
+        </LinearGradient>
     );
 };
 

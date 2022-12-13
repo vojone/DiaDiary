@@ -29,7 +29,7 @@ export default function InitSettingsDropdown(props) {
         placeholderStyle={props.placeholderStyle}
         value={props.value}
         dropdownPosition="bottom"
-        containerStyle={{marginTop: -25}}
+        // containerStyle={{marginTop: -25}}
     >   
     </Dropdown>);
 }
