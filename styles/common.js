@@ -41,7 +41,7 @@ export const headerHeight = 100;
 export const bottomBarHeight = 60;
 
 export const pureDrawerHeaderHeight = 50;
-export const drawerHeaderHeight = StatusBar.currentHeight + pureDrawerHeaderHeight;
+export const drawerHeaderHeight = pureDrawerHeaderHeight;
 
 //Shared styles for addRecord tabs
 export const addRecordStyles = StyleSheet.create({

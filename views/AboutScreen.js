@@ -31,7 +31,7 @@ export default function AboutScreen() {
                     Až budeš chtít můžeš si je také nechat vyexportovat.
                 </Text>
                 <Text style={localstyles.emphPar}>
-                    Pokud jsi "diabetik začátečník" poraď se nejdříve se svým lékařem a zjisti, proč jsou pro tebe tyto údaje důležité. 
+                    Pokud jsi "diabetik začátečník", poraď se nejdříve se svým lékařem a zjisti, proč jsou pro tebe tyto údaje důležité. 
                 </Text>
                 <Text style={{...styles.heading, marginTop: 20 }}>Autoři</Text>
                 <Text style={styles.regular}>
