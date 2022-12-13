@@ -7,19 +7,19 @@
  * @author Tomáš Dvořák (xdvora3r)
  */
 
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Alert, TextInput} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Alert, TextInput, Vibration} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import InputSpinner from "react-native-input-spinner";
-
 import { Button } from 'react-native-paper';
-import { placeholderColor, primaryColor, backgroundColor, backgroundColor2 } from '../styles/common';
+import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 
+import { showToastMessage, showToastMessageDanger, showToastMessageSuccess, showToastMessageWarning } from '../components/ToastMessage';
 import DateTimePickerWithText from '../components/DateTimePickerWithText';
 import AppendDropdown from '../components/AppendDropdown';
-import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 import DropdownItem from "../components/DropdownItem";
 import { LinearGradient } from 'expo-linear-gradient';
 
+import { placeholderColor, primaryColor, backgroundColor, backgroundColor2 } from '../styles/common';
 import { Record } from '../models/record';
 import { Unit } from '../models/unit';
 import { Food } from "../models/food";
@@ -96,6 +96,8 @@ export default function EntryDetail({route, navigation}) {
 
   const updateRecord = () => {
     delete recordDetail._id;
+    Vibration.vibrate(200);
+    showToastMessageSuccess('Záznam byl upraven');
     Record.remove({_id: recordId}).then(() => {new Record(recordDetail).save()});
     setButtonDisable(true);
     
@@ -109,6 +111,9 @@ export default function EntryDetail({route, navigation}) {
         text: "Ano",
         onPress: () => {
           setButtonDisable(true);
+          Vibration.vibrate(200);
+          showToastMessageSuccess('Záznam byl smazán');
+
           Record.remove({_id: recordId}).then(() => {});//navigation.navigate('Home')});
           // Delete record
       },
@@ -116,6 +121,9 @@ export default function EntryDetail({route, navigation}) {
 
       {
         text: "Ne",
+        onPress: () => {
+          showToastMessageWarning('Smazání záznamu zrušeno');
+        },
       },
       ]
     );
@@ -527,7 +535,7 @@ const timeSelectionConfirm = (time) => {
           Uložit změny
         </Button>
 
-        <Button icon="close" mode="contained" disabled={buttonDisable} onPress={() => navigation.navigate('History')}>
+        <Button icon="close" mode="contained" disabled={buttonDisable} onPress={() => navigation.navigate('HistoryScreen')}>
           Zrušit
         </Button>
         </View>
