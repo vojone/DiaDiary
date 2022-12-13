@@ -6,7 +6,7 @@
 import { Record } from "../models/record";
 
 
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import React, { useState, useEffect, useRef, useReducer, useMemo, useCallback } from "react";
 
@@ -383,7 +383,19 @@ export default function ChartScreen({ navigation }) {
           }}>
             Přehled v grafu
         </Text>
-        <MaterialCommunityIcons name="dots-vertical" size={24} color="black" onPress={optionsClick} />
+
+        <TouchableHighlight
+                activeOpacity={0.5}
+                style={{borderRadius: 4, elevation: 0}}
+                underlayColor='lightgray'
+                onPress={optionsClick}
+            >
+                <View>
+                    <MaterialCommunityIcons name="dots-vertical" size={28} color="black"/>
+                </View>
+        </TouchableHighlight>
+
+
         </View>
         <View style={{
           flexDirection: "row",

@@ -3,7 +3,7 @@
  * @author Juraj Dedič (xdedic07)
  */
 
-import { StyleSheet, Text, View, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, RefreshControl, ScrollView, SectionList, VirtualizedList, Dimensions, TouchableHighlight } from 'react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo, useReducer } from 'react'
 
 import ChooseDateRange from '../components/ChooseDateRange';
@@ -18,7 +18,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import BottomSheet from '@gorhom/bottom-sheet';
 
 import { MultiSelect } from "react-native-element-dropdown";
-import { primaryColor } from "../styles/common";
+import { pressUnderlayColor, primaryColor } from "../styles/common";
 import { Tag } from "../models/tag";
 import DropdownItem from "../components/DropdownItem";
 
@@ -137,7 +137,16 @@ export default function HistoryScreen({ navigation }) {
     >
         <View style={{justifyContent: "space-between", flexDirection: "row", alignItems: "center", width: "100%", padding: 20}}>
             <Text style={{textAlign: "left", fontSize: 30, fontWeight: "bold"}}>Historie záznamů</Text>
-            <MaterialCommunityIcons name="dots-vertical" size={24} color="black" onPress={() => {optionsClick()} } />
+            <TouchableHighlight
+                activeOpacity={0.5}
+                style={{borderRadius: 4}}
+                underlayColor='lightgray'
+                onPress={optionsClick}
+            >
+                <View>
+                    <MaterialCommunityIcons name="dots-vertical" size={28} color="black"/>
+                </View>
+            </TouchableHighlight>
         </View>
 
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 30, paddingRight: 30, paddingBottom: 10, paddingTop: 20}}>
