@@ -120,8 +120,6 @@ export default function BloodSugarTab({ navigation, model, screenref }) {
         }
     }
 
-    console.log(glycemiaU.resolution);
-
 
     const styles = addRecordStyles;
     return (
