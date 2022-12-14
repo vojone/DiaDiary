@@ -28,8 +28,57 @@ eas build -p android --profile development
 
 You can download our app (.apk packge) from following url:
 
-https://expo.dev/accounts/vojone/projects/DiaDiary/builds/79dc887f-d8b5-4cf5-8f46-348aa2f7f475
+https://expo.dev/accounts/vojone/projects/DiaDiary/builds/afabd5da-0572-407f-973e-70b1e1ffb554
+
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  █ ▄▄▄▄▄ █▄▀ ▀ ███ ▀▀▄▀▀▀   ██▀█ ▄▄▄▄▄ █
+  █ █   █ █   █▀ ▄▀ ▀ ▄▀█▀▀█  ▀██ █   █ █
+  █ █▄▄▄█ █▄█▀ ▄▀█▄▀    ▀▀█▄▀█▄ █ █▄▄▄█ █
+  █▄▄▄▄▄▄▄█▄█ █ █▄▀▄▀ █▄█▄█▄█ ▀ █▄▄▄▄▄▄▄█
+  █▄ ▄▄██▄▀ █ ▄ █▄█ ▄█▀█ ▀▀▄█ ▄ ▄█▀▄  ▀▄█
+  █ ▀██ █▄▀▄  ▄▄ ██▀██▀██▄▄▄ ▄▀▄ ▀ ▄█  ▀█
+  █▀▄▀▀▄▀▄█▀█▄▀ ▄  ▄▄▄▀█▀▄█   ▀▀  ▀   █ █
+  █ █ ▄██▄▄▄█▀ ██▄█▀█▄▄▀▀ █ █ █▄▀█▀  █▄▀█
+  █▄ ▀▀██▄▀█▀▀█▄ █▀ █▀█   ▀▀▄█ ██▀▀█▀▄ ▀█
+  █▀▄▄ █ ▄▄▄█▀▀█▄▀▄ ▀██▄▄▄▀ ▄▀  ▄▀▀ ▀▄ ▄█
+  █▀▄ ▄██▄ ▀▄████▀▄▄▄█ ▄ ████▄▄  █▀▄██ ██
+  █▀█  ▀▀▄██▀█▀▀▀▀█▄▄█▀ █ ▄▄▀▀▀█▀█▄▄ ▀███
+  █▄▀▀▀██▄█▀ ▄ █▄█ ▀  ▀██ █ ▄     ▀ █ ▄ █
+  █▀▄▀██ ▄▀█▄██ ▄ ██▄▄ █  █ █▀█▀▄▄ ██▄▄▀█
+  ███▄██▄▄▄  ▀▄▀  ▀ █▄█  ▀▀▀ ▀▄ ▄▄▄ ▄ ▄ █
+  █ ▄▄▄▄▄ ███▀▄ █    ██ █ ▀ █ █ █▄█  █  █
+  █ █   █ █▀▄█▄  ███ ▀ ▀ ████ █   ▄ █▀  █
+  █ █▄▄▄█ █ ▄ ▄▄▄██ ▄ █ ██    ▀█▀▄  ▄ ███
+  █▄▄▄▄▄▄▄█▄▄▄█▄█▄█▄▄▄███▄▄▄▄████▄▄▄▄▄▄▄█
 
 ## Third party libraries
 
 See `package.json` for the list of used libraries. All these libraries should be under MIT license.
+
+
+## The App
+
+![SplashScreen](/screenshots/splash.jpg)
+
+![InitialSettings1](/screenshots/initsettings1.jpg)
+
+![InitialSettings2](/screenshots/initsettings2.jpg)
+
+![InitialSettings3](/screenshots/initsettings3.jpg)
+
+![Input1](/screenshots/input1.jpg)
+
+![AltInput](/screenshots/altinput.jpg)
+
+![Chart](/screenshots/chart.jpg)
+
+![History](/screenshots/history.jpg)
+
+![Filtering](/screenshots/fitering.jpg)
+
+![EntryDetail](/screenshots/entrydetail.jpg)
+
+![SideMenu](/screenshots/sidemenu.jpg)
+
+![Export](/screenshots/export.jpg)
+
