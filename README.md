@@ -26,7 +26,9 @@ eas build -p android --profile development
 
 ## Instalation
 
-TBD
+You can download our app (.apk packge) from following url:
+
+https://expo.dev/accounts/vojone/projects/DiaDiary/builds/79dc887f-d8b5-4cf5-8f46-348aa2f7f475
 
 ## Third party libraries
 
