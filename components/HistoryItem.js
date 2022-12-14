@@ -82,9 +82,15 @@ export default function HistoryItem(props) {
                 <Text style={styles.insuline}>
                      {record["insuline"] || "Nezadáno"} {record["insuline"] ? record["insulineT"]["label"] : ""}
                 </Text>
-                <Text>
-                     {isToday(dateTime) ? dateTime.toLocaleTimeString() : getDisplayDate(dateTime)}
+                <View>
+                {!isToday(dateTime) &&
+                <Text style={{textAlign:"center"}}>
+                    { getDisplayDate(dateTime)}
+                </Text>}
+                <Text style={{textAlign: "center"}}>
+                    { dateTime.toLocaleTimeString() }
                 </Text>
+                </View>
             </View>
         </TouchableWithoutFeedback >
     );
