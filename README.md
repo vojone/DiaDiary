@@ -61,29 +61,17 @@ See `package.json` for the list of used libraries. All these libraries should be
 
 ## The App
 
-<img src="/screenshots/splash.jpg" width="100">
+<img src="/screenshots/splash.jpg" width="250">
+<img src="/screenshots/initsettings1.jpg" width="250">
+<img src="/screenshots/initsettings2.jpg" width="250">
+<img src="/screenshots/initsettings3.jpg" width="250">
+<img src="/screenshots/input1.jpg" width="250">
+<img src="/screenshots/altinput.jpg" width="250">
+<img src="/screenshots/chart.jpg" width="250">
+<img src="/screenshots/history.jpg" width="250">
+<img src="/screenshots/fitering.jpg" width="250">
+<img src="/screenshots/entrydetail.jpg" width="250">
+<img src="/screenshots/sidemenu.jpg" width="250">
+<img src="/screenshots/export.jpg" width="250">
 
-![SplashScreen](/screenshots/splash.jpg | width=100)
-
-![InitialSettings1](/screenshots/initsettings1.jpg)
-
-![InitialSettings2](/screenshots/initsettings2.jpg)
-
-![InitialSettings3](/screenshots/initsettings3.jpg)
-
-![Input1](/screenshots/input1.jpg)
-
-![AltInput](/screenshots/altinput.jpg)
-
-![Chart](/screenshots/chart.jpg)
-
-![History](/screenshots/history.jpg)
-
-![Filtering](/screenshots/fitering.jpg)
-
-![EntryDetail](/screenshots/entrydetail.jpg)
-
-![SideMenu](/screenshots/sidemenu.jpg)
-
-![Export](/screenshots/export.jpg)
 
