@@ -23,7 +23,7 @@ function getDisplayDate(date) {
     if (date == null) {
         return "";
     }
-    return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+    return date.getDate() + ". " + (date.getMonth() + 1) + ". " + date.getFullYear();
 }
 
 export default function HistoryItem(props) {
@@ -68,7 +68,8 @@ export default function HistoryItem(props) {
 
         sugar:{
             flex: 1,
-            fontSize: 16
+            fontSize: 16,
+            color: record["bloodSugar"] ? 'black' : 'lightgray',
             // color: 'black',
             // width: 20,
             // marginRight: 10,
@@ -76,7 +77,7 @@ export default function HistoryItem(props) {
         insuline:{
             flex: 1,
             fontSize: 16,
-            color: record["insuline"] ? 'black' : 'grey',
+            color: record["insuline"] ? 'black' : 'lightgray',
             // color: 'black',
             // width: 50,
             // marginLeft: 10,
@@ -96,9 +97,13 @@ export default function HistoryItem(props) {
                 <Text style={styles.insuline}>
                      {record["insuline"] || "Nezadáno"} {record["insuline"] ? record["insulineT"]["label"] : ""}
                 </Text>
-                <Text>
-                     {isToday(dateTime) ? dateTime.toLocaleTimeString() : getDisplayDate(dateTime)}
-                </Text>
+                <View style={{ width: '25%' }}>
+                {isToday(dateTime) ? 
+                    (<View><Text>Dnes</Text><Text>{dateTime.toLocaleTimeString().replace(/^0+/, '')}</Text></View>) 
+                    : 
+                    (<View><Text>{getDisplayDate(dateTime)}</Text><Text>{dateTime.toLocaleTimeString().replace(/^0+/, '')}</Text></View>) 
+                }
+                </View>
             </View>
         </TouchableHighlight >
     );
