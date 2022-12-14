@@ -227,8 +227,10 @@ export default function ChartScreen({ navigation }) {
         return;
       }
       let data = result.sort((a, b) => a["dateTime"] - b["dateTime"]);
-      setData(data);
-      let lastData = data[data.length - 1];
+
+      let filtrated = data.filter(d => d["bloodSugar"]);
+      setData(filtrated);
+      let lastData = filtrated[filtrated.length - 1];
       if(lastData != null){
         setLastUpdate(lastData);
       }
@@ -385,9 +387,8 @@ export default function ChartScreen({ navigation }) {
         </Text>
 
         <TouchableHighlight
-                activeOpacity={0.5}
                 style={{borderRadius: 4, elevation: 0}}
-                underlayColor='lightgray'
+                underlayColor='#dddddd'
                 onPress={optionsClick}
             >
                 <View>

@@ -3,8 +3,9 @@
  * @author Juraj Dedič (xdedic07)
  */
 
-import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableHighlight } from "react-native";
 import { color } from "react-native-reanimated";
+import { backgroundColor, pressUnderlayColor } from "../styles/common";
 
 function isToday(date) {
     if(!date) return false;
@@ -56,6 +57,15 @@ export default function HistoryItem(props) {
 
             elevation: 5,
             },
+
+        container: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'black',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+        }, 
+
         sugar:{
             flex: 1,
             fontSize: 16
@@ -74,10 +84,14 @@ export default function HistoryItem(props) {
     });
 
     return (
-        <TouchableWithoutFeedback  onPress={props.onPress}>
-            <View style={styles.text}>
+        <TouchableHighlight 
+            style={styles.text} 
+            onPress={props.onPress}
+            underlayColor={backgroundColor}
+        >
+            <View  style={styles.container}>
                 <Text style={styles.sugar}>
-                     {record["bloodSugar"]} {record["bloodSugarU"]["label"]}
+                     {record["bloodSugar"] || "Nezadáno"} {record["bloodSugar"] ? record["bloodSugarU"]["label"] : " "}
                 </Text> 
                 <Text style={styles.insuline}>
                      {record["insuline"] || "Nezadáno"} {record["insuline"] ? record["insulineT"]["label"] : ""}
@@ -86,6 +100,6 @@ export default function HistoryItem(props) {
                      {isToday(dateTime) ? dateTime.toLocaleTimeString() : getDisplayDate(dateTime)}
                 </Text>
             </View>
-        </TouchableWithoutFeedback >
+        </TouchableHighlight >
     );
 }

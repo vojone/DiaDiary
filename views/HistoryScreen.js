@@ -138,9 +138,8 @@ export default function HistoryScreen({ navigation }) {
         <View style={{justifyContent: "space-between", flexDirection: "row", alignItems: "center", width: "100%", padding: 20}}>
             <Text style={{textAlign: "left", fontSize: 30, fontWeight: "bold"}}>Historie záznamů</Text>
             <TouchableHighlight
-                activeOpacity={0.5}
                 style={{borderRadius: 4}}
-                underlayColor='lightgray'
+                underlayColor='#dddddd'
                 onPress={optionsClick}
             >
                 <View>
@@ -203,7 +202,6 @@ export default function HistoryScreen({ navigation }) {
                 selectedStyle={{backgroundColor: primaryColor, borderRadius: 100}}
                 renderItem={(item, selected) => <DropdownItem item={item} selected={selected} padding={20} withIcon={true}></DropdownItem>}
                 selectedTextStyle={{color: 'white'}}
-                containerStyle={{top: -25}}
             >
             </MultiSelect>
         </View>

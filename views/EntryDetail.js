@@ -365,7 +365,6 @@ const timeSelectionConfirm = (time) => {
 
         <Text style={styles.text_style.normal}>Hladina cukru</Text>
         <View style={styles.list_flex}>
-        { recordDetail.bloodSugar &&
         <InputSpinner 
             rounded= {false}
             showBorder={true}
@@ -392,12 +391,10 @@ const timeSelectionConfirm = (time) => {
               ></AppendDropdown>
             } // Appended element
           />
-        }
         </View>
 
         <Text style={styles.text_style.normal}>Inzulín (jednotky)</Text>
         <View style={styles.list_flex}>
-          { recordDetail.bloodSugar &&
           <InputSpinner 
             rounded= {false}
             showBorder={true}
@@ -424,7 +421,6 @@ const timeSelectionConfirm = (time) => {
             ></AppendDropdown>
             }
           />
-        }
         </View>
 
         <Text style={styles.text_style.header.middle}>Jídlo</Text>
