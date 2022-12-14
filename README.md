@@ -61,17 +61,17 @@ See `package.json` for the list of used libraries. All these libraries should be
 
 ## The App
 
-<img src="/screenshots/splash.jpg" width="250">
-<img src="/screenshots/initsettings1.jpg" width="250">
-<img src="/screenshots/initsettings2.jpg" width="250">
-<img src="/screenshots/initsettings3.jpg" width="250">
-<img src="/screenshots/input1.jpg" width="250">
-<img src="/screenshots/altinput.jpg" width="250">
-<img src="/screenshots/chart.jpg" width="250">
-<img src="/screenshots/history.jpg" width="250">
-<img src="/screenshots/fitering.jpg" width="250">
-<img src="/screenshots/entrydetail.jpg" width="250">
-<img src="/screenshots/sidemenu.jpg" width="250">
-<img src="/screenshots/export.jpg" width="250">
+<img src="/screenshots/splash.jpg" width="300">
+<img src="/screenshots/initsettings1.jpg" width="300">
+<img src="/screenshots/initsettings2.jpg" width="300">
+<img src="/screenshots/initsettings3.jpg" width="300">
+<img src="/screenshots/input1.jpg" width="300">
+<img src="/screenshots/altinput.jpg" width="300">
+<img src="/screenshots/chart.jpg" width="300">
+<img src="/screenshots/history.jpg" width="300">
+<img src="/screenshots/fitering.jpg" width="300">
+<img src="/screenshots/entrydetail.jpg" width="300">
+<img src="/screenshots/sidemenu.jpg" width="300">
+<img src="/screenshots/export.jpg" width="300">
 
 
