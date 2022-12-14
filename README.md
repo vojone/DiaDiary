@@ -61,6 +61,8 @@ See `package.json` for the list of used libraries. All these libraries should be
 
 ## The App
 
+<img src="/screenshots/splash.jpg" width="100">
+
 ![SplashScreen](/screenshots/splash.jpg | width=100)
 
 ![InitialSettings1](/screenshots/initsettings1.jpg)
